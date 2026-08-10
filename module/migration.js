@@ -2393,24 +2393,22 @@ export  const updates = async () => {
         }
     }
 
-    if (_compareVersion(itemversion, "7.2.6")) {
+    if (_compareVersion(itemversion, "7.2.7")) {
         let itemData = foundry.utils.duplicate(item);
 
-        if (!item.system?.settings?.iscreated) {
-            itemData.system.settings.iscreated = true;
-            altered = true;
-        }
-        else if (!item.system?.iscreated) {
-            itemData.system.iscreated = true;
-            altered = true;
+        if (item.type === "Advantage" || item.type === "Ability") {
+            if (item.system?.settings?.iscreated === false) {
+                itemData.system.settings.iscreated = true;
+                altered = true;
+            }
         }
 
         if (altered) {
             if (itemData.system?.settings?.version !== undefined) {
-                itemData.system.settings.version = "7.2.6";
+                itemData.system.settings.version = "7.2.7";
             }
             else {
-                itemData.system.version = "7.2.6";
+                itemData.system.version = "7.2.7";
             }
             
             await item.update(itemData);
@@ -2743,8 +2741,9 @@ export  const updates = async () => {
     if (newfunctions == "") {
         newfunctions += 'Issues fixed in version:<br />';    
 
-        if (_compareVersion(installedVersion, '7.2.6')) {
+        if (_compareVersion(installedVersion, '7.2.7')) {
             newfunctions += '<li>[PC Actor] Abilities did not set its id correctly.</li>';
+            newfunctions += '<li>Fixed patch problems.</li>';
         }
 
         if (_compareVersion(installedVersion, '7.2.5')) {
