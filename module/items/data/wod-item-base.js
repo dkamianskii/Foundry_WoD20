@@ -24,36 +24,56 @@ export class WoDItem extends Item {
 				data.system = {};
 			}
 
-			if (!data.system.iscreated) {
+			if (data.type === "Ability" || data.type === "Advantage" || data.type === "Sphere" || data.type === "Realm" || data.type === "Splat") {
+				updates["system.settings.iscreated"] = true;
+				updates["system.settings.version"] = game.system.version;
+			}
+			else if (data.type === "Armor" || 
+						data.type === "Melee Weapon" || 
+						data.type === "Ranged Weapon" || 
+						data.type === "Power" || 
+						data.type === "Item" || 
+						data.type === "Rote" || 
+						data.type === "Fetish" || 
+						data.type === "Feature" || 
+						data.type === "Bonus" || 
+						data.type === "Trait" || 
+						data.type === "Experience" ){
 				updates["system.iscreated"] = true;
 				updates["system.version"] = game.system.version;
+			}
+			else {
+				return;
+			}
 
-				if (data.type === "Ability") {
-					if (!data.system.id || data.system.id === "") {
-						updates["system.id"] = (data.name || "").toLowerCase().replace(/\s+/g, '');
-					}
-					if (!data.system.type || data.system.type === "") {
-						updates["system.type"] = "wod.abilities.ability";
-					}
-				}	
-				
-				if ((data.type === "Advantage") && (options?.parent !== null) && (options?.parent !== undefined)) {
-					updates["system.settings.order"] = options.parent.items.filter(i => i.type === "Advantage").length;
-				}
+			const imgUrl = _getImage(data);
 
-				if (data.type === "Trait" && data.system?.type === "wod.types.shapeform") {
-					updates["system.usesoaksettings"] = false;
-				}
+			if (imgUrl != "") {
+				updates.img = imgUrl;
+			}
 
-				const imgUrl = _getImage(data);
-				if (imgUrl != "") {
-					updates.img = imgUrl;
-				}
+			if (data.type === "Trait" && data.system?.type === "wod.types.shapeform") {
+				updates["system.usesoaksettings"] = false;
+			}
 
-				// Apply updates using updateSource (Foundry v10+)
-				if (Object.keys(updates).length > 0) {
-					this.updateSource(updates);
+			if (data.type === "Ability") {
+				updates["system.label"] = data.name;
+
+				if (!data.system.id || data.system.id === "") {
+					updates["system.id"] = (data.name || "").toLowerCase().replace(/\s+/g, '');
 				}
+				if (!data.system.type || data.system.type === "") {
+					updates["system.type"] = "wod.abilities.ability";
+				}
+			}	
+			
+			if ((data.type === "Advantage") && (options?.parent !== null) && (options?.parent !== undefined)) {
+				updates["system.settings.order"] = options.parent.items.filter(i => i.type === "Advantage").length;
+			}
+
+			// Apply updates using updateSource (Foundry v10+)
+			if (Object.keys(updates).length > 0) {
+				this.updateSource(updates);
 			}
 		}
 		catch (err) {

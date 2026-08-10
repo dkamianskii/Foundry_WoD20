@@ -2392,6 +2392,34 @@ export  const updates = async () => {
             altered = false;
         }
     }
+
+    if (_compareVersion(itemversion, "7.2.6")) {
+        let itemData = foundry.utils.duplicate(item);
+
+        if (!item.system?.settings?.iscreated) {
+            itemData.system.settings.iscreated = true;
+            altered = true;
+        }
+        else if (!item.system?.iscreated) {
+            itemData.system.iscreated = true;
+            altered = true;
+        }
+
+        if (altered) {
+            if (itemData.system?.settings?.version !== undefined) {
+                itemData.system.settings.version = "7.2.6";
+            }
+            else {
+                itemData.system.version = "7.2.6";
+            }
+            
+            await item.update(itemData);
+
+            console.log("WoD Migration | Updated items not set to iscreated.");
+            
+            altered = false;
+        }
+    }
  };
 
  /**
@@ -2714,6 +2742,10 @@ export  const updates = async () => {
 
     if (newfunctions == "") {
         newfunctions += 'Issues fixed in version:<br />';    
+
+        if (_compareVersion(installedVersion, '7.2.6')) {
+            newfunctions += '<li>[PC Actor] Abilities did not set its id correctly.</li>';
+        }
 
         if (_compareVersion(installedVersion, '7.2.5')) {
             newfunctions += '<li>[PC Actor WtA] Fixed bug that caused renown not to be shown.</li>';
