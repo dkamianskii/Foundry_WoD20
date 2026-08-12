@@ -2741,6 +2741,10 @@ export  const updates = async () => {
     if (newfunctions == "") {
         newfunctions += 'Issues fixed in version:<br />';    
 
+        if (_compareVersion(installedVersion, '7.2.8')) {
+            newfunctions += '<li>[PC Actor] Fixed issue with newly created actors\' abilities isn\'t correctly translated. [<a href="https://github.com/JohanFalt/Foundry_WoD20/issues/1472">#1472</a>]</li>';
+        }
+
         if (_compareVersion(installedVersion, '7.2.7')) {
             newfunctions += '<li>[PC Actor] Abilities did not set its id correctly.</li>';
             newfunctions += '<li>Fixed patch problems.</li>';

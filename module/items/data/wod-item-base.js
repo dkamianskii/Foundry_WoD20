@@ -57,7 +57,9 @@ export class WoDItem extends Item {
 			}
 
 			if (data.type === "Ability") {
-				updates["system.label"] = data.name;
+				if (!data.system.label || data.system.label === "") {
+					updates["system.label"] = data.name;
+				}
 
 				if (!data.system.id || data.system.id === "") {
 					updates["system.id"] = (data.name || "").toLowerCase().replace(/\s+/g, '');
