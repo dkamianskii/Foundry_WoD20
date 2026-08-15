@@ -2741,6 +2741,12 @@ export  const updates = async () => {
     if (newfunctions == "") {
         newfunctions += 'Issues fixed in version:<br />';    
 
+        if (_compareVersion(installedVersion, '7.2.9')) {
+            newfunctions += '<li>[PC Actor] If the game was using the V5 settings for using the attributes composure and resolve rolling willpower did not work correctly.</li>';
+            newfunctions += '<li>[PC Actor] If the game was using the V5 settings for using composure and resolve to calculate willpower the update of willpower was not done correctly.</li>';
+            newfunctions += '<li>The hint texts for these two world settings was confusing, have updated them to actually tell what they are used for.</li>';
+        }
+
         if (_compareVersion(installedVersion, '7.2.8')) {
             newfunctions += '<li>[PC Actor] Fixed issue with newly created actors\' abilities isn\'t correctly translated. [<a href="https://github.com/JohanFalt/Foundry_WoD20/issues/1472">#1472</a>]</li>';
         }

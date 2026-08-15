@@ -281,6 +281,63 @@ export class WoDActor extends Actor {
                     actorData.system.settings.hasquintessence = true;
                 }
 
+                // 5th-edition attributes: Willpower permanent = Composure + Resolve
+                if ((actorData.system.advantages[key].system.id === "willpower") &&
+                    (actorData.system.settings.variant !== "spirit") &&
+                    (CONFIG.worldofdarkness.attributeSettings === "5th") &&
+                    (CONFIG.worldofdarkness.fifthEditionWillpowerSetting === "5th")) {
+
+                    let advantageRollSetting = true;
+                    try {
+                        advantageRollSetting = CONFIG.worldofdarkness.rollSettings;
+                    }
+                    catch (e) {
+                        advantageRollSetting = true;
+                    }
+
+                    let permanent = parseInt(actorData.system.attributes.composure?.value ?? 0) + parseInt(actorData.system.attributes.resolve?.value ?? 0);
+                    const max = parseInt(actorData.system.advantages[key].system.max) || 10;
+
+                    if (permanent > max) {
+                        permanent = max;
+                    }
+
+                    let temporary = parseInt(actorData.system.advantages[key].system.temporary ?? 0);
+                    if ((permanent < temporary) && (!actorData.system.advantages[key].system.settings?.highertemporary)) {
+                        temporary = permanent;
+                    }
+
+                    let roll = 0;
+                    if (actorData.system.advantages[key].system.settings?.usebothrolls) {
+                        roll = permanent + temporary;
+                    }
+                    else if (advantageRollSetting) {
+                        roll = permanent;
+                    }
+                    else {
+                        roll = permanent > temporary ? temporary : permanent;
+                    }
+
+                    const currentPermanent = parseInt(adv.system.permanent ?? 0);
+                    const currentTemporary = parseInt(adv.system.temporary ?? 0);
+                    const currentRoll = parseInt(adv.system.roll ?? 0);
+
+                    if ((currentPermanent !== permanent) || (currentTemporary !== temporary) || (currentRoll !== roll)) {
+                        actorData.system.advantages[key].system.permanent = permanent;
+                        actorData.system.advantages[key].system.temporary = temporary;
+                        actorData.system.advantages[key].system.roll = roll;
+
+                        itemList.push({
+                            _id: adv._id,
+                            "system.permanent": permanent,
+                            "system.temporary": temporary,
+                            "system.roll": roll
+                        });
+                    }
+
+                    continue;
+                }
+
                 // set bearing in path correctly
                 if (actorData.system.advantages[key].system.id === "path") {
     				let bearing = 0;

@@ -163,6 +163,21 @@ export class DialogGeneralRoll extends FormApplication {
                         data.object.name = data.object.attributeName; 
                     }
                     else if ((attributeKey == "willpower") && (CONFIG.worldofdarkness.attributeSettings == "5th")) {
+                        const willpowerAdv = data.actorData.advantages?.[attributeKey];
+                        const advantage = willpowerAdv?.system !== undefined ? willpowerAdv.system : willpowerAdv;
+
+                        if (advantage) {
+                            if (advantage.label === "custom") {
+                                data.object.attributeName = advantage.custom;
+                            }
+                            else {
+                                data.object.attributeName = game.i18n.localize(advantage.label);
+                            }
+
+                            data.object.attributeValue = parseInt(advantage.roll);
+                            data.object.name = data.object.attributeName;
+                        }
+
                         if (parseInt(data.actorData.attributes?.composure.value) >= specialityLevel) {
                             data.object.hasSpeciality = true;
                             attributeSpeciality = data.actorData.attributes.composure.speciality;
