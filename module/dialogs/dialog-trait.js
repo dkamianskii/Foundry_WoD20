@@ -56,7 +56,7 @@ export class OtherTrait {
 }
 
 export class DialogRoll extends FormApplication {
-    
+
     static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-dialog item-dialog"],
@@ -70,14 +70,14 @@ export class DialogRoll extends FormApplication {
         super(item, {submitOnChange: true, closeOnSubmit: false});
         this.actor = actor;
         this.isDialog = true;
-        
+
         this.options.title = `${this.actor.name}`;
     }
 
     /** @override */
 	get template() {
-        return "systems/worldofdarkness/templates/dialogs/dialog-item.hbs";
-	}    
+        return "systems/wod-advanced/templates/dialogs/dialog-item.hbs";
+	}
 
     async getData() {
         const data = super.getData();
@@ -87,7 +87,7 @@ export class DialogRoll extends FormApplication {
 
         // Determine sheettype for dialog CSS classes
         let actortype = this.actor.type.toLowerCase();
-        
+
         // For PC actors, use splat or variantsheet to determine type
         if (this.actor.type === "PC") {
             if (this.actor?.system?.settings?.splat && this.actor.system.settings.splat !== "") {
@@ -179,7 +179,7 @@ export class DialogRoll extends FormApplication {
                     data.object.specialityText += this.actor.system.attributes.resolve.speciality;
                 }
             }
-        }        
+        }
         // virtues
         else if ((this.actor.system?.advantages.virtues != undefined) && (this.actor.system.advantages.virtues[data.object.dice1]?.roll != undefined)) {
             data.object.attributeValue = parseInt(this.actor.system.advantages.virtues[data.object.dice1].roll);
@@ -213,7 +213,7 @@ export class DialogRoll extends FormApplication {
                 data.object.abilityValue = parseInt(abilityItem.system.value);
                 data.object.abilityName = game.i18n.localize(abilityItem.system.label);
 
-                if ((parseInt(abilityItem.system.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) || 
+                if ((parseInt(abilityItem.system.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) ||
                     (CONFIG.worldofdarkness.alwaysspeciality[actortype].includes(abilityItem.system.id))) {
                     data.object.hasSpeciality = true;
                     abilitySpeciality = abilityItem.system.speciality;
@@ -232,16 +232,16 @@ export class DialogRoll extends FormApplication {
                 }
                 data.object.specialityText += this.actor.system.abilities[data.object.dice2].speciality;
             }
-        }             
+        }
         // virtues
         else if ((this.actor.system.advantages.virtues != undefined) && (this.actor.system.advantages.virtues[data.object.dice2]?.roll != undefined)) {
             data.object.abilityValue = parseInt(this.actor.system.advantages.virtues[data.object.dice2].roll);
             data.object.abilityName = game.i18n.localize(this.actor.system.advantages.virtues[data.object.dice2].label);
-        }    
+        }
         else if (data.object.dice2 == "path") {
             data.object.abilityValue = parseInt(this.actor.system.advantages.path?.roll);
             data.object.abilityName = game.i18n.localize(this.actor.system.advantages.path?.label);
-        } 
+        }
         else if ((data.object.dice1 == "art") && (data.object.type == "wod.types.artpower")) {
             if (!this.object.isUnleashing) {
                 const realm = data.object._lowestRank();
@@ -262,7 +262,7 @@ export class DialogRoll extends FormApplication {
 
         html
             .find('.dialog-difficulty-button')
-            .click(this._setDifficulty.bind(this));        
+            .click(this._setDifficulty.bind(this));
 
         html
             .find('.actionbutton')
@@ -279,13 +279,13 @@ export class DialogRoll extends FormApplication {
             return;
         }
 
-        event.preventDefault();      
-        
+        event.preventDefault();
+
         // add the lowest number of dices from selected Realms
         if (this.object.type == "wod.types.artpower") {
             this.object.isUnleashing = formData["isUnleashing"];
         }
-        
+
         this.object.useSpeciality = formData["specialty"];
         this.object.useWillpower = formData["useWillpower"];
 
@@ -314,10 +314,10 @@ export class DialogRoll extends FormApplication {
         const element = event.currentTarget;
         const parent = $(element.parentNode);
         const steps = parent.find(".dialog-difficulty-button");
-        const index = parseInt(element.value);   
+        const index = parseInt(element.value);
 
-        this.object.difficulty = index;   
-        this.object.canRoll = this.object.difficulty > -1 ? true : false;     
+        this.object.difficulty = index;
+        this.object.canRoll = this.object.difficulty > -1 ? true : false;
 
         if (index < 0) {
             return;
@@ -331,7 +331,7 @@ export class DialogRoll extends FormApplication {
             }
         });
     }
-    
+
     _rollPower(event) {
         if (this.object.close) {
             this.close();
@@ -375,18 +375,18 @@ export class DialogRoll extends FormApplication {
         dialogRoll.numSpecialDices = numSpecialDices;
         dialogRoll.specialDiceText = specialDiceText;
         dialogRoll.woundpenalty = 0;
-        dialogRoll.difficulty = parseInt(this.object.difficulty);          
+        dialogRoll.difficulty = parseInt(this.object.difficulty);
         dialogRoll.speciality = this.object.useSpeciality;
-        dialogRoll.specialityText = specialityText;      
-        dialogRoll.systemText = this.object.details;  
+        dialogRoll.specialityText = specialityText;
+        dialogRoll.systemText = this.object.details;
         dialogRoll.usewillpower = this.object.useWillpower;
-        
+
         DiceRoller(dialogRoll);
     }
 
     /* clicked to close form */
     _closeForm(event) {
         this.object.close = true;
-    }    
+    }
 
 }

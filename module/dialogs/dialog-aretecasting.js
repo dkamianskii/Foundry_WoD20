@@ -15,7 +15,7 @@ export class Rote {
     constructor(item) {
         this.name = "";
         this.selectedSpheres = [];
-        this.description = "";        
+        this.description = "";
 
         this.check_instrumentPerson = false;
 		this.check_instrumentUnique = false;
@@ -44,8 +44,8 @@ export class Rote {
         this.select_dominoEffect = 0;
         this.select_deedOutlandish = 0;
 
-        this.quintessence = 0;      
-        
+        this.quintessence = 0;
+
         this.spelltype = "coincidental";
         this.witnesses = false;
 
@@ -92,7 +92,7 @@ export class Rote {
 
             if (item.system["spendingtime"] < 0) {
                 this.select_spendingTime = parseInt(item.system["spendingtime"]);
-            }		    
+            }
 
             this.isExtendedCasting = item.system["isextended"];
 
@@ -108,7 +108,7 @@ export class Rote {
                 this.sumSelectedDifficulty -= this.select_spendingTime * -1;
             }
 
-            this._setDifficulty(this._highestRank());            
+            this._setDifficulty(this._highestRank());
         }
     }
 
@@ -146,7 +146,7 @@ export class Rote {
                     diff = parseInt(rank) + 3;
                 }
             }
-        }       
+        }
 
         if (diff > -1) {
             this.baseDifficulty = diff;
@@ -179,7 +179,7 @@ export class Rote {
 export class DialogAreteCasting extends FormApplication {
     constructor(actor, rote) {
         super(rote, {submitOnChange: true, closeOnSubmit: false});
-        this.actor = actor;        
+        this.actor = actor;
         this.isDialog = true;
 
         if (rote.isRote) {
@@ -198,7 +198,7 @@ export class DialogAreteCasting extends FormApplication {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["wod20 wod-dialog aretecasting-dialog mageDialog"],
-            template: "systems/worldofdarkness/templates/dialogs/dialog-aretecasting.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-aretecasting.hbs",
             closeOnSubmit: false,
             submitOnChange: true,
             resizable: true
@@ -239,7 +239,7 @@ export class DialogAreteCasting extends FormApplication {
             .find('.closebutton')
             .click(this._closeForm.bind(this));
     }
-    
+
     close() {
         // do something for 'on close here'
         super.close()
@@ -275,9 +275,9 @@ export class DialogAreteCasting extends FormApplication {
         const element = event.currentTarget;
         const parent = $(element.parentNode);
         const steps = parent.find(".dialog-difficulty-button");
-        const index = element.value;   
+        const index = element.value;
 
-        this.object.baseDifficulty = parseInt(index);     
+        this.object.baseDifficulty = parseInt(index);
         steps.removeClass("active");
 
         steps.each(function (i) {
@@ -309,15 +309,15 @@ export class DialogAreteCasting extends FormApplication {
             return;
         }
 
-        event.preventDefault();    
-        
+        event.preventDefault();
+
         let totalDiff = 0;
         this.object.selectedMods = [];
 
         for (const value in formData) {
             if (value.startsWith('object.check_')) {
                 let elementName = '[name="'+value+'"]';
-                let objectname = value.replace("object.", "");                
+                let objectname = value.replace("object.", "");
 
                 if (formData[value] == null) {
                     this.object[objectname] = false;
@@ -340,13 +340,13 @@ export class DialogAreteCasting extends FormApplication {
                     let name = value.toLowerCase().replace("object.select_", "");
                     this.object.selectedMods.push(game.i18n.localize("wod.dialog.aretecasting." + name));
                 }
-                
+
                 let objectname = value.replace("object.", "");
                 let formValue = formData[value];
 
                 if (parseInt(this.object[objectname]) != parseInt(formValue)) {
                     this.object[objectname] = parseInt(formValue);
-                }                
+                }
             }
         }
 
@@ -360,7 +360,7 @@ export class DialogAreteCasting extends FormApplication {
         else {
             this.object.spelltype = "";
         }
-        
+
         this.object.witnesses = formData["object.witnesses"];
         this.object.isExtendedCasting = formData["object.isExtendedCasting"];
 
@@ -378,7 +378,7 @@ export class DialogAreteCasting extends FormApplication {
 
         this.object.areteModifier = parseInt(formData["object.areteModifier"]);
 
-        this.object.canCast = this._calculateDifficulty(false);   
+        this.object.canCast = this._calculateDifficulty(false);
         this.render();
     }
 
@@ -395,7 +395,7 @@ export class DialogAreteCasting extends FormApplication {
 
         if (index < 0 || index > steps.length) {
             return;
-        }        
+        }
 
         steps.removeClass("active");
 
@@ -435,23 +435,23 @@ export class DialogAreteCasting extends FormApplication {
             }
             else {
                 action = game.i18n.localize("wod.dialog.aretecasting.castingarete");
-            }           
-            
+            }
+
             if (this.actor.type === "PC") {
                 const arete = this.actor.api?.getAdvantage("arete");
                 template.push(`${game.i18n.localize("wod.advantages.arete")} (${arete?.system?.roll ?? 0})`);
             }
             else {
                 template.push(`${game.i18n.localize("wod.advantages.arete")} (${this.actor.system.advantages.arete.roll})`);
-            }            
+            }
 
             if (parseInt(this.object.areteModifier) > 0) {
                 template.push(`${game.i18n.localize("wod.dialog.aretecasting.aretebonus")} +${this.object.areteModifier}`);
             }
             else if (parseInt(this.object.areteModifier) < 0) {
                 template.push(`${game.i18n.localize("wod.dialog.aretecasting.aretebonus")} -${this.object.areteModifier}`);
-            }      
-            
+            }
+
             if (this.object.isExtendedCasting) {
                 extraInfo.push(`${game.i18n.localize("wod.dialog.aretecasting.extendedcasting")} - ${this.object.totalSuccesses} ${game.i18n.localize("wod.dice.successes")}`);
 
@@ -475,7 +475,7 @@ export class DialogAreteCasting extends FormApplication {
             // the selected mods
             for (const property of this.object.selectedMods) {
                 extraInfo.push(property);
-            } 
+            }
 
             if (this.object.quintessence < 0) {
                 const spentPoints = this.object.quintessence * -1;
@@ -488,7 +488,7 @@ export class DialogAreteCasting extends FormApplication {
                 this.object.totalDifficulty = 10;
             }
             else if (this.object.totalDifficulty < CONFIG.worldofdarkness.lowestDifficulty) {
-                this.object.totalDifficulty = CONFIG.worldofdarkness.lowestDifficulty; 
+                this.object.totalDifficulty = CONFIG.worldofdarkness.lowestDifficulty;
             }
 
             for (const sphere in CONFIG.worldofdarkness.allSpheres) {
@@ -512,15 +512,15 @@ export class DialogAreteCasting extends FormApplication {
                                 specialityText = specialityText != "" ? specialityText + ", " + this.actor.system.spheres[sphere].speciality : this.actor.system.spheres[sphere].speciality;
                         }
 
-                        label = this.actor.system.spheres[sphere].label;                        
+                        label = this.actor.system.spheres[sphere].label;
                     }
 
                     extraInfo.push(`${game.i18n.localize(label)} (${this.object.selectedSpheres[sphere]})`);
-                }                    
+                }
             }
 
             let numDices = 0;
-            
+
             if (this.actor.type === "PC") {
                 const arete = this.actor.api?.getAdvantage("arete");
                 numDices = parseInt(arete?.system?.roll ?? 0) + parseInt(this.object.areteModifier);
@@ -534,16 +534,16 @@ export class DialogAreteCasting extends FormApplication {
             powerRoll.origin = "magic";
             powerRoll.numDices = numDices;
             powerRoll.woundpenalty = 0;
-            powerRoll.difficulty = parseInt(this.object.totalDifficulty);           
+            powerRoll.difficulty = parseInt(this.object.totalDifficulty);
             powerRoll.speciality = specialityRoll;
             powerRoll.usewillpower = this.object.useWillpower;
             powerRoll.specialityText = specialityText;
             powerRoll.dicetext = template;
             powerRoll.extraInfo = extraInfo;
             powerRoll.systemText = this.object.description;
-            
+
             let successes = await DiceRoller(powerRoll);
-            
+
             if (!this.object.isExtendedCasting) {
                 this.object.close = true;
                 this.close();
@@ -553,10 +553,10 @@ export class DialogAreteCasting extends FormApplication {
                 if (!this.object.keepDifficulty && (successes == 0)) {
                     this.object.difficultyModifier = parseInt(this.object.difficultyModifier) + 1;
                 }
-                
-                this.object.totalSuccesses = parseInt(this.object.totalSuccesses) + parseInt(successes);    
-                this.render();            
-            }            
+
+                this.object.totalSuccesses = parseInt(this.object.totalSuccesses) + parseInt(successes);
+                this.render();
+            }
         }
     }
 
@@ -573,7 +573,7 @@ export class DialogAreteCasting extends FormApplication {
         }
         else {
             selected[spherename] = value;
-        }        
+        }
 
         return selected;
     }

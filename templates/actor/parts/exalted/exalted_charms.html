@@ -7,7 +7,7 @@
 
             {{#each (getExaltedCharm ../actor "charmtype" charmtype) as |item itemid|}}
 
-                {{> "systems/worldofdarkness/templates/actor/parts/power_list.html" item=item config=../../config actor=../../actor locked=../../locked showclear=false}}
+                {{> "systems/wod-advanced/templates/actor/parts/power_list.html" item=item config=../../config actor=../../actor locked=../../locked showclear=false}}
 
             {{/each}}
 
@@ -22,7 +22,7 @@
 
     {{#each (getExaltedCharm actor "type" "wod.types.exaltedsorcery") as |item itemid|}}
 
-        {{> "systems/worldofdarkness/templates/actor/parts/power_list.html" item=item config=../config actor=../actor locked=../locked showclear=false}}
+        {{> "systems/wod-advanced/templates/actor/parts/power_list.html" item=item config=../config actor=../actor locked=../locked showclear=false}}
 
     {{/each}}
 

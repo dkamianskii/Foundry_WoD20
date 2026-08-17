@@ -6,8 +6,8 @@
         </div>
 
         {{#each (getMainPowerList actor "wod.types.arcanoi") as |item id|}}
-            {{> "systems/worldofdarkness/templates/actor/parts/mainpower_list.html" mainpower=item config=../config actor=../actor locked=../locked}}
-        {{/each}}        
+            {{> "systems/wod-advanced/templates/actor/parts/mainpower_list.html" mainpower=item config=../config actor=../actor locked=../locked}}
+        {{/each}}
     </div>
 </div>
 
@@ -19,17 +19,17 @@
             {{#each actor.system.listdata.powers.arcanois.unlistedarcanois as | item id|}}
 
                 <div class="row">
-                    <div class="pullLeft arcanoi-headline headlineNormal vrollable" 
+                    <div class="pullLeft arcanoi-headline headlineNormal vrollable"
                         data-type="{{../config.sheettype.mortal}}"
                         data-object="SortArcanoiPower"
                         data-rollitem="true"
                         data-itemid="{{item._id}}">{{item.name}}</div>
-                    
+
                     {{#if (eq ../locked false)}}
                         <div class="pullLeft power-iconbox">
                             <a class="item-delete" title="{{localize 'wod.labels.remove.arcanoipower'}}" data-type="Arcanois" data-item-id="{{item._id}}"><i class="icon fa-solid fa-trash-can"></i></a>
                         </div>
-                    {{/if}}                    
+                    {{/if}}
                 </div>
             {{/each}}
         </div>
@@ -56,18 +56,18 @@
                             {{/if}}
                         </div>
 
-                        <div class="resource-value pullLeft power-dotBox" 
-                            data-value="{{item.system.value}}" 
+                        <div class="resource-value pullLeft power-dotBox"
+                            data-value="{{item.system.value}}"
                             data-itemid="{{item._id}}">
 
-                            {{#numLoop item.system.max}}                            
-                                <span class="resource-value-step" data-type="{{../../config.sheettype.mortal}}" data-index="{{this}}"></span>                            
+                            {{#numLoop item.system.max}}
+                                <span class="resource-value-step" data-type="{{../../config.sheettype.mortal}}" data-index="{{this}}"></span>
                             {{/numLoop}}
                         </div>
 
                         <div class="pullLeft">
                             <div class="pullLeft">
-                                <a class="send-chat" 
+                                <a class="send-chat"
                                     title="{{localize 'wod.labels.send'}}"
                                     data-itemid="{{item._id}}"><i class="icon fa-solid fa-comment-dots"></i></a>
                             </div>
@@ -79,10 +79,10 @@
                                     <a class="item-delete" title="{{localize 'wod.labels.remove.passion'}}" data-type="Feature" data-item-id="{{item._id}}"><i class="icon fa-solid fa-trash-can"></i></a>
                                 </div>
                             {{/if}}
-                            
+
                         </div>
                     </div>
-                </div> 
+                </div>
             {{/each}}
         </div>
     </div>
@@ -92,7 +92,7 @@
                 <span class="sheet-banner-text">{{localize "wod.power.fetters"}}</span>
             </div>
         </div>
-    
+
         <div class="fetter" data-area="fetter">
             {{#each actor.system.listdata.traits.fetters as |item id|}}
                 <div class="item-row-area">
@@ -105,18 +105,18 @@
                             {{/if}}
                         </div>
 
-                        <div class="resource-value pullLeft power-dotBox" 
-                            data-value="{{item.system.value}}" 
+                        <div class="resource-value pullLeft power-dotBox"
+                            data-value="{{item.system.value}}"
                             data-itemid="{{item._id}}">
 
-                            {{#numLoop item.system.max}}                            
-                                <span class="resource-value-step" data-type="{{../../config.sheettype.mortal}}" data-index="{{this}}"></span>                            
+                            {{#numLoop item.system.max}}
+                                <span class="resource-value-step" data-type="{{../../config.sheettype.mortal}}" data-index="{{this}}"></span>
                             {{/numLoop}}
                         </div>
-    
+
                         <div class="pullLeft">
                             <div class="pullLeft">
-                                <a class="send-chat" 
+                                <a class="send-chat"
                                     title="{{localize 'wod.labels.send'}}"
                                     data-itemid="{{item._id}}"><i class="icon fa-solid fa-comment-dots"></i></a>
                             </div>
@@ -128,10 +128,10 @@
                                     <a class="item-delete" title="{{localize 'wod.labels.remove.fetter'}}" data-type="Feature" data-item-id="{{item._id}}"><i class="icon fa-solid fa-trash-can"></i></a>
                                 </div>
                             {{/if}}
-                            
+
                         </div>
                     </div>
-                </div> 
+                </div>
             {{/each}}
         </div>
     </div>

@@ -190,7 +190,7 @@
 			"mortal": "Mortal",
 			"werewolf": "Hombre Lobo",
 			"mage": "Mago",
-			
+
 			"background": "Trasfondo",
 			"bloodbound": "Vínculo de Sangre/Vinculum",
 			"boon": "Favor",
@@ -971,8 +971,14 @@
 			"ragewarning": "Tu Rabia temporal es mayor que tu Rabia permanente",
 			"gnosis": "Gnosis",
 			"willpower": "Fuerza de Voluntad",
+			"currentwillpower": "Fuerza de Voluntad actual",
+			"fullwillpower": "Fuerza de Voluntad completa",
+			"exhausted": "Agotada",
+			"willpowertrackhint": "Clic izquierdo para aumentar una herida de Voluntad; clic derecho para borrarla.",
+			"exhaustedwillpowerpenalty": "Fuerza de Voluntad agotada",
 			"imbalance": "Desequilibrio",
 			"willpowerchange": "¡La Fuerza de Voluntad está basada en tu Compostura + Resolución en la configuración del Sistema y no puede alterarse!",
+			"willpowerbuiltin": "La Fuerza de Voluntad está integrada en los actores PJ y no puede añadirse como Ventaja.",
 			"noadvantages": "No advantage selected",
 			"path": {
 				"headline": "Moralidad",
@@ -1427,6 +1433,7 @@
 			"both": "Ambos",
 			"nochange": "Sin cambio",
 			"usewillpower": "Usar Fuerza de Voluntad",
+			"usefullwillpower": "Usar Fuerza de Voluntad completa",
 			"ignoreshpehre": "Ignore sphere when setting base difficulty",
 			"bio": {
 				"wronggeneration": "Generación no válida",
@@ -1983,7 +1990,7 @@
 			"rollingremainactivetext": "Cada éxito sana un nivel de Salud, de cualquier tipo de daño. Sin importar cuanto daño ha sanado, el personaje entra en Frenesí Rabioso. Un hombre lobo gana una Cicatriz de batalla cada vez que permanece activo con éxito.",
 			"addedautosucc": "La tirada añade {0} éxitos automáticos",
 			"usingwillpower": "Usando Fuerza de Voluntad",
-			"nowillpower": "¡{name} no tiene Fuerza de Voluntad temporal restante!",
+			"nowillpower": "¡A {name} no le queda Fuerza de Voluntad que gastar!",
 			"favored": "Tirada predilecta",
 			"bonusdices": "Bonus dices",
 			"nobotchpossible": "No botch possible on this roll",
@@ -2138,7 +2145,8 @@
 			},
 			"general": {
 				"selectattribute": "Selecciona el Atributo a usar",
-				"numberdiceshint": "Para tirar más de 10 a la vez, inserta el número en la caja superior."
+				"numberdiceshint": "Para tirar más de 10 a la vez, inserta el número en la caja superior.",
+				"fullwillpowerhint": "La Voluntad completa ignora las heridas leves de Voluntad, pero no las graves."
 			},
 			"bonus": {
 				"chosenattribute": "Atributo elegido",

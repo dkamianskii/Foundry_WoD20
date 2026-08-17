@@ -29,7 +29,7 @@
                     {{localize "wod.dice.rollof"}} {{object.attributeName}}
                 {{/if}}
                 {{#if (eq object.type "ability")}}
-                    {{localize "wod.dice.roll"}} 
+                    {{localize "wod.dice.roll"}}
                     {{#if (ne object.attributeName "")}}
                         {{object.attributeName}}
                     {{/if}}
@@ -80,6 +80,14 @@
                 </div>
 
             {{/if}}
+
+            {{#if object.isWillpowerRoll}}
+                <div class="clearareaBox infobox dialog-checkbox">
+                    <div class="pullLeft"><input name="useFullWillpower" type="checkbox" {{isChecked object.useFullWillpower}} /></div>
+                    <div class="pullLeft"><label for="useFullWillpower" class="dialog-casting-type-label">{{localize "wod.labels.usefullwillpower"}}</label></div>
+                </div>
+                <div class="information-area">{{localize "wod.dialog.general.fullwillpowerhint"}}</div>
+            {{/if}}
         </div>
 
         {{#if (eq object.type "ability")}}
@@ -121,7 +129,7 @@
     <div class="dialog-area">
         <div class="headline splatFont">{{localize "wod.labels.difficulty"}}</div>
         <div class="infobox centerText">
-            
+
             {{#numFromLoop config.lowestDifficulty 10}}
                 <button id="difficulty" class="button fullSplatColor pointer dialog-difficulty-button {{#if (eq ../object.difficulty this)}}active{{/if}}" value="{{this}}" data-index="{{this}}">{{this}}</button>
             {{/numFromLoop}}

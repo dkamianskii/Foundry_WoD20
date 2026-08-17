@@ -3,6 +3,7 @@ import { DiceRollContainer } from "../scripts/roll-dice.js";
 import CombatHelper from "../scripts/combat-helpers.js";
 import BonusHelper from "../scripts/bonus-helpers.js";
 import Functions from "../functions.js";
+import { getWillpowerState } from "../scripts/willpower.js";
 
 export class GeneralRoll {
     constructor(key, type, actor) {
@@ -26,6 +27,8 @@ export class GeneralRoll {
         this.usedReducedDiff = false;
         this.useSpeciality = false;
         this.useWillpower = false;
+        this.useFullWillpower = false;
+        this.isWillpowerRoll = actor?.type === "PC" && key === "willpower";
         this.hasSpeciality = false;
         this.isFavored = false;
 
@@ -35,19 +38,19 @@ export class GeneralRoll {
         else {
             this.ignorepain = false;
         }
-        
-        this.usepain = true;        
+
+        this.usepain = true;
 
         this.specialityText = "";
 
         this.sheettype = "";
 
-        
+
 
         if (type == "attribute") {
             this.attributeKey = key;
 
-            if (CONFIG.worldofdarkness.attributeSettings == "20th") {                
+            if (CONFIG.worldofdarkness.attributeSettings == "20th") {
                 this.attributeName = game.i18n.localize(CONFIG.worldofdarkness.attributes20[key]);
             }
             else if (CONFIG.worldofdarkness.attributeSettings == "5th") {
@@ -60,7 +63,7 @@ export class GeneralRoll {
             this.abilityKey = key;
         }
         else if (type == "noability") {
-            this.attributeKey = key;            
+            this.attributeKey = key;
         }
         else if (type == "dice") {
             this.key = "dice";
@@ -72,12 +75,12 @@ export class GeneralRoll {
 export class DialogGeneralRoll extends FormApplication {
     constructor(actor, roll) {
         super(roll, {submitOnChange: true, closeOnSubmit: false});
-        this.actor = actor;     
-        this.isDialog = true;  
+        this.actor = actor;
+        this.isDialog = true;
         this.isFreeRole = actor == undefined;
 
         if (!this.isFreeRole) {
-            this.options.title = `${this.actor.name}`;        
+            this.options.title = `${this.actor.name}`;
         }
     }
 
@@ -88,7 +91,7 @@ export class DialogGeneralRoll extends FormApplication {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["wod20 wod-dialog general-dialog"],
-            template: "systems/worldofdarkness/templates/dialogs/dialog-generalroll.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-generalroll.hbs",
             closeOnSubmit: false,
             submitOnChange: true,
             resizable: true
@@ -105,12 +108,12 @@ export class DialogGeneralRoll extends FormApplication {
         let specialityText = "";
 
         if (!this.isFreeRole) {
-            data.actorData = this.actor.system;   
-            data.actorData.type = this.actor.type;            
+            data.actorData = this.actor.system;
+            data.actorData.type = this.actor.type;
 
             // Determine sheettype for dialog CSS classes
             let actortype = this.actor.type.toLowerCase();
-            
+
             // For PC actors, use splat or variantsheet to determine type
             if (this.actor.type === "PC") {
                 if (this.actor?.system?.settings?.splat && this.actor.system.settings.splat !== "") {
@@ -129,15 +132,15 @@ export class DialogGeneralRoll extends FormApplication {
             }
         }
         else {
-            data.object.ignorepain = true;    
-            data.object.usepain = false;    
-            
+            data.object.ignorepain = true;
+            data.object.usepain = false;
+
             data.object.sheettype = "mortalDialog";
         }
 
         data.config = CONFIG.worldofdarkness;
-        data.object.hasSpeciality = false; 
-        data.object.specialityText = "";      
+        data.object.hasSpeciality = false;
+        data.object.specialityText = "";
         let specialityLevel = 4;
 
         if ((CONFIG.worldofdarkness.specialityLevel != undefined) && (Functions.isNumber(CONFIG.worldofdarkness.specialityLevel))) {
@@ -148,8 +151,8 @@ export class DialogGeneralRoll extends FormApplication {
             if (await BonusHelper.CheckAttributeBonus(this.actor, this.object.attributeKey)) {
                 let bonus = await BonusHelper.GetAttributeBonus(this.actor, this.object.attributeKey);
                 this.object.difficulty += parseInt(bonus);
-            }            
-        }                
+            }
+        }
 
         if (data.object.type == "dice") {
             data.object.hasSpeciality = this.object.useSpeciality;
@@ -157,10 +160,32 @@ export class DialogGeneralRoll extends FormApplication {
         else {
             if (attributeKey != "") {
                 if (data.object.type == "noability") {
-                    if ((this.actor.type !== "PC") && ((attributeKey == "conscience") || (attributeKey == "selfcontrol") || (attributeKey == "courage"))) {
+                    if ((this.actor.type === "PC") && (attributeKey === "willpower")) {
+                        const willpower = getWillpowerState(this.actor);
+                        const poolLabel = data.object.useFullWillpower
+                            ? "wod.advantages.fullwillpower"
+                            : "wod.advantages.currentwillpower";
+                        data.object.attributeName = game.i18n.localize(poolLabel);
+                        data.object.attributeValue = data.object.useFullWillpower ? willpower.full : willpower.current;
+                        data.object.name = data.object.attributeName;
+                        data.object.isWillpowerRoll = true;
+
+                        if (CONFIG.worldofdarkness.attributeSettings === "5th") {
+                            if (parseInt(data.actorData.attributes?.composure.value) >= specialityLevel) {
+                                data.object.hasSpeciality = true;
+                                attributeSpeciality = data.actorData.attributes.composure.speciality;
+                            }
+                            if ((parseInt(data.actorData.attributes?.resolve.value) >= specialityLevel) && data.actorData.attributes?.resolve.speciality) {
+                                data.object.hasSpeciality = true;
+                                if (attributeSpeciality) attributeSpeciality += ", ";
+                                attributeSpeciality += data.actorData.attributes.resolve.speciality;
+                            }
+                        }
+                    }
+                    else if ((this.actor.type !== "PC") && ((attributeKey == "conscience") || (attributeKey == "selfcontrol") || (attributeKey == "courage"))) {
                         data.object.attributeName = game.i18n.localize(data.actorData.advantages.virtues[attributeKey].label);
                         data.object.attributeValue = parseInt(data.actorData.advantages.virtues[attributeKey].roll);
-                        data.object.name = data.object.attributeName; 
+                        data.object.name = data.object.attributeName;
                     }
                     else if ((attributeKey == "willpower") && (CONFIG.worldofdarkness.attributeSettings == "5th")) {
                         const willpowerAdv = data.actorData.advantages?.[attributeKey];
@@ -182,7 +207,7 @@ export class DialogGeneralRoll extends FormApplication {
                             data.object.hasSpeciality = true;
                             attributeSpeciality = data.actorData.attributes.composure.speciality;
                         }
-        
+
                         if ((parseInt(data.actorData.attributes?.resolve.value) >= specialityLevel) && (data.actorData.attributes?.resolve.speciality != "")) {
                             data.object.hasSpeciality = true;
 
@@ -191,22 +216,22 @@ export class DialogGeneralRoll extends FormApplication {
                             }
 
                             attributeSpeciality += data.actorData.attributes.resolve.speciality;
-                        }  
-                    } 
+                        }
+                    }
                     else {
                         const advantage = (data.actorData.advantages[attributeKey].system !== undefined ? data.actorData.advantages[attributeKey].system : data.actorData.advantages[attributeKey]);
-                        
+
                         if (advantage.label === "custom") {
                             data.object.attributeName = advantage.custom;
                         }
                         else {
                             data.object.attributeName = game.i18n.localize(advantage.label);
                         }
-                        
+
                         data.object.attributeValue = parseInt(advantage.roll);
                         data.object.name = data.object.attributeName;
-                    }         
-                }            
+                    }
+                }
                 else {
                     data.object.attributeValue = parseInt(data.actorData.attributes[attributeKey].total);
 
@@ -224,7 +249,7 @@ export class DialogGeneralRoll extends FormApplication {
 
             if (abilityKey != "") {
                 let ability = undefined;
-    
+
                 if (this.actor.type === "PC" && abilityKey && abilityKey !== "" && this.actor.api) {
                     // Använd API för PC actors
                     const abilityItem = this.actor.api.getAbility(abilityKey);
@@ -260,10 +285,10 @@ export class DialogGeneralRoll extends FormApplication {
                 }
 
                 if (await BonusHelper.CheckAbilityDiff(this.actor, ability._id)) {
-                    let bonus = await BonusHelper.GetAbilityDiff(this.actor, ability._id); 
+                    let bonus = await BonusHelper.GetAbilityDiff(this.actor, ability._id);
                     this.object.difficulty += parseInt(bonus);
-                }              
-                
+                }
+
                 data.object.abilityValue = parseInt(ability.value);
 
                 if (await BonusHelper.CheckAbilityBuff(this.actor, ability._id)) {
@@ -273,8 +298,8 @@ export class DialogGeneralRoll extends FormApplication {
 
                 if ((!ability.issecondary) && (data.actorData.abilities[abilityKey]?.altlabel !== "" && data.actorData.abilities[abilityKey]?.altlabel !== undefined)) {
                     ability.label =  data.actorData.abilities[abilityKey].altlabel;
-                }                
-                
+                }
+
                 data.object.abilityName = (!ability.issecondary) ? game.i18n.localize(ability.label) : ability.label;
                 data.object.name = data.object.abilityName;
 
@@ -287,13 +312,13 @@ export class DialogGeneralRoll extends FormApplication {
                 if (CONFIG.worldofdarkness.alwaysspeciality[actortype] == undefined) {
                     actortype = CONFIG.worldofdarkness.sheettype.vampire.toLowerCase();
                 }
-                
+
                 if ((parseInt(ability.value) >= specialityLevel) || (CONFIG.worldofdarkness.alwaysspeciality[actortype].includes(ability._id))) {
                     data.object.hasSpeciality = true;
                     abilitySpeciality = ability.speciality;
                 }
             }
-        }        
+        }
 
         if (data.object.hasSpeciality) {
             if ((attributeSpeciality != "") && (abilitySpeciality != "")) {
@@ -321,8 +346,8 @@ export class DialogGeneralRoll extends FormApplication {
 
         html
             .find('.dialog-difficulty-button')
-            .click(this._setDifficulty.bind(this));   
-            
+            .click(this._setDifficulty.bind(this));
+
         html
             .find('.dialog-attribute-button')
             .click(this._setAttribute.bind(this));
@@ -342,10 +367,11 @@ export class DialogGeneralRoll extends FormApplication {
             return;
         }
 
-        event.preventDefault();       
-        
+        event.preventDefault();
+
         this.object.useSpeciality = formData["specialty"];
         this.object.useWillpower = formData["useWillpower"];
+        this.object.useFullWillpower = !!formData["useFullWillpower"];
 
         if (this.object.useSpeciality && CONFIG.worldofdarkness.usespecialityReduceDiff && !this.object.usedReducedDiff) {
             this.object.difficulty -= CONFIG.worldofdarkness.specialityReduceDiff;
@@ -355,13 +381,13 @@ export class DialogGeneralRoll extends FormApplication {
             this.object.difficulty += parseInt(CONFIG.worldofdarkness.specialityReduceDiff);
             this.object.usedReducedDiff = false;
         }
-        
+
         this.object.usepain = formData["usepain"];
 
         try {
             if (formData["manualDiceValue"] != undefined) {
                 this.object.attributeValue = parseInt(formData["manualDiceValue"]);
-            }            
+            }
         }
         catch {
             this.object.attributeValue = 3;
@@ -388,10 +414,10 @@ export class DialogGeneralRoll extends FormApplication {
         const element = event.currentTarget;
         const parent = $(element.parentNode);
         const steps = parent.find(".dialog-difficulty-button");
-        const index = parseInt(element.value);   
+        const index = parseInt(element.value);
 
-        this.object.difficulty = index;   
-        this.object.canRoll = this.object.difficulty > -1 ? true : false;     
+        this.object.difficulty = index;
+        this.object.canRoll = this.object.difficulty > -1 ? true : false;
 
         if (index < 0) {
             return;
@@ -410,10 +436,10 @@ export class DialogGeneralRoll extends FormApplication {
         const element = event.currentTarget;
         const parent = $(element.parentNode);
         const steps = parent.find(".dialog-numdices-button");
-        const index = parseInt(element.value);   
+        const index = parseInt(element.value);
 
-        this.object.attributeValue = index;   
-        this.object.canRoll = this.object.difficulty > -1 ? true : false;     
+        this.object.attributeValue = index;
+        this.object.canRoll = this.object.difficulty > -1 ? true : false;
 
         if (index < 0) {
             return;
@@ -445,12 +471,12 @@ export class DialogGeneralRoll extends FormApplication {
         this.object.attributeKey = element.value;
         this.object.difficulty = 6;
 
-        if (await BonusHelper.CheckAttributeBonus(this.actor, this.object.attributeKey)) {            
+        if (await BonusHelper.CheckAttributeBonus(this.actor, this.object.attributeKey)) {
             let bonus = await BonusHelper.GetAttributeBonus(this.actor, this.object.attributeKey);
             this.object.difficulty += parseInt(bonus);
         }
 
-        if (CONFIG.worldofdarkness.attributeSettings == "20th") {                
+        if (CONFIG.worldofdarkness.attributeSettings == "20th") {
             this.object.attributeName = game.i18n.localize(CONFIG.worldofdarkness.attributes20[key]);
         }
         else if (CONFIG.worldofdarkness.attributeSettings == "5th") {
@@ -477,7 +503,7 @@ export class DialogGeneralRoll extends FormApplication {
             return;
         }
 
-        this.object.canRoll = this.object.difficulty > -1 ? true : false;     
+        this.object.canRoll = this.object.difficulty > -1 ? true : false;
         let woundPenaltyVal = 0;
         let template = [];
         let specialityText = "";
@@ -497,7 +523,7 @@ export class DialogGeneralRoll extends FormApplication {
         if (this.object.type == "dice") {
             woundPenaltyVal = 0;
         }
-        else {            
+        else {
             template.push(`${this.object.attributeName} (${this.object.attributeValue})`);
 
             if (this.object.abilityName != "") {
@@ -515,8 +541,8 @@ export class DialogGeneralRoll extends FormApplication {
             }
 
             if (this.object.ignorepain) {
-                woundPenaltyVal = 0;	
-            }				
+                woundPenaltyVal = 0;
+            }
             else if ((this.object.type == "dice") || (this.object.type == "noability")) {
                 woundPenaltyVal = 0;
             }
@@ -537,11 +563,11 @@ export class DialogGeneralRoll extends FormApplication {
         generalRoll.origin = "general";
         generalRoll.numDices = numDices;
         generalRoll.woundpenalty = parseInt(woundPenaltyVal);
-        generalRoll.difficulty = parseInt(this.object.difficulty);          
+        generalRoll.difficulty = parseInt(this.object.difficulty);
         generalRoll.speciality = this.object.useSpeciality;
         generalRoll.usewillpower = this.object.useWillpower;
         generalRoll.specialityText = specialityText;
-        
+
         DiceRoller(generalRoll);
 
         this.object.close = true;
@@ -550,6 +576,6 @@ export class DialogGeneralRoll extends FormApplication {
     /* clicked to close form */
     _closeForm(event) {
         this.object.close = true;
-    }    
+    }
 
 }

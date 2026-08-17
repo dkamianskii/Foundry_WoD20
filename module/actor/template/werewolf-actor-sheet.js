@@ -3,17 +3,17 @@ import ActionHelper from "../../scripts/action-helpers.js";
 import TokenHelper from "../../scripts/token-helpers.js";
 
 export default class WerewolfActorSheet extends MortalActorSheet {
-	
+
 	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-sheet werewolf"],
-			template: "systems/worldofdarkness/templates/actor/werewolf-sheet.html"
+			template: "systems/wod-advanced/templates/actor/werewolf-sheet.html"
 		});
 	}
-  
+
 	constructor(actor, options) {
-		super(actor, options);			
+		super(actor, options);
 	}
 
 	/** @override */
@@ -50,9 +50,9 @@ export default class WerewolfActorSheet extends MortalActorSheet {
 
 	/** @override */
 	get template() {
-		return "systems/worldofdarkness/templates/actor/werewolf-sheet.html";
+		return "systems/wod-advanced/templates/actor/werewolf-sheet.html";
 	}
-	
+
 	/** @override */
 	activateListeners(html) {
 		super.activateListeners(html);
@@ -69,8 +69,8 @@ export default class WerewolfActorSheet extends MortalActorSheet {
 
 		html
 			.find(".macroBtn")
-			.click(this._onRollWerewolfDialog.bind(this));			
-		
+			.click(this._onRollWerewolfDialog.bind(this));
+
 		html
 			.find(".resource-value > .resource-value-step")
 			.click(this._onDotCounterWerewolfChange.bind(this));
@@ -79,14 +79,14 @@ export default class WerewolfActorSheet extends MortalActorSheet {
 		html
 			.find(".resource-counter > .resource-value-step")
 			.click(this._onDotCounterWerewolfChange.bind(this));
-		
+
 		// shift form
 		html
 			.find(".shape-selector")
 			.click(this._onShiftForm.bind(this));
 	}
 
-	_onRollWerewolfDialog(event) {		
+	_onRollWerewolfDialog(event) {
 		event.preventDefault();
 		const element = event.currentTarget;
 		const dataset = element.dataset;
@@ -97,7 +97,7 @@ export default class WerewolfActorSheet extends MortalActorSheet {
 
 		ActionHelper.RollDialog(dataset, this.actor);
 	}
-	
+
 	_onDotCounterWerewolfChange(event) {
 		event.preventDefault();
 		const element = event.currentTarget;
@@ -114,11 +114,11 @@ export default class WerewolfActorSheet extends MortalActorSheet {
 		const fields = fieldStrings.split(".");
 		const steps = parent.find(".resource-value-step");
 
-		if ((this.locked) && 
-				((fieldStrings != "rage.temporary") && 
-				(fieldStrings != "gnosis.temporary") && 
-				(fieldStrings != "renown.glory.temporary") && 
-				(fieldStrings != "renown.honor.temporary") && 
+		if ((this.locked) &&
+				((fieldStrings != "rage.temporary") &&
+				(fieldStrings != "gnosis.temporary") &&
+				(fieldStrings != "renown.glory.temporary") &&
+				(fieldStrings != "renown.honor.temporary") &&
 				(fieldStrings != "renown.wisdom.temporary"))) {
 			ui.notifications.warn(game.i18n.localize("wod.system.sheetlocked"));
 			return;
@@ -158,8 +158,8 @@ export default class WerewolfActorSheet extends MortalActorSheet {
 
 	// 		if (actorData.system.shapes[i].label == toForm) {
 	// 			actorData.system.shapes[i].isactive = true;
-	// 		}			
-	// 	}		
+	// 		}
+	// 	}
 
 	// 	actorData.system.settings.isupdated = false;
 	// 	await this.actor.update(actorData);
@@ -185,18 +185,18 @@ export default class WerewolfActorSheet extends MortalActorSheet {
 
 			if (actorData.system.shapes[i].label == toForm) {
 				actorData.system.shapes[i].isactive = true;
-			}			
-		}			
-		
+			}
+		}
+
 		// Update Bonus items based on active shape
-		const bonuses = this.actor.items.filter(item => item.type === "Bonus" && 
-			(item.system.parentid === "glabro" || item.system.parentid === "crinos" || 
+		const bonuses = this.actor.items.filter(item => item.type === "Bonus" &&
+			(item.system.parentid === "glabro" || item.system.parentid === "crinos" ||
 			 item.system.parentid === "hispo" || item.system.parentid === "lupus"));
-		
+
 		const bonusUpdates = [];
 		for (const bonus of bonuses) {
 			const shouldBeActive = actorData.system.shapes[bonus.system.parentid]?.isactive || false;
-			
+
 			if (bonus.system.isactive !== shouldBeActive) {
 				bonusUpdates.push({
 					_id: bonus.id,
@@ -204,18 +204,18 @@ export default class WerewolfActorSheet extends MortalActorSheet {
 				});
 			}
 		}
-		
+
 		if (bonusUpdates.length > 0) {
 			await this.actor.updateEmbeddedDocuments("Item", bonusUpdates);
 		}
 
 		actorData.system.settings.isupdated = false;
 		await this.actor.update(actorData);
-		
+
 		await TokenHelper.formShift(this.actor, fromForm, toForm);
 		this.render();
 	}
-	
+
 	async _assignToWerewolf(fields, value) {
 		const actorData = foundry.utils.duplicate(this.actor);
 
@@ -239,8 +239,8 @@ export default class WerewolfActorSheet extends MortalActorSheet {
 				}
 			}
 		}
-		
+
 		actorData.system.settings.isupdated = false;
 		await this.actor.update(actorData);
-	}	
+	}
 }

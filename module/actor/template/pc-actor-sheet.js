@@ -6,30 +6,33 @@ import SelectHelper from "../../scripts/select-helpers.js";
 
 import { OnSquareCounterChange } from "../../scripts/action-helpers.js";
 import { OnSquareCounterClear } from "../../scripts/action-helpers.js";
+import { OnWillpowerCounterChange } from "../../scripts/action-helpers.js";
+import { OnWillpowerCounterClear } from "../../scripts/action-helpers.js";
 import { OnDotCounterChange } from "../../scripts/action-helpers.js";
 import { OnStatValueChange } from "../../scripts/action-helpers.js";
 import { OnActorSwitch } from "../../scripts/action-helpers.js";
 import { OnUseMacro } from "../../scripts/action-helpers.js";
 
-import { OnItemCreate, 
-			OnItemEdit, 
-			OnItemActive, 
-			OnItemSwitch, 
-			OnItemDelete, 
-			OnRemoveSplat, 
-			OnQuintessenceHandling, 
-			OnQuintessenceWheelClick, 
-			OnParadoxWheelClick, 
+import { OnItemCreate,
+			OnItemEdit,
+			OnItemActive,
+			OnItemSwitch,
+			OnItemDelete,
+			OnRemoveSplat,
+			OnQuintessenceHandling,
+			OnQuintessenceWheelClick,
+			OnParadoxWheelClick,
 			OnHandleImbalance,
-			OnFormActivate, 
-			OnPowerSort, 
-			OnPowerClear, 
-			OnGenerationChange, 
-			SendChat, 
-			RollDice, 
+			OnFormActivate,
+			OnPowerSort,
+			OnPowerClear,
+			OnGenerationChange,
+			SendChat,
+			RollDice,
 			OnEditImage } from "../../scripts/action-helpers.js";
 
 import { calculateHealth } from "../../scripts/health.js";
+import { getWillpowerState } from "../../scripts/willpower.js";
 import { calculateTotals } from "../../scripts/totals.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
@@ -39,16 +42,16 @@ const { HandlebarsApplicationMixin } = foundry.applications.api
  * @extends {foundry.applications.sheets.ActorSheetV2}
  */
 export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2) {
-	
+
 	constructor(actor, options) {
 		super(actor, options);
 
-		this.isGM = game.user.isGM;	
+		this.isGM = game.user.isGM;
 		this.isLimited = actor.limited;
 		this.locked = true;
 		this.isOwner = actor.isOwner;
 		this.isCharacter = true;
-		this.variantOpen = false;		
+		this.variantOpen = false;
 		this.era = actor.document.system.settings.era;
 		this._settingsTab = "statsadv";
 
@@ -57,7 +60,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 
 	get title() {
 		return this.actor.isToken ? `[Token] ${this.actor.name}` : this.actor.name;
-	}	
+	}
 
 	static DEFAULT_OPTIONS = {
 		form: {
@@ -88,6 +91,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 			editAttribute: null,
 			actorSwitch: OnActorSwitch,
 			editHealth: OnSquareCounterChange,				// Health
+			editWillpower: OnWillpowerCounterChange,		// Willpower wounds
 			editDot: OnDotCounterChange, 					// Permanent / temporary dots
 			useMacro: OnUseMacro,
 			editImage: OnEditImage,							// Actor image editing
@@ -113,7 +117,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 
 			// mage
 			quintessenceHandling: OnQuintessenceHandling,
-			quintessenceWheelClick: OnQuintessenceWheelClick			
+			quintessenceWheelClick: OnQuintessenceWheelClick
 		},
 		dragDrop: [
             {
@@ -123,33 +127,33 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
         ]
 	}
 
-	static PARTS = {	
+	static PARTS = {
 		tabs: {
-			template: "systems/worldofdarkness/templates/actor/parts/navigation.hbs"
+			template: "systems/wod-advanced/templates/actor/parts/navigation.hbs"
 		},
 		bio: {
-			template: "systems/worldofdarkness/templates/actor/parts/bio.hbs"
+			template: "systems/wod-advanced/templates/actor/parts/bio.hbs"
 		},
 		stats: {
-			template: "systems/worldofdarkness/templates/actor/parts/stats.hbs"
+			template: "systems/wod-advanced/templates/actor/parts/stats.hbs"
 		},
 		powers: {
-			template: "systems/worldofdarkness/templates/actor/parts/powers.hbs"
+			template: "systems/wod-advanced/templates/actor/parts/powers.hbs"
 		},
 		combat: {
-			template: "systems/worldofdarkness/templates/actor/parts/combat.hbs"
+			template: "systems/wod-advanced/templates/actor/parts/combat.hbs"
 		},
 		gear: {
-			template: "systems/worldofdarkness/templates/actor/parts/gear.hbs"
+			template: "systems/wod-advanced/templates/actor/parts/gear.hbs"
 		},
 		feature: {
-			template: "systems/worldofdarkness/templates/actor/parts/feature.hbs"
+			template: "systems/wod-advanced/templates/actor/parts/feature.hbs"
 		},
 		effects: {
-			template: "systems/worldofdarkness/templates/actor/parts/effects.hbs"
+			template: "systems/wod-advanced/templates/actor/parts/effects.hbs"
 		},
 		settings: {
-			template: "systems/worldofdarkness/templates/actor/parts/settings.hbs"
+			template: "systems/wod-advanced/templates/actor/parts/settings.hbs"
 		}
 	}
 
@@ -234,7 +238,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 			for (const [key, tab] of Object.entries(tabs)) {
 				filteredTabs[key] = tab;
 			}
-		} 
+		}
 		else {
 			// User has limited access, only show bio tab
 			if (tabs.bio) {
@@ -254,7 +258,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 			if (tab.id === "powers") {
 				// Power icon depends on actor's splat type (discipline for vampire, gift for werewolf, etc.)
 				tab.icon = game.worldofdarkness.icons[this.splat][getPowertype(this.actor)];
-			} 
+			}
 			else {
 				// For other tabs, use the icon from tabs definition or fallback to default
 				if (tab.id === "feature") {
@@ -265,7 +269,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 				}
 				else {
 					tab.icon = game.worldofdarkness.icons[this.splat][tab.id];
-				}				
+				}
 			}
 			tab.cssClass = tab.active ? 'actorv2 active ' : 'actorv2 ';
 			tab.cssClass += this.locked ? 'locked ' : '';
@@ -278,16 +282,16 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 	/** @override */
 	async _prepareContext(options) {
 		const data = await super._prepareContext();
-		const actor = this.actor;		
+		const actor = this.actor;
 
 		this.splat = getSplat(this.actor);
 
 		// Add the tabs
-		data.tabs = this.getTabs();		
+		data.tabs = this.getTabs();
 
-		data.config = CONFIG.worldofdarkness;	
+		data.config = CONFIG.worldofdarkness;
 
-		data.worldofdarkness = game.worldofdarkness;	
+		data.worldofdarkness = game.worldofdarkness;
 
 		data.userpermissions = ActionHelper._getUserPermissions(game.user);
 		data.graphicsettings = ActionHelper._getGraphicSettings();
@@ -296,7 +300,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 		data.locked = this.locked;
 		data.isCharacter = this.isCharacter;
 		data.isGM = this.isGM;
-		
+
 		data.actor = actor;
 
 		console.log(`${data.actor.name} - (${data.actor.type} / ${this.splat})`);
@@ -305,7 +309,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 		return {
 			...data
 		}
-	}	
+	}
 
 	async _preparePartContext (partId, context, options) {
 		context = { ...(await super._preparePartContext(partId, context, options)) }
@@ -334,7 +338,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 		}
 
 		return context
-	}	
+	}
 
 	static async onSubmitActorForm (event, form, formData) {
 		const target = event.target;
@@ -365,10 +369,10 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 			// Handle numbers and strings properly
 			if (target.type === 'number') {
 				value = parseInt(target.value)
-			} 
+			}
 			else if (target.type === 'checkbox') {
 				value = target.checked
-			} 
+			}
 			else {
 				value = target.value
 			}
@@ -376,10 +380,10 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 			let item = await this.actor.getEmbeddedDocument("Item", target.dataset.itemid);
             await item.update({
 			 	[`${target.name}`]: value
-			});			
+			});
 
 			return;
-		}		
+		}
 		else {
 			if (target.tagName === 'INPUT') {
 				let value = "";
@@ -387,10 +391,10 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 				// Handle numbers and strings properly
 				if (target.type === 'number') {
 					value = parseInt(target.value);
-				} 
+				}
 				else if (target.type === 'checkbox') {
 					value = target.checked;
-				} 
+				}
 				else {
 					if (target.dataset.dtype === "Number") {
 						value = parseInt(target.value);
@@ -398,7 +402,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 					}
 					else {
 						value = target.value;
-					}					
+					}
 				}
 
 				let actorData = foundry.utils.duplicate(this.actor.toObject());
@@ -409,7 +413,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 					actorData.system.settings.isupdated = true;
 				}
 				await this.actor.update(actorData);
-			} 
+			}
 			else {
 				// Process submit data
 				const submitData = this._prepareSubmitData(event, form, formData);
@@ -430,12 +434,12 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 			}
 
 			await this.actor._setItems();
-		} 
+		}
 	}
 
 	async _onRender () {
 		const element = this.element;
-		
+
 		// Highlight dot/box UI based on current values
 		ActionHelper.SetupDotCounters_v2(element);
 
@@ -444,16 +448,17 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 
 		// right-click health boxes - use event delegation
 		this._bindHealthContextMenu(element);
-		
+		this._bindWillpowerContextMenu(element);
+
 		// Attach show/hide handlers for power description toggles
 		this._bindCollapsibleButtons(element);
-		
+
 		// Attach expand/collapse handlers for grouped tables (experience, etc.)
 		this._bindUnfoldButtons(element);
-		
+
 		// Restore saved collapsed/expanded state from user flags
 		this._restoreUnfoldState(element);
-		
+
 		// Make draggable rows functional inside the sheet
 		this._setupDragAndDrop(element);
 
@@ -596,13 +601,13 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 			icon.classList.remove("fa-expand");
 			icon.classList.add("fa-compress");
 		}
-	}	
+	}
 
 	_handleUnfoldClick(event) {
 		const button = event.currentTarget;
 		if (!button) return;
 		ItemHelper._onTableCollapse({ currentTarget: button }, this.actor._id);
-	}	
+	}
 
 	/**
 	 * Settings sub-tabs.
@@ -663,14 +668,28 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 	_bindHealthContextMenu(root) {
 		if (root.dataset.healthContextMenuBound) return;
 		root.dataset.healthContextMenuBound = "true";
-		
+
 		root.addEventListener("contextmenu", (event) => {
 			// Check if the clicked element is a health resource step
 			const target = event.target.closest(".health .resource-value-step");
 			if (!target) return;
-			
+
 			event.preventDefault();
 			OnSquareCounterClear.call(this, event);
+		});
+	}
+
+	/** Allow right-click clearing of individual Willpower wounds. */
+	_bindWillpowerContextMenu(root) {
+		if (root.dataset.willpowerContextMenuBound) return;
+		root.dataset.willpowerContextMenuBound = "true";
+
+		root.addEventListener("contextmenu", (event) => {
+			const target = event.target.closest(".willpower-track .resource-value-step");
+			if (!target) return;
+
+			event.preventDefault();
+			OnWillpowerCounterClear.call(this, event);
 		});
 	}
 
@@ -705,7 +724,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
     /**
      * @param {DragEvent} event - The drag start event
      */
-    _onDragStart(event) { 
+    _onDragStart(event) {
 		const dataset = event.target.dataset;
 
 		// Handle drag to order item lists (advantages, features, powers)
@@ -738,7 +757,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 
 		// Item classes that support drag-over feedback
 		const itemClasses = ['.advantage-item', '.feature-item', '.power-item'];
-		
+
 		// Check for any item drop target
 		for (const itemClass of itemClasses) {
 			const target = event.target.closest(itemClass);
@@ -767,10 +786,10 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 		// Handle different data types
 		switch (data.type) {
 			// Item position reordering - handled locally
-			case 'SortOrder':                
+			case 'SortOrder':
 				return this._onReorderItem(event, data);
 			// Dropped Item from compendium/sidebar
-			case 'Item':                
+			case 'Item':
 				return this._onDropItem(event, data);
 		}
 	}
@@ -781,7 +800,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 		if (droppedItem.type === "Splat") {
 			// Check if actor already has a splat item
 			const hasSplatItem = this.actor.items.some(i => i.type === "Splat");
-			
+
 			// Only require unlock if there's already a splat item (changing splat)
 			if (this.locked && hasSplatItem) {
 				ui.notifications.warn(game.i18n.localize("wod.system.sheetlocked"));
@@ -795,9 +814,9 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 				this.locked = false;
 				await this.render(false);
 			}
-			
+
 			return;
-		}	
+		}
 		if ((droppedItem.type === "Power") || (droppedItem.type === "Sphere")) {
 			await DropHelper.OnDropItem(event, droppedItem, this.actor);
 			return;
@@ -808,12 +827,12 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 		}
 
 		const itemData = droppedItem.toObject();
-		
+
 		if (itemData.type === "Ability") {
 			if (itemData.system.type === "wod.abilities.ability") {
 				itemData.system.type = "wod.abilities.talent";
 			}
-		}		
+		}
 
 		if (itemData.system?.isremovable !== undefined) {
 			itemData.system.isremovable = true;
@@ -834,7 +853,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 			});
 			return;
 		}
-		
+
 		// Only handle items of correct type
 		if (data.itemtype !== "Advantage" && data.itemtype !== "Trait" && data.itemtype !== "Sphere" && data.itemtype !== "Realm") {
 			// Clean up on early return
@@ -881,7 +900,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 				sheet: this
 			}
 		);
-		
+
 		// Always clean up drag-over classes after reorder attempt
 		this.element.querySelectorAll('.drag-over-top, .drag-over-bottom, .drag-over').forEach(el => {
 			el.classList.remove('drag-over-top', 'drag-over-bottom', 'drag-over');
@@ -920,7 +939,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 
 		const wheelElements = root.querySelectorAll?.(".quintessence-wheel .wheel-step");
 		if (!wheelElements?.length) return;
-		
+
 		wheelElements.forEach(el => {
 			if (el.dataset.contextBound) return;
 			el.dataset.contextBound = "true";
@@ -940,7 +959,7 @@ export default class PCActorSheet extends HandlebarsApplicationMixin(foundry.app
 
 		const willpowerElements = root.querySelectorAll?.(".willpower > .resource-value > .resource-value-step");
 		if (!willpowerElements?.length) return;
-		
+
 		willpowerElements.forEach(el => {
 			if (el.dataset.contextBound) return;
 			el.dataset.contextBound = "true";
@@ -981,18 +1000,18 @@ export const getPowertype = function (actor) {
 	} else {
 		splatname = actor.type ? actor.type.toLowerCase() : "pc";
 	}
-	
+
 	let powertype = "power";
 
 	if (splatname === CONFIG.worldofdarkness.splat.vampire) {
 		powertype = "discipline";
-	} 
-	else if ((splatname === CONFIG.worldofdarkness.splat.werewolf) || 
-				(splatname === CONFIG.worldofdarkness.splat.changingbreed) || 
+	}
+	else if ((splatname === CONFIG.worldofdarkness.splat.werewolf) ||
+				(splatname === CONFIG.worldofdarkness.splat.changingbreed) ||
 				((actor.system.settings.game === CONFIG.worldofdarkness.splat.werewolf) && (splatname === CONFIG.worldofdarkness.splat.spirit))) {
 		powertype = "gift";
-	} 
-	else if ((splatname === CONFIG.worldofdarkness.splat.mage) || 
+	}
+	else if ((splatname === CONFIG.worldofdarkness.splat.mage) ||
 				((actor.system.settings.game === CONFIG.worldofdarkness.splat.mage) && (splatname === CONFIG.worldofdarkness.splat.spirit))) {
 		powertype = "magic";
 	}
@@ -1075,14 +1094,14 @@ export const prepareStatContext = async function (context, actor) {
 	context.knowledges = context.knowledges.sort((a, b) => game.i18n.localize(a.system.label).localeCompare(game.i18n.localize(b.system.label)));
 
 	context.advantages 	= actor.items
-								.filter(item => item.type === "Advantage" && item.system.group === '' && item.system.settings.isvisible)
+								.filter(item => item.type === "Advantage" && item.system.id !== "willpower" && item.system.group === '' && item.system.settings.isvisible)
 								.map(item => ({ _id: item._id, ...item }));
 
 	context.advantages = context.advantages.sort((a, b) => Number(a.system.settings.order) - Number(b.system.settings.order));
 
 	context.showVirtues = false;
 	context.showRenowns = false;
-	context.showQuintessences = false;	
+	context.showQuintessences = false;
 	context.showOtherGroupAdvantages = false;
 
 	context.showParadox = false;
@@ -1092,26 +1111,26 @@ export const prepareStatContext = async function (context, actor) {
 		context.virtues = actor.items
 								.filter(item => item.type === "Advantage" && item.system.group === 'virtue' && item.system.settings.isvisible)
 								.map(item => ({ _id: item._id, ...item }));
-						
-		context.virtues = context.virtues.sort((a, b) => Number(a.system.settings.order) - Number(b.system.settings.order));	
-		context.showVirtues = context.virtues.length > 0;	
 
-		context.virtuesHeadline = game.i18n.localize("wod.advantages.virtue.headline");		
+		context.virtues = context.virtues.sort((a, b) => Number(a.system.settings.order) - Number(b.system.settings.order));
+		context.showVirtues = context.virtues.length > 0;
+
+		context.virtuesHeadline = game.i18n.localize("wod.advantages.virtue.headline");
 	}
 	if (actor.system.settings.hasrenown) {
 		context.renowns = actor.items
 								.filter(item => item.type === "Advantage" && item.system.group === 'renown' && item.system.settings.isvisible)
 								.map(item => ({ _id: item._id, ...item }));
-						
+
 		context.renowns = context.renowns.sort((a, b) => Number(a.system.settings.order) - Number(b.system.settings.order));
 		context.showRenowns = context.renowns.length > 0;
 	}
 	// if (actor.system.settings.hasothergroupadvantages) {
 	// 	context.othergroupadvantages = actor.items
-	// 							.filter(item => item.type === "Advantage" && 
-	// 										item.system.group !== 'virtue' && 
-	// 										item.system.group !== 'renown' && 
-	// 										item.system.group !== 'quintessence' && 
+	// 							.filter(item => item.type === "Advantage" &&
+	// 										item.system.group !== 'virtue' &&
+	// 										item.system.group !== 'renown' &&
+	// 										item.system.group !== 'quintessence' &&
 	// 										item.system.settings.isvisible)
 	// 							.map(item => ({ _id: item._id, ...item }));
 
@@ -1138,10 +1157,10 @@ export const prepareStatContext = async function (context, actor) {
 	// Find all grouped advantages beyond virtue, renown, and quintessence
 	const knownGroups = ['', 'virtue', 'renown', 'quintessence'];
 	const allGroupedAdvantages = actor.items
-		.filter(item => 
-			item.type === "Advantage" && 
-			item.system.group !== '' && 
-			!knownGroups.includes(item.system.group) && 
+		.filter(item =>
+			item.type === "Advantage" &&
+			item.system.group !== '' &&
+			!knownGroups.includes(item.system.group) &&
 			item.system.settings.isvisible
 		)
 		.map(item => ({ _id: item._id, ...item }));
@@ -1170,6 +1189,7 @@ export const prepareStatContext = async function (context, actor) {
 	context.hasGroupedAdvantages = context.groupedadvantages.length > 0;
 
 	context.health = await calculateHealth(actor, CONFIG.worldofdarkness.sheettype.mortal);
+	context.willpower = getWillpowerState(actor);
 
 	context.chimericalhealth = undefined;
 
@@ -1196,12 +1216,12 @@ export const preparePowersContext = async function (context, actor) {
 	context.arts = ItemHelper.GetPowersByType(actor, "wod.types.art", true);
 	context.lores = ItemHelper.GetPowersByType(actor, "wod.types.lore", true);
 	context.edges = ItemHelper.GetPowersByType(actor, "wod.types.edge", true);
-	
+
 	context.combinations = ItemHelper.GetPowersByType(actor, "wod.types.combination", true);
 	context.rituals = ItemHelper.GetPowersByType(actor, "wod.types.ritual", true);
 	context.rites = ItemHelper.GetPowersByType(actor, "wod.types.rite", true);
-	
-	context.rotes = ItemHelper.GetItemType(actor, "Rote");	
+
+	context.rotes = ItemHelper.GetItemType(actor, "Rote");
 	context.resonances = actor.items.filter(item => item.type === "Trait" && item.system.type === "wod.types.resonance");
 	context.numinas = ItemHelper.GetPowersByType(actor, "wod.types.numina", true);
 
@@ -1216,7 +1236,7 @@ export const preparePowersContext = async function (context, actor) {
 	context.unsortedarts = artPowers.filter(power => lacksParent(power, context.arts));
 	context.unsortedlores = lorePowers.filter(power => lacksParent(power, context.lores));
 	context.unsortededges = edgePowers.filter(power => lacksParent(power, context.edges));
-	
+
 	context.unsortednuminas = numinaPowers.filter(power => lacksParent(power, context.numinas));
 
 	// Gifts grouped by rank
@@ -1290,7 +1310,7 @@ export const prepareGearContext = async function (context, actor) {
 }
 
 export const prepareFeatureContext = async function (context, actor) {
-  	context.tab = context.tabs.feature;	
+	context.tab = context.tabs.feature;
 
 	context.backgrounds = ItemHelper.GetItemType(actor, "Feature", "wod.types.background");
 	context.merits 		= ItemHelper.GetItemType(actor, "Feature", "wod.types.merit");
@@ -1306,7 +1326,7 @@ export const prepareFeatureContext = async function (context, actor) {
 		if (orderA !== orderB) return orderA - orderB;
 		return a.name.localeCompare(b.name);
 	});
-	//context.othertraits = ItemHelper.GetItemType(actor, "Trait", "wod.types.othertraits");	
+	//context.othertraits = ItemHelper.GetItemType(actor, "Trait", "wod.types.othertraits");
 
   	return context;
 }
@@ -1373,7 +1393,7 @@ export const prepareSettingsContext = async function (context, actor) {
 
 	// Advantages
 	context.advantages 	= actor.items
-								.filter(item => item.type === "Advantage" && item.system.group === '')
+								.filter(item => item.type === "Advantage" && item.system.id !== "willpower" && item.system.group === '')
 								.map(item => ({ _id: item._id, ...item }));
 
 	context.advantages = context.advantages.sort((a, b) => Number(a.system.settings.order) - Number(b.system.settings.order));
@@ -1417,13 +1437,13 @@ export const prepareSettingsContext = async function (context, actor) {
 	// Don't filter by isvisible here - we want to show all grouped advantages in settings so user can manage them
 	const knownGroups = ['', 'virtue', 'renown', 'quintessence'];
 	const allGroupedAdvantages = actor.items
-		.filter(item => 
-			item.type === "Advantage" && 
-			item.system.group !== '' && 
+		.filter(item =>
+			item.type === "Advantage" &&
+			item.system.group !== '' &&
 			!knownGroups.includes(item.system.group)
 		)
 		.map(item => ({ _id: item._id, ...item }));
-	
+
 	// Also include virtues, renown, and quintessence if they exist (these are excluded from the filter above)
 	if (actor.system.settings.hasvirtue) {
 		const virtues = actor.items

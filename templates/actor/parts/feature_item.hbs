@@ -8,13 +8,13 @@
             <i class="item-active pointer icon fa-regular fa-square" title="{{localize 'wod.power.active'}}" data-itemid="{{item._id}}" data-type="isactive" data-action="itemActive"></i>
         {{/if}}
 
-        
+
         {{#if item.system.isrollable}}
-            <div class="largeBox vrollable" 
-                data-rollitem="true" 
+            <div class="largeBox vrollable"
+                data-rollitem="true"
                 data-itemid="{{item._id}}"
                 title="{{item.name}}"
-                data-action="rollDice">           
+                data-action="rollDice">
                 {{#if (ne item.name "")}}
                     {{item.name}}
                 {{else}}
@@ -52,14 +52,14 @@
                 {{else}}
                     &nbsp;
                 {{/if}}
-            </div>                    
+            </div>
         {{/if}}
     </div>
     <div class="iconBox">
 
-        {{> "systems/worldofdarkness/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=locked edittitle=edittitle deletetitle=deletetitle}}
+        {{> "systems/wod-advanced/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=locked edittitle=edittitle deletetitle=deletetitle}}
 
-    </div>	                
+    </div>
 </div>
 <div class="description" data-itemid="{{item._id}}">
 

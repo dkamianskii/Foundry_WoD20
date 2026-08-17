@@ -1,5 +1,5 @@
 const DISCIPLINES_COMPENDIUM = "world.disciplines";
-const APOCALYPTIC_FORMS_JSON = "systems/worldofdarkness/data/demon/apocalyptic-form-abilities.json";
+const APOCALYPTIC_FORMS_JSON = "systems/wod-advanced/data/demon/apocalyptic-form-abilities.json";
 
 export default class ItemHelper {
 
@@ -11,7 +11,7 @@ export default class ItemHelper {
      * @returns {Promise<string[]>} Array med disciplineId i samma ordning som i filen
      */
     static async GetDisciplineIndexList() {
-        const res = await fetch("systems/worldofdarkness/assets/data/disciplines.json");
+        const res = await fetch("systems/wod-advanced/assets/data/disciplines.json");
         const json = await res.json();
         const disciplines = json?.disciplines;
         if (!disciplines || typeof disciplines !== "object") return [];
@@ -24,7 +24,7 @@ export default class ItemHelper {
      */
     static async LogDisciplineIndices() {
         const ids = await ItemHelper.GetDisciplineIndexList();
-        const json = (await (await fetch("systems/worldofdarkness/assets/data/disciplines.json")).json()).disciplines;
+        const json = (await (await fetch("systems/wod-advanced/assets/data/disciplines.json")).json()).disciplines;
         console.log("Discipliner (index → namn):");
         ids.forEach((id, i) => console.log(`  ${i}  ${json[id]?.name ?? id}`));
         return ids;
@@ -42,7 +42,7 @@ export default class ItemHelper {
             throw new Error(`Ogiltigt index ${index}. Giltiga index: 0–${ids.length - 1}. Använd ItemHelper.LogDisciplineIndices() för att se listan.`);
         }
         const disciplineId = ids[index];
-        const res = await fetch("systems/worldofdarkness/assets/data/disciplines.json");
+        const res = await fetch("systems/wod-advanced/assets/data/disciplines.json");
         const json = await res.json();
         const disciplineData = json?.disciplines?.[disciplineId];
         if (!disciplineData) throw new Error(`Disciplin "${disciplineId}" hittades inte.`);
@@ -114,7 +114,7 @@ export default class ItemHelper {
     static async CreateAllDisciplines() {
         try {
             const ids = await ItemHelper.GetDisciplineIndexList();
-            const res = await fetch("systems/worldofdarkness/assets/data/disciplines.json");
+            const res = await fetch("systems/wod-advanced/assets/data/disciplines.json");
             const json = await res.json();
             const disciplines = json?.disciplines;
             if (!disciplines || typeof disciplines !== "object") {

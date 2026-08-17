@@ -4,15 +4,15 @@ import CreateHelper from "../../scripts/create-helpers.js";
 import { calculateHealth } from "../../scripts/health.js";
 
 export default class WraithActorSheet extends MortalActorSheet {
-	
+
 	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-sheet wraith"],
-			template: "systems/worldofdarkness/templates/actor/wraith-sheet.html"
+			template: "systems/wod-advanced/templates/actor/wraith-sheet.html"
 		});
 	}
-  
+
 	constructor(actor, options) {
 		super(actor, options);
 	}
@@ -33,9 +33,9 @@ export default class WraithActorSheet extends MortalActorSheet {
 
 	/** @override */
 	get template() {
-		return "systems/worldofdarkness/templates/actor/wraith-sheet.html";
+		return "systems/wod-advanced/templates/actor/wraith-sheet.html";
 	}
-	
+
 	/** @override */
 	activateListeners(html) {
 		super.activateListeners(html);
@@ -53,7 +53,7 @@ export default class WraithActorSheet extends MortalActorSheet {
 		html
 			.find(".resource-value > .resource-value-step")
 			.click(this._onDotCounterWraithChange.bind(this));
-		
+
 		// temporary squares
 		html
 			.find(".resource-counter > .resource-value-step")
@@ -63,13 +63,13 @@ export default class WraithActorSheet extends MortalActorSheet {
 		html
 			.find(".wraith.health .resource-counter > .resource-value-step")
 			.click(this._onSquareCounterWraithChange.bind(this));
-			
+
 		html
 			.find(".wraith.health .resource-counter > .resource-value-step")
 			.on('contextmenu', this._onSquareCounterClear.bind(this));
-	}	
+	}
 
-	_onRollWraithDialog(event) {		
+	_onRollWraithDialog(event) {
 		event.preventDefault();
 		const element = event.currentTarget;
 		const dataset = element.dataset;
@@ -92,9 +92,9 @@ export default class WraithActorSheet extends MortalActorSheet {
 			return;
 		}
 
-		const parent = $(element.parentNode);	
-		const steps = parent.find(".resource-value-step");	
-		const index = Number(dataset.index);		
+		const parent = $(element.parentNode);
+		const steps = parent.find(".resource-value-step");
+		const index = Number(dataset.index);
 
 		let itemid = undefined;
 
@@ -130,13 +130,13 @@ export default class WraithActorSheet extends MortalActorSheet {
 			if (fields[1] == "corpus") {
 				return;
 			}
-	
+
 			if (index < 0 || index > steps.length) {
 				return;
 			}
-			
+
 			await this._assignToActorField(fields, index + 1);
-		}			
+		}
 	}
 
 	/* Clicked health boxes */
@@ -155,25 +155,25 @@ export default class WraithActorSheet extends MortalActorSheet {
 		if (type != CONFIG.worldofdarkness.sheettype.wraith) {
 			return;
 		}
-		
+
 		if (currentState < 0) {
 			return;
 		}
-		
+
 		const actorData = foundry.utils.duplicate(this.actor);
 
 		if (oldState == "") {
 			actorData.system.health.damage.corpus.bashing = parseInt(actorData.system.health.damage.corpus.bashing) + 1;
 		}
-		else if (oldState == "/") { 
+		else if (oldState == "/") {
 			actorData.system.health.damage.corpus.bashing = parseInt(actorData.system.health.damage.corpus.bashing) - 1;
-			actorData.system.health.damage.corpus.lethal = parseInt(actorData.system.health.damage.corpus.lethal) + 1;			
+			actorData.system.health.damage.corpus.lethal = parseInt(actorData.system.health.damage.corpus.lethal) + 1;
 		}
-		else if (oldState == "x") { 
+		else if (oldState == "x") {
 			actorData.system.health.damage.corpus.lethal = parseInt(actorData.system.health.damage.corpus.lethal) - 1;
 			actorData.system.health.damage.corpus.aggravated = parseInt(actorData.system.health.damage.corpus.aggravated) + 1;
 		}
-		else if (oldState == "*") { 
+		else if (oldState == "*") {
 			actorData.system.health.damage.corpus.aggravated = parseInt(actorData.system.health.damage.corpus.aggravated) - 1;
 		}
 
@@ -212,13 +212,13 @@ export default class WraithActorSheet extends MortalActorSheet {
 		if (oldState == "") {
 			return
 		}
-		else if (oldState == "/") { 
+		else if (oldState == "/") {
 			actorData.system.health.damage.corpus.bashing = parseInt(actorData.system.health.damage.corpus.bashing) - 1;
 		}
-		else if (oldState == "x") { 
+		else if (oldState == "x") {
 			actorData.system.health.damage.corpus.lethal = parseInt(actorData.system.health.damage.corpus.lethal) - 1;
 		}
-		else if (oldState == "*") { 
+		else if (oldState == "*") {
 		 	actorData.system.health.damage.corpus.aggravated = parseInt(actorData.system.health.damage.corpus.aggravated) - 1;
 		}
 
@@ -238,14 +238,14 @@ export default class WraithActorSheet extends MortalActorSheet {
 		await this.actor.update(actorData);
 		this.render();
 	}
-	
+
 	async _assignToWraith(fields, value) {
 		const actorData = foundry.utils.duplicate(this.actor);
 
-		let area = fields[0];	
-		const ability = fields[1];	
+		let area = fields[0];
+		const ability = fields[1];
 
-		if (area === "advantages") {			
+		if (area === "advantages") {
 			const abilityType = fields[2];
 
 			if (fields.length == 3) {

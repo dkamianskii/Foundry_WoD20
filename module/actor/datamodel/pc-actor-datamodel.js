@@ -2,6 +2,7 @@ import attributes from "./base/actor_attributes.js";
 import settings from "./base/actor_settings.js";
 import traits from "./base/actor_traits.js";
 import health from "./base/actor_health.js";
+import willpower from "./base/actor_willpower.js";
 
 export default class PCDataModel extends foundry.abstract.DataModel {
     static defineSchema() {
@@ -36,13 +37,13 @@ export default class PCDataModel extends foundry.abstract.DataModel {
             appearance: new fields.HTMLField(),
             background: new fields.HTMLField(),
             notes: new fields.HTMLField(),
-            roleplaytip: new fields.HTMLField()            
-        });            
+            roleplaytip: new fields.HTMLField()
+        });
 
         // Same as before
         schema.attributes = new fields.SchemaField({
             ...attributes.defineSchema()
-        }); 
+        });
 
         // Same as before
         schema.soak = new fields.SchemaField({
@@ -59,6 +60,10 @@ export default class PCDataModel extends foundry.abstract.DataModel {
         // Same as before
         schema.health = new fields.SchemaField({
             ...health.defineSchema()
+        });
+
+        schema.willpower = new fields.SchemaField({
+            ...willpower.defineSchema()
         });
 
         // Same as before
@@ -80,7 +85,7 @@ export default class PCDataModel extends foundry.abstract.DataModel {
             walk: new fields.SchemaField({
                 value: new fields.NumberField({...valueInteger}),
                 isactive: new fields.BooleanField({initial: true})
-            }),  
+            }),
             jog: new fields.SchemaField({
                 value: new fields.NumberField({...valueInteger}),
                 isactive: new fields.BooleanField({initial: true})
@@ -110,7 +115,7 @@ export default class PCDataModel extends foundry.abstract.DataModel {
                 carried: new fields.NumberField({...valueNumber}),
                 bank: new fields.NumberField({...valueNumber})
             })
-        });        
+        });
 
         schema.favoriterolls = new fields.ArrayField(
             new fields.ObjectField({
@@ -130,6 +135,9 @@ export default class PCDataModel extends foundry.abstract.DataModel {
         }
         if (source?.health?.damage && source.health.damage.chimerical === undefined) {
             source.health.damage.chimerical = { bashing: 0, lethal: 0, aggravated: 0 };
+        }
+        if (source?.willpower === undefined) {
+            source.willpower = { damage: { light: 0, heavy: 0 } };
         }
         return super.migrateData(source);
     }

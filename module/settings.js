@@ -8,9 +8,9 @@ export const systemSettings = function() {
     //     }
 
     // "core" is core settings
-	// "worldofdarkness" as system setting
+	// "wod-advanced" as system setting
 	// "wod" or other then is module settings
-	game.settings.register("worldofdarkness", "worldVersion", {
+	game.settings.register("wod-advanced", "worldVersion", {
 		name: game.i18n.localize('wod.settings.worldversion'),
 		hint: game.i18n.localize('wod.settings.worldversionhint'),
 		scope: "world",
@@ -19,19 +19,19 @@ export const systemSettings = function() {
 		type: String,
 	});
 
-    
+
 
 	// Are you to use the permanent (check) values or temporary (not checked) of e.g. Willpower in rolls
-	game.settings.register("worldofdarkness", "advantageRolls", {
+	game.settings.register("wod-advanced", "advantageRolls", {
 		name: game.i18n.localize('wod.settings.advantagerolls'),
 		hint: game.i18n.localize('wod.settings.advantagerollshint'),
 		scope: "world",
 		config: false,
 		default: true,
 		type: Boolean,
-	});	
+	});
 
-    game.settings.register("worldofdarkness", "specialityLevel", {
+    game.settings.register("wod-advanced", "specialityLevel", {
 		name: game.i18n.localize('wod.settings.specialitylevel'),
 		hint: game.i18n.localize('wod.settings.specialitylevelhint'),
 		scope: "world",
@@ -45,9 +45,9 @@ export const systemSettings = function() {
             4 : "4",
             5 : "5"
 		}
-	});	
+	});
 
-	game.settings.register("worldofdarkness", "attributeSettings", {
+	game.settings.register("wod-advanced", "attributeSettings", {
 		name: game.i18n.localize('wod.settings.attributesettings'),
 		hint: game.i18n.localize('wod.settings.attributesettingshint'),
 		scope: "world",
@@ -60,7 +60,7 @@ export const systemSettings = function() {
 		}
 	});
 
-    game.settings.register("worldofdarkness", "fifthEditionWillpowerSetting", {
+    game.settings.register("wod-advanced", "fifthEditionWillpowerSetting", {
 		name: game.i18n.localize('wod.settings.fifthedwillpowersetting'),
 		hint: game.i18n.localize('wod.settings.fifthedwillpowersettinghint'),
 		scope: "world",
@@ -73,18 +73,18 @@ export const systemSettings = function() {
 		}
 	});
 
-    game.settings.register("worldofdarkness", "willpowerBonusDice", {
+    game.settings.register("wod-advanced", "willpowerBonusDice", {
 		name: game.i18n.localize('wod.settings.willpowerBonusDice'),
 		hint: game.i18n.localize('wod.settings.willpowerBonusDicehint'),
 		scope: "world",
 		config: false,
 		default: false,
 		type: Boolean,
-	});	
+	});
 
     // DICE RULES
 
-    game.settings.register("worldofdarkness", "theRollofOne", {
+    game.settings.register("wod-advanced", "theRollofOne", {
 		name: game.i18n.localize('wod.settings.therollofone'),
 		hint: game.i18n.localize('wod.settings.therollofonehint'),
 		scope: "world",
@@ -97,18 +97,18 @@ export const systemSettings = function() {
 			"2": "-2",
 			"3": "-3"
 		}
-	});    
+	});
 
-	game.settings.register("worldofdarkness", "successesToDamageRolls", {
+	game.settings.register("wod-advanced", "successesToDamageRolls", {
 		name: game.i18n.localize('wod.settings.successesdamage'),
 		hint: game.i18n.localize('wod.settings.successesdamagehint'),
 		scope: "world",
 		config: false,
 		default: true,
 		type: Boolean,
-	});	
+	});
 
-    game.settings.register("worldofdarkness", "useOnesDamage", {
+    game.settings.register("wod-advanced", "useOnesDamage", {
 		name: game.i18n.localize('wod.settings.useOnesDamage'),
 		scope: "world",
 		config: false,
@@ -116,7 +116,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "usePenaltyDamage", {
+    game.settings.register("wod-advanced", "usePenaltyDamage", {
 		name: game.i18n.localize('wod.settings.usepenaltydamage'),
 		scope: "world",
 		config: false,
@@ -124,7 +124,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "useOnesSoak", {
+    game.settings.register("wod-advanced", "useOnesSoak", {
 		name: game.i18n.localize('wod.settings.useOnesSoak'),
 		scope: "world",
 		config: false,
@@ -132,7 +132,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "lowestDifficulty", {
+    game.settings.register("wod-advanced", "lowestDifficulty", {
 		name: game.i18n.localize('wod.settings.lowestdifficulty'),
 		hint: game.i18n.localize('wod.settings.lowestdifficultyhint'),
 		scope: "world",
@@ -148,7 +148,7 @@ export const systemSettings = function() {
 		}
 	});
 
-    game.settings.register("worldofdarkness", "specialityAddSuccess", {
+    game.settings.register("wod-advanced", "specialityAddSuccess", {
 		name: game.i18n.localize('wod.settings.specialityaddsuccess'),
 		hint: game.i18n.localize('wod.settings.specialityaddsuccesshint'),
 		scope: "world",
@@ -163,16 +163,16 @@ export const systemSettings = function() {
 		}
 	});
 
-    game.settings.register("worldofdarkness", "specialityAllowBotch", {
+    game.settings.register("wod-advanced", "specialityAllowBotch", {
 		name: game.i18n.localize('wod.settings.specialityallowbotch'),
-		hint: game.i18n.localize('wod.settings.specialityallowbotchhint'),    
+		hint: game.i18n.localize('wod.settings.specialityallowbotchhint'),
 		scope: "world",
 		config: false,
 		default: true,
 		type: Boolean
 	});
 
-    game.settings.register("worldofdarkness", "specialityReduceDiff", {
+    game.settings.register("wod-advanced", "specialityReduceDiff", {
 		name: game.i18n.localize('wod.settings.specialityreducediff'),
 		hint: game.i18n.localize('wod.settings.specialityreducediffhint'),
 		scope: "world",
@@ -187,7 +187,7 @@ export const systemSettings = function() {
 		}
 	});
 
-    game.settings.register("worldofdarkness", "tenAddSuccess", {
+    game.settings.register("wod-advanced", "tenAddSuccess", {
 		name: game.i18n.localize('wod.settings.tenaddsuccess'),
 		hint: game.i18n.localize('wod.settings.tenaddsuccesshint'),
 		scope: "world",
@@ -202,7 +202,7 @@ export const systemSettings = function() {
 		}
 	});
 
-    game.settings.register("worldofdarkness", "explodingDice", {
+    game.settings.register("wod-advanced", "explodingDice", {
 		name: game.i18n.localize('wod.settings.explodingdice'),
 		hint: game.i18n.localize('wod.settings.explodingdicehint'),
 		scope: "world",
@@ -221,7 +221,7 @@ export const systemSettings = function() {
 
     // ERA SETTINGS
 
-    game.settings.register("worldofdarkness", "eraMortal", {
+    game.settings.register("wod-advanced", "eraMortal", {
 		name: game.i18n.localize('wod.era.mortaleratext'),
 		scope: "world",
 		config: false,
@@ -236,7 +236,7 @@ export const systemSettings = function() {
 		}
 	});
 
-    game.settings.register("worldofdarkness", "eraMage", {
+    game.settings.register("wod-advanced", "eraMage", {
 		name: game.i18n.localize('wod.era.mageeratext'),
 		scope: "world",
 		config: false,
@@ -248,7 +248,7 @@ export const systemSettings = function() {
 		}
 	});
 
-    game.settings.register("worldofdarkness", "eraVampire", {
+    game.settings.register("wod-advanced", "eraVampire", {
 		name: game.i18n.localize('wod.era.vampireeratext'),
 		scope: "world",
 		config: false,
@@ -263,7 +263,7 @@ export const systemSettings = function() {
 		}
 	});
 
-    game.settings.register("worldofdarkness", "eraWerewolf", {
+    game.settings.register("wod-advanced", "eraWerewolf", {
 		name: game.i18n.localize('wod.era.werewolferatext'),
 		scope: "world",
 		config: false,
@@ -280,7 +280,7 @@ export const systemSettings = function() {
 
     // COMBAT SETTINGS
 
-    game.settings.register("worldofdarkness", "autoAmmo", {
+    game.settings.register("wod-advanced", "autoAmmo", {
 		name: game.i18n.localize('wod.settings.autoammo'),
 		hint: game.i18n.localize('wod.settings.autoammohint'),
 		scope: "world",
@@ -293,7 +293,7 @@ export const systemSettings = function() {
 
     // DEMON SETTINGS
 
-    game.settings.register("worldofdarkness", "demonCreateForms", {
+    game.settings.register("wod-advanced", "demonCreateForms", {
 		name: game.i18n.localize('wod.settings.demoncreateforms'),
         hint: game.i18n.localize('wod.settings.demoncreateformshint'),
 		scope: "world",
@@ -302,7 +302,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "demonEvocationTorment", {
+    game.settings.register("wod-advanced", "demonEvocationTorment", {
 		name: game.i18n.localize('wod.settings.demonevocationtorment'),
 		hint: game.i18n.localize('wod.settings.demonevocationtormenthint'),
 		scope: "world",
@@ -316,7 +316,7 @@ export const systemSettings = function() {
 		}
 	});
 
-    game.settings.register("worldofdarkness", "demonSystemSettings", {
+    game.settings.register("wod-advanced", "demonSystemSettings", {
 		name: game.i18n.localize('wod.settings.demonsystemsettings'),
 		hint: game.i18n.localize('wod.settings.demonsystemsettingshint'),
 		scope: "world",
@@ -333,7 +333,7 @@ export const systemSettings = function() {
 
     // HUNTER SETTINGS
 
-    game.settings.register("worldofdarkness", "hunteredgeSettings", {
+    game.settings.register("wod-advanced", "hunteredgeSettings", {
 		name: game.i18n.localize('wod.settings.edgesettings'),
 		hint: game.i18n.localize('wod.settings.edgesettingshints'),
 		scope: "world",
@@ -350,7 +350,7 @@ export const systemSettings = function() {
 
     // VAMPIRE SETTINGS
 
-    game.settings.register("worldofdarkness", "virtuesLimit", {
+    game.settings.register("wod-advanced", "virtuesLimit", {
 		name: game.i18n.localize('wod.settings.virtueslimit'),
 		hint: game.i18n.localize('wod.settings.virtueslimithint'),
 		scope: "world",
@@ -363,7 +363,7 @@ export const systemSettings = function() {
 
     // WEREWOLF SETTINGS
 
-    game.settings.register("worldofdarkness", "wererwolfrageSettings", {
+    game.settings.register("wod-advanced", "wererwolfrageSettings", {
 		name: game.i18n.localize('wod.settings.ragesettings'),
 		hint: game.i18n.localize('wod.settings.ragesettingshints'),
 		scope: "world",
@@ -376,7 +376,7 @@ export const systemSettings = function() {
 
     // PERMISSION SETTINGS
 
-    game.settings.register("worldofdarkness", "observersFullActorViewPermission", {
+    game.settings.register("wod-advanced", "observersFullActorViewPermission", {
 		name: game.i18n.localize('wod.settings.observersactorpermission'),
 		hint: game.i18n.localize('wod.settings.observersactorpermissionhint'),
 		scope: "world",
@@ -389,7 +389,7 @@ export const systemSettings = function() {
 		}
 	});
 
-    game.settings.register("worldofdarkness", "limitedFullActorViewPermission", {
+    game.settings.register("wod-advanced", "limitedFullActorViewPermission", {
 		name: game.i18n.localize('wod.settings.limitedactorpermission'),
 		hint: game.i18n.localize('wod.settings.limitedactorpermissionhint'),
 		scope: "world",
@@ -403,7 +403,7 @@ export const systemSettings = function() {
 		}
 	});
 
-	game.settings.register("worldofdarkness", "changeActorImagePermission", {
+	game.settings.register("wod-advanced", "changeActorImagePermission", {
 		name: game.i18n.localize('wod.settings.changeactorimage'),
 		hint: game.i18n.localize('wod.settings.changeactorimagehint'),
 		scope: "world",
@@ -412,7 +412,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-	game.settings.register("worldofdarkness", "changeItemImagePermission", {
+	game.settings.register("wod-advanced", "changeItemImagePermission", {
 		name: game.i18n.localize('wod.settings.changeitemimage'),
 		hint: game.i18n.localize('wod.settings.changeitemimagehint'),
 		scope: "world",
@@ -421,7 +421,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-	game.settings.register("worldofdarkness", "itemAdministratorLevel", {
+	game.settings.register("wod-advanced", "itemAdministratorLevel", {
 		name: game.i18n.localize('wod.settings.itemadministrator'),
 		hint: game.i18n.localize('wod.settings.itemadministratorhint'),
 		scope: "world",
@@ -440,7 +440,7 @@ export const systemSettings = function() {
 
     // GRAPHIC SETTINGS
 
-    game.settings.register("worldofdarkness", "useSplatFonts", {
+    game.settings.register("wod-advanced", "useSplatFonts", {
 		name: game.i18n.localize('wod.settings.usesplatfont'),
 		hint: game.i18n.localize('wod.settings.usesplatfonthint'),
 		scope: "world",
@@ -449,7 +449,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "useLinkPlatform", {
+    game.settings.register("wod-advanced", "useLinkPlatform", {
 		name: game.i18n.localize('wod.settings.usesworldanvil'),
 		hint: game.i18n.localize('wod.settings.usesworldanvilhint'),
 		scope: "world",
@@ -461,17 +461,17 @@ export const systemSettings = function() {
     /**
     * dark mode. Css adjustements are located in the dark-theme.less file.
     */
-    // game.settings.register( "worldofdarkness", "darkMode", {
+    // game.settings.register( "wod-advanced", "darkMode", {
     //     name: game.i18n.localize('wod.settings.darkmodesetting'),
     //     hint: game.i18n.localize('wod.settings.darkmodesettinghint'),
     //     scope: "client",
     //     config: true,
     //     default: false,
-    //     type: Boolean,        
+    //     type: Boolean,
     // });
 
     // PATCH SETTINGS
-	game.settings.register("worldofdarkness", "patch107", {
+	game.settings.register("wod-advanced", "patch107", {
 		name: "patch107",
 		hint: "patch107",
 		scope: "world",
@@ -480,7 +480,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-	game.settings.register("worldofdarkness", "patch110", {
+	game.settings.register("wod-advanced", "patch110", {
 		name: "patch110",
 		hint: "patch110",
 		scope: "world",
@@ -489,7 +489,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-	game.settings.register("worldofdarkness", "patch120", {
+	game.settings.register("wod-advanced", "patch120", {
 		name: "patch120",
 		hint: "patch120",
 		scope: "world",
@@ -498,7 +498,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch130", {
+    game.settings.register("wod-advanced", "patch130", {
 		name: "patch130",
 		hint: "patch130",
 		scope: "world",
@@ -507,7 +507,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch140", {
+    game.settings.register("wod-advanced", "patch140", {
 		name: "patch140",
 		hint: "patch140",
 		scope: "world",
@@ -516,7 +516,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch150", {
+    game.settings.register("wod-advanced", "patch150", {
 		name: "patch150",
 		hint: "patch150",
 		scope: "world",
@@ -525,7 +525,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch160", {
+    game.settings.register("wod-advanced", "patch160", {
 		name: "patch160",
 		hint: "patch160",
 		scope: "world",
@@ -534,7 +534,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch210", {
+    game.settings.register("wod-advanced", "patch210", {
 		name: "patch210",
 		hint: "patch210",
 		scope: "world",
@@ -543,7 +543,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch220", {
+    game.settings.register("wod-advanced", "patch220", {
 		name: "patch220",
 		hint: "patch220",
 		scope: "world",
@@ -552,7 +552,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch230", {
+    game.settings.register("wod-advanced", "patch230", {
 		name: "patch230",
 		hint: "patch230",
 		scope: "world",
@@ -561,7 +561,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch300", {
+    game.settings.register("wod-advanced", "patch300", {
 		name: "patch300",
 		hint: "patch300",
 		scope: "world",
@@ -570,7 +570,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch310", {
+    game.settings.register("wod-advanced", "patch310", {
 		name: "patch310",
 		hint: "patch310",
 		scope: "world",
@@ -579,7 +579,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch320", {
+    game.settings.register("wod-advanced", "patch320", {
 		name: "patch320",
 		hint: "patch320",
 		scope: "world",
@@ -588,7 +588,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch330", {
+    game.settings.register("wod-advanced", "patch330", {
 		name: "patch330",
 		hint: "patch330",
 		scope: "world",
@@ -597,7 +597,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch400", {
+    game.settings.register("wod-advanced", "patch400", {
 		name: "patch400",
 		hint: "patch400",
 		scope: "world",
@@ -606,7 +606,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch410", {
+    game.settings.register("wod-advanced", "patch410", {
 		name: "patch410",
 		hint: "patch410",
 		scope: "world",
@@ -615,7 +615,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch420", {
+    game.settings.register("wod-advanced", "patch420", {
 		name: "patch420",
 		hint: "patch420",
 		scope: "world",
@@ -624,7 +624,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch500", {
+    game.settings.register("wod-advanced", "patch500", {
 		name: "patch500",
 		hint: "patch500",
 		scope: "world",
@@ -633,7 +633,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch600", {
+    game.settings.register("wod-advanced", "patch600", {
 		name: "patch600",
 		hint: "patch600",
 		scope: "world",
@@ -642,7 +642,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch700", {
+    game.settings.register("wod-advanced", "patch700", {
 		name: "patch700",
 		hint: "patch700",
 		scope: "world",
@@ -651,7 +651,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch710", {
+    game.settings.register("wod-advanced", "patch710", {
 		name: "patch710",
 		hint: "patch710",
 		scope: "world",
@@ -660,7 +660,7 @@ export const systemSettings = function() {
 		type: Boolean,
 	});
 
-    game.settings.register("worldofdarkness", "patch720", {
+    game.settings.register("wod-advanced", "patch720", {
 		name: "patch720",
 		hint: "patch720",
 		scope: "world",
@@ -670,7 +670,7 @@ export const systemSettings = function() {
 	});
 
     /* Messages */
-    game.settings.register("worldofdarkness", "readmessage01", {
+    game.settings.register("wod-advanced", "readmessage01", {
 		name: "Read message01",
 		hint: "",
 		scope: "world",
@@ -680,7 +680,7 @@ export const systemSettings = function() {
 	});
 
     /* Groups of settings */
-    game.settings.registerMenu("worldofdarkness", "ruleSettings", {
+    game.settings.registerMenu("wod-advanced", "ruleSettings", {
         name: game.i18n.localize('wod.settings.rulesettings'),
         hint: game.i18n.localize('wod.settings.rulesettingshint'),
         label: game.i18n.localize('wod.settings.rulesettings'),
@@ -689,7 +689,7 @@ export const systemSettings = function() {
         restricted: true,
     });
 
-    game.settings.registerMenu("worldofdarkness", "diceSettings", {
+    game.settings.registerMenu("wod-advanced", "diceSettings", {
         name: game.i18n.localize('wod.settings.dicerules'),
         hint: game.i18n.localize('wod.settings.diceruleshint'),
         label: game.i18n.localize('wod.settings.dicerules'),
@@ -698,16 +698,16 @@ export const systemSettings = function() {
         restricted: true,
     });
 
-    game.settings.registerMenu("worldofdarkness", "eraSettings", {
+    game.settings.registerMenu("wod-advanced", "eraSettings", {
         name: game.i18n.localize('wod.settings.erasettings'),
         hint: game.i18n.localize('wod.settings.erasettingshint'),
         label: game.i18n.localize('wod.settings.erasettings'),
         icon: "icon fa-solid fa-gear",
         type: Era,
         restricted: true,
-    });    
+    });
 
-    game.settings.registerMenu("worldofdarkness", "combatSettings", {
+    game.settings.registerMenu("wod-advanced", "combatSettings", {
         name: game.i18n.localize("wod.settings.combatsettings"),
         hint: game.i18n.localize("wod.settings.combatsettingshint"),
         label: game.i18n.localize("wod.settings.combatsettings"),
@@ -716,7 +716,7 @@ export const systemSettings = function() {
         restricted: true,
     });
 
-    game.settings.registerMenu("worldofdarkness", "demonSettings", {
+    game.settings.registerMenu("wod-advanced", "demonSettings", {
         name: game.i18n.localize('wod.settings.demonsettings'),
         hint: game.i18n.localize('wod.settings.demonsettingshint'),
         label: game.i18n.localize('wod.settings.demonsettings'),
@@ -725,7 +725,7 @@ export const systemSettings = function() {
         restricted: true,
     });
 
-    game.settings.registerMenu("worldofdarkness", "hunterSettings", {
+    game.settings.registerMenu("wod-advanced", "hunterSettings", {
         name: game.i18n.localize('wod.settings.huntersettings'),
         hint: game.i18n.localize('wod.settings.huntersettingshint'),
         label: game.i18n.localize('wod.settings.huntersettings'),
@@ -734,7 +734,7 @@ export const systemSettings = function() {
         restricted: true,
     });
 
-    game.settings.registerMenu("worldofdarkness", "vampireSettings", {
+    game.settings.registerMenu("wod-advanced", "vampireSettings", {
         name: game.i18n.localize('wod.settings.vampiresettings'),
         hint: game.i18n.localize('wod.settings.vampiresettingshint'),
         label: game.i18n.localize('wod.settings.vampiresettings'),
@@ -743,7 +743,7 @@ export const systemSettings = function() {
         restricted: true,
     });
 
-    game.settings.registerMenu("worldofdarkness", "werewolfSettings", {
+    game.settings.registerMenu("wod-advanced", "werewolfSettings", {
         name: game.i18n.localize('wod.settings.werewolfsettings'),
         hint: game.i18n.localize('wod.settings.werewolfsettingshint'),
         label: game.i18n.localize('wod.settings.werewolfsettings'),
@@ -752,7 +752,7 @@ export const systemSettings = function() {
         restricted: true,
     });
 
-	game.settings.registerMenu("worldofdarkness", "permissionSettings", {
+	game.settings.registerMenu("wod-advanced", "permissionSettings", {
         name: game.i18n.localize('wod.settings.permissionsettings'),
         hint: game.i18n.localize('wod.settings.permissionsettingshint'),
         label: game.i18n.localize('wod.settings.permissionsettings'),
@@ -761,7 +761,7 @@ export const systemSettings = function() {
         restricted: true,
     });
 
-    game.settings.registerMenu("worldofdarkness", "graphicSettings", {
+    game.settings.registerMenu("wod-advanced", "graphicSettings", {
         name: game.i18n.localize('wod.settings.graphicsettings'),
         hint: game.i18n.localize('wod.settings.graphicsettingshint'),
         label: game.i18n.localize('wod.settings.graphicsettings'),
@@ -778,17 +778,17 @@ export class Rules extends FormApplication {
             id: "rules",
             classes: ["wod20rule-dialog"],
             title: game.i18n.localize('wod.settings.rulesettings'),
-            template: "systems/worldofdarkness/templates/dialogs/dialog-settings-rule.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-settings-rule.hbs",
         });
     }
-  
+
     getData(options) {
-        const hasPermission = game.user.can("SETTINGS_MODIFY");  
+        const hasPermission = game.user.can("SETTINGS_MODIFY");
         const data = {
-            system: { 
-                title: game.system.title, 
-                menus: [], 
-                settings: [] 
+            system: {
+                title: game.system.title,
+                menus: [],
+                settings: []
             }
         };
 
@@ -802,17 +802,17 @@ export class Rules extends FormApplication {
 
                     setting.name = game.i18n.localize(setting.name);
                     setting.hint = game.i18n.localize(setting.hint);
-                    setting.value = game.settings.get("worldofdarkness", setting.key);
+                    setting.value = game.settings.get("wod-advanced", setting.key);
                     setting.type = s.type instanceof Function ? s.type.name : "String";
-                    setting.scope = "worldofdarkness";
+                    setting.scope = "wod-advanced";
                     setting.isBoolean = s.type === Boolean;
                     setting.isSelect = s.choices !== undefined;
 
                     data.system.settings.push(setting);
-                } 
+                }
             }
         }
-  
+
         // Return data
         return {
             user: game.user,
@@ -821,12 +821,12 @@ export class Rules extends FormApplication {
             data: data
         };
     }
-  
+
     activateListeners(html) {
         super.activateListeners(html);
         html.find(".submenu button").click(this._onClickSubmenu.bind(this));
     }
-  
+
     /**
      * Handle activating the button to configure User Role permissions
      * @param event {Event} The initial button click event
@@ -839,15 +839,15 @@ export class Rules extends FormApplication {
         const app = new menu.type();
         return app.render(true);
     }
-  
+
     /** @override */
     async _updateObject(event, formData) {
         for (let [k, v] of Object.entries(foundry.utils.flattenObject(formData))) {
             let s = game.settings.settings.get(k);
-            let current = game.settings.get("worldofdarkness", s.key);
+            let current = game.settings.get("wod-advanced", s.key);
 
             if (v !== current) {
-                await game.settings.set("worldofdarkness", s.key, v);
+                await game.settings.set("wod-advanced", s.key, v);
             }
         }
     }
@@ -860,17 +860,17 @@ export class Dices extends FormApplication {
             id: "dices",
             classes: ["wod20rule-dialog"],
             title: game.i18n.localize("wod.settings.rollsettings"),
-            template: "systems/worldofdarkness/templates/dialogs/dialog-settings-dice.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-settings-dice.hbs",
         });
     }
-  
+
     getData(options) {
-        const hasPermission = game.user.can("SETTINGS_MODIFY");  
+        const hasPermission = game.user.can("SETTINGS_MODIFY");
         const data = {
-            system: { 
-                title: game.system.title, 
-                menus: [], 
-                settings: [] 
+            system: {
+                title: game.system.title,
+                menus: [],
+                settings: []
             }
         };
 
@@ -878,33 +878,33 @@ export class Dices extends FormApplication {
         if (hasPermission) {
             for (let s of game.settings.settings.values()) {
                 // Exclude settings the user cannot change
-                if ((s.key == "theRollofOne") || 
-                        (s.key == "useOnesDamage") || 
-                        (s.key == "usePenaltyDamage") || 
-                        (s.key == "useOnesSoak") || 
-                        (s.key == "lowestDifficulty") || 
-                        (s.key == "specialityAddSuccess") || 
-                        (s.key == "specialityReduceDiff") || 
-                        (s.key == "specialityAllowBotch") ||                         
-                        (s.key == "tenAddSuccess") || 
-                        (s.key == "explodingDice") || 
+                if ((s.key == "theRollofOne") ||
+                        (s.key == "useOnesDamage") ||
+                        (s.key == "usePenaltyDamage") ||
+                        (s.key == "useOnesSoak") ||
+                        (s.key == "lowestDifficulty") ||
+                        (s.key == "specialityAddSuccess") ||
+                        (s.key == "specialityReduceDiff") ||
+                        (s.key == "specialityAllowBotch") ||
+                        (s.key == "tenAddSuccess") ||
+                        (s.key == "explodingDice") ||
                         (s.key == "successesToDamageRolls"))  {
                     // Update setting data
                     const setting = foundry.utils.duplicate(s);
 
                     setting.name = game.i18n.localize(setting.name);
                     setting.hint = game.i18n.localize(setting.hint);
-                    setting.value = game.settings.get("worldofdarkness", setting.key);
+                    setting.value = game.settings.get("wod-advanced", setting.key);
                     setting.type = s.type instanceof Function ? s.type.name : "String";
-                    setting.scope = "worldofdarkness";
+                    setting.scope = "wod-advanced";
                     setting.isBoolean = s.type === Boolean;
                     setting.isSelect = s.choices !== undefined;
 
                     data.system.settings.push(setting);
-                } 
+                }
             }
         }
-  
+
         // Return data
         return {
             user: game.user,
@@ -913,12 +913,12 @@ export class Dices extends FormApplication {
             data: data
         };
     }
-  
+
     activateListeners(html) {
         super.activateListeners(html);
         html.find(".submenu button").click(this._onClickSubmenu.bind(this));
     }
-  
+
     /**
      * Handle activating the button to configure User Role permissions
      * @param event {Event} The initial button click event
@@ -931,15 +931,15 @@ export class Dices extends FormApplication {
         const app = new menu.type();
         return app.render(true);
     }
-  
+
     /** @override */
     async _updateObject(event, formData) {
         for (let [k, v] of Object.entries(foundry.utils.flattenObject(formData))) {
             let s = game.settings.settings.get(k);
-            let current = game.settings.get("worldofdarkness", s.key);
+            let current = game.settings.get("wod-advanced", s.key);
 
             if (v !== current) {
-                await game.settings.set("worldofdarkness", s.key, v);
+                await game.settings.set("wod-advanced", s.key, v);
             }
         }
     }
@@ -952,17 +952,17 @@ export class Era extends FormApplication {
             id: "dices",
             classes: ["wod20rule-dialog"],
             title: game.i18n.localize("wod.settings.erasettings"),
-            template: "systems/worldofdarkness/templates/dialogs/dialog-settings-era.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-settings-era.hbs",
         });
     }
-  
+
     getData(options) {
-        const hasPermission = game.user.can("SETTINGS_MODIFY");  
+        const hasPermission = game.user.can("SETTINGS_MODIFY");
         const data = {
-            system: { 
-                title: game.system.title, 
-                menus: [], 
-                settings: [] 
+            system: {
+                title: game.system.title,
+                menus: [],
+                settings: []
             }
         };
 
@@ -976,17 +976,17 @@ export class Era extends FormApplication {
 
                     setting.name = game.i18n.localize(setting.name);
                     setting.hint = game.i18n.localize(setting.hint);
-                    setting.value = game.settings.get("worldofdarkness", setting.key);
+                    setting.value = game.settings.get("wod-advanced", setting.key);
                     setting.type = s.type instanceof Function ? s.type.name : "String";
-                    setting.scope = "worldofdarkness";
+                    setting.scope = "wod-advanced";
                     setting.isBoolean = s.type === Boolean;
                     setting.isSelect = s.choices !== undefined;
 
                     data.system.settings.push(setting);
-                } 
+                }
             }
         }
-  
+
         // Return data
         return {
             user: game.user,
@@ -995,12 +995,12 @@ export class Era extends FormApplication {
             data: data
         };
     }
-  
+
     activateListeners(html) {
         super.activateListeners(html);
         html.find(".submenu button").click(this._onClickSubmenu.bind(this));
     }
-  
+
     /**
      * Handle activating the button to configure User Role permissions
      * @param event {Event} The initial button click event
@@ -1013,15 +1013,15 @@ export class Era extends FormApplication {
         const app = new menu.type();
         return app.render(true);
     }
-  
+
     /** @override */
     async _updateObject(event, formData) {
         for (let [k, v] of Object.entries(foundry.utils.flattenObject(formData))) {
             let s = game.settings.settings.get(k);
-            let current = game.settings.get("worldofdarkness", s.key);
+            let current = game.settings.get("wod-advanced", s.key);
 
             if (v !== current) {
-                await game.settings.set("worldofdarkness", s.key, v);
+                await game.settings.set("wod-advanced", s.key, v);
             }
         }
     }
@@ -1034,17 +1034,17 @@ export class Combat extends FormApplication {
             id: "dices",
             classes: ["wod20rule-dialog"],
             title: game.i18n.localize("wod.settings.combatsettings"),
-            template: "systems/worldofdarkness/templates/dialogs/dialog-settings-combat.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-settings-combat.hbs",
         });
     }
-  
+
     getData(options) {
-        const hasPermission = game.user.can("SETTINGS_MODIFY");  
+        const hasPermission = game.user.can("SETTINGS_MODIFY");
         const data = {
-            system: { 
-                title: game.system.title, 
-                menus: [], 
-                settings: [] 
+            system: {
+                title: game.system.title,
+                menus: [],
+                settings: []
             }
         };
 
@@ -1058,17 +1058,17 @@ export class Combat extends FormApplication {
 
                     setting.name = game.i18n.localize(setting.name);
                     setting.hint = game.i18n.localize(setting.hint);
-                    setting.value = game.settings.get("worldofdarkness", setting.key);
+                    setting.value = game.settings.get("wod-advanced", setting.key);
                     setting.type = s.type instanceof Function ? s.type.name : "String";
-                    setting.scope = "worldofdarkness";
+                    setting.scope = "wod-advanced";
                     setting.isBoolean = s.type === Boolean;
                     setting.isSelect = s.choices !== undefined;
 
                     data.system.settings.push(setting);
-                } 
+                }
             }
         }
-  
+
         // Return data
         return {
             user: game.user,
@@ -1077,12 +1077,12 @@ export class Combat extends FormApplication {
             data: data
         };
     }
-  
+
     activateListeners(html) {
         super.activateListeners(html);
         html.find(".submenu button").click(this._onClickSubmenu.bind(this));
     }
-  
+
     /**
      * Handle activating the button to configure User Role permissions
      * @param event {Event} The initial button click event
@@ -1095,15 +1095,15 @@ export class Combat extends FormApplication {
         const app = new menu.type();
         return app.render(true);
     }
-  
+
     /** @override */
     async _updateObject(event, formData) {
         for (let [k, v] of Object.entries(foundry.utils.flattenObject(formData))) {
             let s = game.settings.settings.get(k);
-            let current = game.settings.get("worldofdarkness", s.key);
+            let current = game.settings.get("wod-advanced", s.key);
 
             if (v !== current) {
-                await game.settings.set("worldofdarkness", s.key, v);
+                await game.settings.set("wod-advanced", s.key, v);
             }
         }
     }
@@ -1116,17 +1116,17 @@ export class Demon extends FormApplication {
             id: "demon",
             classes: ["wod20rule-dialog"],
             title: game.i18n.localize("wod.settings.demonsettings"),
-            template: "systems/worldofdarkness/templates/dialogs/dialog-settings-rule.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-settings-rule.hbs",
         });
     }
-  
+
     getData(options) {
-        const hasPermission = game.user.can("SETTINGS_MODIFY");  
+        const hasPermission = game.user.can("SETTINGS_MODIFY");
         const data = {
-            system: { 
-                title: game.system.title, 
-                menus: [], 
-                settings: [] 
+            system: {
+                title: game.system.title,
+                menus: [],
+                settings: []
             }
         };
 
@@ -1140,17 +1140,17 @@ export class Demon extends FormApplication {
 
                     setting.name = game.i18n.localize(setting.name);
                     setting.hint = game.i18n.localize(setting.hint);
-                    setting.value = game.settings.get("worldofdarkness", setting.key);
+                    setting.value = game.settings.get("wod-advanced", setting.key);
                     setting.type = s.type instanceof Function ? s.type.name : "String";
-                    setting.scope = "worldofdarkness";
+                    setting.scope = "wod-advanced";
                     setting.isBoolean = s.type === Boolean;
                     setting.isSelect = s.choices !== undefined;
 
                     data.system.settings.push(setting);
-                } 
+                }
             }
         }
-  
+
         // Return data
         return {
             user: game.user,
@@ -1159,12 +1159,12 @@ export class Demon extends FormApplication {
             data: data
         };
     }
-  
+
     activateListeners(html) {
         super.activateListeners(html);
         html.find(".submenu button").click(this._onClickSubmenu.bind(this));
     }
-  
+
     /**
      * Handle activating the button to configure User Role permissions
      * @param event {Event} The initial button click event
@@ -1177,7 +1177,7 @@ export class Demon extends FormApplication {
         const app = new menu.type();
         return app.render(true);
     }
-  
+
     /** @override */
     async _updateObject(event, formData) {
         for (let [k, v] of Object.entries(foundry.utils.flattenObject(formData))) {
@@ -1200,17 +1200,17 @@ export class Hunter extends FormApplication {
             id: "hunter",
             classes: ["wod20rule-dialog"],
             title: game.i18n.localize("wod.settings.huntersettings"),
-            template: "systems/worldofdarkness/templates/dialogs/dialog-settings-rule.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-settings-rule.hbs",
         });
     }
-  
+
     getData(options) {
-        const hasPermission = game.user.can("SETTINGS_MODIFY");  
+        const hasPermission = game.user.can("SETTINGS_MODIFY");
         const data = {
-            system: { 
-                title: game.system.title, 
-                menus: [], 
-                settings: [] 
+            system: {
+                title: game.system.title,
+                menus: [],
+                settings: []
             }
         };
 
@@ -1224,17 +1224,17 @@ export class Hunter extends FormApplication {
 
                     setting.name = game.i18n.localize(setting.name);
                     setting.hint = game.i18n.localize(setting.hint);
-                    setting.value = game.settings.get("worldofdarkness", setting.key);
+                    setting.value = game.settings.get("wod-advanced", setting.key);
                     setting.type = s.type instanceof Function ? s.type.name : "String";
-                    setting.scope = "worldofdarkness";
+                    setting.scope = "wod-advanced";
                     setting.isBoolean = s.type === Boolean;
                     setting.isSelect = s.choices !== undefined;
 
                     data.system.settings.push(setting);
-                } 
+                }
             }
         }
-  
+
         // Return data
         return {
             user: game.user,
@@ -1243,12 +1243,12 @@ export class Hunter extends FormApplication {
             data: data
         };
     }
-  
+
     activateListeners(html) {
         super.activateListeners(html);
         html.find(".submenu button").click(this._onClickSubmenu.bind(this));
     }
-  
+
     /**
      * Handle activating the button to configure User Role permissions
      * @param event {Event} The initial button click event
@@ -1261,15 +1261,15 @@ export class Hunter extends FormApplication {
         const app = new menu.type();
         return app.render(true);
     }
-  
+
     /** @override */
     async _updateObject(event, formData) {
         for (let [k, v] of Object.entries(foundry.utils.flattenObject(formData))) {
             let s = game.settings.settings.get(k);
-            let current = game.settings.get("worldofdarkness", s.key);
+            let current = game.settings.get("wod-advanced", s.key);
 
             if (v !== current) {
-                await game.settings.set("worldofdarkness", s.key, v);
+                await game.settings.set("wod-advanced", s.key, v);
             }
         }
     }
@@ -1282,17 +1282,17 @@ export class Vampire extends FormApplication {
             id: "vampire",
             classes: ["wod20rule-dialog"],
             title: game.i18n.localize("wod.settings.vampiresettings"),
-            template: "systems/worldofdarkness/templates/dialogs/dialog-settings-rule.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-settings-rule.hbs",
         });
     }
-  
+
     getData(options) {
-        const hasPermission = game.user.can("SETTINGS_MODIFY");  
+        const hasPermission = game.user.can("SETTINGS_MODIFY");
         const data = {
-            system: { 
-                title: game.system.title, 
-                menus: [], 
-                settings: [] 
+            system: {
+                title: game.system.title,
+                menus: [],
+                settings: []
             }
         };
 
@@ -1306,17 +1306,17 @@ export class Vampire extends FormApplication {
 
                     setting.name = game.i18n.localize(setting.name);
                     setting.hint = game.i18n.localize(setting.hint);
-                    setting.value = game.settings.get("worldofdarkness", setting.key);
+                    setting.value = game.settings.get("wod-advanced", setting.key);
                     setting.type = s.type instanceof Function ? s.type.name : "String";
-                    setting.scope = "worldofdarkness";
+                    setting.scope = "wod-advanced";
                     setting.isBoolean = s.type === Boolean;
                     setting.isSelect = s.choices !== undefined;
 
                     data.system.settings.push(setting);
-                } 
+                }
             }
         }
-  
+
         // Return data
         return {
             user: game.user,
@@ -1325,12 +1325,12 @@ export class Vampire extends FormApplication {
             data: data
         };
     }
-  
+
     activateListeners(html) {
         super.activateListeners(html);
         html.find(".submenu button").click(this._onClickSubmenu.bind(this));
     }
-  
+
     /**
      * Handle activating the button to configure User Role permissions
      * @param event {Event} The initial button click event
@@ -1343,15 +1343,15 @@ export class Vampire extends FormApplication {
         const app = new menu.type();
         return app.render(true);
     }
-  
+
     /** @override */
     async _updateObject(event, formData) {
         for (let [k, v] of Object.entries(foundry.utils.flattenObject(formData))) {
             let s = game.settings.settings.get(k);
-            let current = game.settings.get("worldofdarkness", s.key);
+            let current = game.settings.get("wod-advanced", s.key);
 
             if (v !== current) {
-                await game.settings.set("worldofdarkness", s.key, v);
+                await game.settings.set("wod-advanced", s.key, v);
             }
         }
     }
@@ -1364,17 +1364,17 @@ export class Werewolf extends FormApplication {
             id: "werewolf",
             classes: ["wod20rule-dialog"],
             title: game.i18n.localize("wod.settings.werewolfsettings"),
-            template: "systems/worldofdarkness/templates/dialogs/dialog-settings-rule.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-settings-rule.hbs",
         });
     }
-  
+
     getData(options) {
-        const hasPermission = game.user.can("SETTINGS_MODIFY");  
+        const hasPermission = game.user.can("SETTINGS_MODIFY");
         const data = {
-            system: { 
-                title: game.system.title, 
-                menus: [], 
-                settings: [] 
+            system: {
+                title: game.system.title,
+                menus: [],
+                settings: []
             }
         };
 
@@ -1388,17 +1388,17 @@ export class Werewolf extends FormApplication {
 
                     setting.name = game.i18n.localize(setting.name);
                     setting.hint = game.i18n.localize(setting.hint);
-                    setting.value = game.settings.get("worldofdarkness", setting.key);
+                    setting.value = game.settings.get("wod-advanced", setting.key);
                     setting.type = s.type instanceof Function ? s.type.name : "String";
-                    setting.scope = "worldofdarkness";
+                    setting.scope = "wod-advanced";
                     setting.isBoolean = s.type === Boolean;
                     setting.isSelect = s.choices !== undefined;
 
                     data.system.settings.push(setting);
-                } 
+                }
             }
         }
-  
+
         // Return data
         return {
             user: game.user,
@@ -1407,12 +1407,12 @@ export class Werewolf extends FormApplication {
             data: data
         };
     }
-  
+
     activateListeners(html) {
         super.activateListeners(html);
         html.find(".submenu button").click(this._onClickSubmenu.bind(this));
     }
-  
+
     /**
      * Handle activating the button to configure User Role permissions
      * @param event {Event} The initial button click event
@@ -1425,15 +1425,15 @@ export class Werewolf extends FormApplication {
         const app = new menu.type();
         return app.render(true);
     }
-  
+
     /** @override */
     async _updateObject(event, formData) {
         for (let [k, v] of Object.entries(foundry.utils.flattenObject(formData))) {
             let s = game.settings.settings.get(k);
-            let current = game.settings.get("worldofdarkness", s.key);
+            let current = game.settings.get("wod-advanced", s.key);
 
             if (v !== current) {
-                await game.settings.set("worldofdarkness", s.key, v);
+                await game.settings.set("wod-advanced", s.key, v);
             }
         }
     }
@@ -1446,17 +1446,17 @@ export class Permissions extends FormApplication {
             id: "permission",
             classes: ["wod20rule-dialog"],
             title: game.i18n.localize('wod.settings.permissionsettings'),
-            template: "systems/worldofdarkness/templates/dialogs/dialog-settings-rule.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-settings-rule.hbs",
         });
     }
-  
+
     getData(options) {
-        const hasPermission = game.user.can("SETTINGS_MODIFY");  
+        const hasPermission = game.user.can("SETTINGS_MODIFY");
         const data = {
-            system: { 
-                title: game.system.title, 
-                menus: [], 
-                settings: [] 
+            system: {
+                title: game.system.title,
+                menus: [],
+                settings: []
             }
         };
 
@@ -1470,17 +1470,17 @@ export class Permissions extends FormApplication {
 
                     setting.name = game.i18n.localize(setting.name);
                     setting.hint = game.i18n.localize(setting.hint);
-                    setting.value = game.settings.get("worldofdarkness", setting.key);
+                    setting.value = game.settings.get("wod-advanced", setting.key);
                     setting.type = s.type instanceof Function ? s.type.name : "String";
-                    setting.scope = "worldofdarkness";
+                    setting.scope = "wod-advanced";
                     setting.isBoolean = s.type === Boolean;
                     setting.isSelect = s.choices !== undefined;
 
                     data.system.settings.push(setting);
-                } 
+                }
             }
         }
-  
+
         // Return data
         return {
             user: game.user,
@@ -1489,12 +1489,12 @@ export class Permissions extends FormApplication {
             data: data
         };
     }
-  
+
     activateListeners(html) {
         super.activateListeners(html);
         html.find(".submenu button").click(this._onClickSubmenu.bind(this));
     }
-  
+
     /**
      * Handle activating the button to configure User Role permissions
      * @param event {Event} The initial button click event
@@ -1507,15 +1507,15 @@ export class Permissions extends FormApplication {
         const app = new menu.type();
         return app.render(true);
     }
-  
+
     /** @override */
     async _updateObject(event, formData) {
         for (let [k, v] of Object.entries(foundry.utils.flattenObject(formData))) {
             let s = game.settings.settings.get(k);
-            let current = game.settings.get("worldofdarkness", s.key);
+            let current = game.settings.get("wod-advanced", s.key);
 
             if (v !== current) {
-                await game.settings.set("worldofdarkness", s.key, v);
+                await game.settings.set("wod-advanced", s.key, v);
             }
         }
     }
@@ -1528,17 +1528,17 @@ export class Graphics extends FormApplication {
             id: "graphics",
             classes: ["wod20rule-dialog"],
             title: game.i18n.localize('wod.settings.graphicsettings'),
-            template: "systems/worldofdarkness/templates/dialogs/dialog-settings-rule.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-settings-rule.hbs",
         });
     }
-  
+
     getData(options) {
-        const hasPermission = game.user.can("SETTINGS_MODIFY");  
+        const hasPermission = game.user.can("SETTINGS_MODIFY");
         const data = {
-            system: { 
-                title: game.system.title, 
-                menus: [], 
-                settings: [] 
+            system: {
+                title: game.system.title,
+                menus: [],
+                settings: []
             }
         };
 
@@ -1552,17 +1552,17 @@ export class Graphics extends FormApplication {
 
                     setting.name = game.i18n.localize(setting.name);
                     setting.hint = game.i18n.localize(setting.hint);
-                    setting.value = game.settings.get("worldofdarkness", setting.key);
+                    setting.value = game.settings.get("wod-advanced", setting.key);
                     setting.type = s.type instanceof Function ? s.type.name : "String";
-                    setting.scope = "worldofdarkness";
+                    setting.scope = "wod-advanced";
                     setting.isBoolean = s.type === Boolean;
                     setting.isSelect = s.choices !== undefined;
 
                     data.system.settings.push(setting);
-                } 
+                }
             }
         }
-  
+
         // Return data
         return {
             user: game.user,
@@ -1571,12 +1571,12 @@ export class Graphics extends FormApplication {
             data: data
         };
     }
-  
+
     activateListeners(html) {
         super.activateListeners(html);
         html.find(".submenu button").click(this._onClickSubmenu.bind(this));
     }
-  
+
     /**
      * Handle activating the button to configure User Role permissions
      * @param event {Event} The initial button click event
@@ -1589,15 +1589,15 @@ export class Graphics extends FormApplication {
         const app = new menu.type();
         return app.render(true);
     }
-  
+
     /** @override */
     async _updateObject(event, formData) {
         for (let [k, v] of Object.entries(foundry.utils.flattenObject(formData))) {
             let s = game.settings.settings.get(k);
-            let current = game.settings.get("worldofdarkness", s.key);
+            let current = game.settings.get("wod-advanced", s.key);
 
             if (v !== current) {
-                await game.settings.set("worldofdarkness", s.key, v);
+                await game.settings.set("wod-advanced", s.key, v);
             }
         }
     }

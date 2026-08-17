@@ -798,7 +798,7 @@
       "_id": "ohPzX2bjsLfkUHV6",
       "name": "Razer Claws",
       "type": "Power",
-      "img": "systems/worldofdarkness/assets/img/items/power_werewolf.svg",
+      "img": "systems/wod-advanced/assets/img/items/power_werewolf.svg",
       "effects": [],
       "folder": "pw76Ns5PFF1AqttB",
       "sort": 150000,
@@ -843,7 +843,7 @@
         "CJSsCwdnDobaXtrZ": 3
       },
       "_stats": {
-        "systemId": "worldofdarkness",
+        "systemId": "wod-advanced",
         "systemVersion": "2.3.0",
         "coreVersion": "10.291",
         "createdTime": 1668969160073,
@@ -855,7 +855,7 @@
       "_id": "Y50pP5Ygo88tuvnn",
       "name": "Persuasion",
       "type": "Power",
-      "img": "systems/worldofdarkness/assets/img/items/power_werewolf.svg",
+      "img": "systems/wod-advanced/assets/img/items/power_werewolf.svg",
       "effects": [],
       "folder": "SX2nGNnhsW6XHI3s",
       "sort": 150000,
@@ -923,7 +923,7 @@
         "CJSsCwdnDobaXtrZ": 3
       },
       "_stats": {
-        "systemId": "worldofdarkness",
+        "systemId": "wod-advanced",
         "systemVersion": "2.3.0",
         "coreVersion": "10.291",
         "createdTime": 1668969183874,
@@ -935,7 +935,7 @@
       "_id": "VkMSmEVeM4T71SCF",
       "name": "Lightning Reflexes",
       "type": "Power",
-      "img": "systems/worldofdarkness/assets/img/items/power_werewolf.svg",
+      "img": "systems/wod-advanced/assets/img/items/power_werewolf.svg",
       "effects": [],
       "folder": "ifa5KUgtik9lslqA",
       "sort": 0,
@@ -980,7 +980,7 @@
         "CJSsCwdnDobaXtrZ": 3
       },
       "_stats": {
-        "systemId": "worldofdarkness",
+        "systemId": "wod-advanced",
         "systemVersion": "2.3.0",
         "coreVersion": "10.291",
         "createdTime": 1668969193744,
@@ -992,7 +992,7 @@
       "_id": "c5p6ie2SqSxuRI7a",
       "name": "Rite of the Jackdaw",
       "type": "Power",
-      "img": "systems/worldofdarkness/assets/img/items/ritual_werewolf.svg",
+      "img": "systems/wod-advanced/assets/img/items/ritual_werewolf.svg",
       "effects": [],
       "folder": "DVdaL187D6wEvaE5",
       "sort": 100000,
@@ -1037,7 +1037,7 @@
         "CJSsCwdnDobaXtrZ": 3
       },
       "_stats": {
-        "systemId": "worldofdarkness",
+        "systemId": "wod-advanced",
         "systemVersion": "2.3.0",
         "coreVersion": "10.291",
         "createdTime": 1668969219615,
@@ -1049,7 +1049,7 @@
       "_id": "IWQauOBr2Ri5I03r",
       "name": "Rite of Talisman Dedication",
       "type": "Power",
-      "img": "systems/worldofdarkness/assets/img/items/ritual_werewolf.svg",
+      "img": "systems/wod-advanced/assets/img/items/ritual_werewolf.svg",
       "effects": [],
       "folder": "7yLA1ST3BdBeDapp",
       "sort": 162500,
@@ -1094,7 +1094,7 @@
         "CJSsCwdnDobaXtrZ": 3
       },
       "_stats": {
-        "systemId": "worldofdarkness",
+        "systemId": "wod-advanced",
         "systemVersion": "2.3.0",
         "coreVersion": "10.291",
         "createdTime": 1668969225596,
@@ -1106,7 +1106,7 @@
       "_id": "KOFwn4xvt9wtGK4c",
       "name": "Bite",
       "type": "Melee Weapon",
-      "img": "systems/worldofdarkness/assets/img/items/naturalweapons.svg",
+      "img": "systems/wod-advanced/assets/img/items/naturalweapons.svg",
       "effects": [],
       "folder": "i6PltrOYamzG6FU6",
       "sort": 800000,
@@ -1154,7 +1154,7 @@
         "CJSsCwdnDobaXtrZ": 3
       },
       "_stats": {
-        "systemId": "worldofdarkness",
+        "systemId": "wod-advanced",
         "systemVersion": "2.3.0",
         "coreVersion": "10.291",
         "createdTime": 1668969239763,
@@ -1166,7 +1166,7 @@
       "_id": "OTGcC1Tcqd9KaF66",
       "name": "Claw",
       "type": "Melee Weapon",
-      "img": "systems/worldofdarkness/assets/img/items/naturalweapons.svg",
+      "img": "systems/wod-advanced/assets/img/items/naturalweapons.svg",
       "effects": [],
       "folder": "i6PltrOYamzG6FU6",
       "sort": 900000,
@@ -1214,7 +1214,7 @@
         "CJSsCwdnDobaXtrZ": 3
       },
       "_stats": {
-        "systemId": "worldofdarkness",
+        "systemId": "wod-advanced",
         "systemVersion": "2.3.0",
         "coreVersion": "10.291",
         "createdTime": 1668969240950,
@@ -1226,7 +1226,7 @@
       "_id": "XAGKvruQFDT8na5Q",
       "name": "Razor Claws",
       "type": "Melee Weapon",
-      "img": "systems/worldofdarkness/assets/img/items/naturalweapons.svg",
+      "img": "systems/wod-advanced/assets/img/items/naturalweapons.svg",
       "effects": [],
       "folder": "i6PltrOYamzG6FU6",
       "sort": 900000,
@@ -1274,7 +1274,7 @@
         "CJSsCwdnDobaXtrZ": 3
       },
       "_stats": {
-        "systemId": "worldofdarkness",
+        "systemId": "wod-advanced",
         "systemVersion": "2.3.0",
         "coreVersion": "10.291",
         "createdTime": 1668969243774,
@@ -1286,7 +1286,7 @@
       "_id": "siv8Pv0g6mJWZUZb",
       "name": "Axe",
       "type": "Melee Weapon",
-      "img": "systems/worldofdarkness/assets/img/items/meleeweapons.svg",
+      "img": "systems/wod-advanced/assets/img/items/meleeweapons.svg",
       "effects": [],
       "folder": "mYAjN9wm7CQJBcKl",
       "sort": 0,
@@ -1334,7 +1334,7 @@
         "CJSsCwdnDobaXtrZ": 3
       },
       "_stats": {
-        "systemId": "worldofdarkness",
+        "systemId": "wod-advanced",
         "systemVersion": "2.3.0",
         "coreVersion": "10.291",
         "createdTime": 1668969275336,
@@ -1346,7 +1346,7 @@
       "_id": "dEoSxctKPvBVbABE",
       "name": "Sword",
       "type": "Melee Weapon",
-      "img": "systems/worldofdarkness/assets/img/items/meleeweapons.svg",
+      "img": "systems/wod-advanced/assets/img/items/meleeweapons.svg",
       "effects": [],
       "folder": "mYAjN9wm7CQJBcKl",
       "sort": 400000,
@@ -1394,7 +1394,7 @@
         "CJSsCwdnDobaXtrZ": 3
       },
       "_stats": {
-        "systemId": "worldofdarkness",
+        "systemId": "wod-advanced",
         "systemVersion": "2.3.0",
         "coreVersion": "10.291",
         "createdTime": 1668969277966,
@@ -1406,7 +1406,7 @@
       "_id": "7vvECwsWXGxTMfQd",
       "name": "Pistol (hvy.)",
       "type": "Ranged Weapon",
-      "img": "systems/worldofdarkness/assets/img/items/rangedweapons.svg",
+      "img": "systems/wod-advanced/assets/img/items/rangedweapons.svg",
       "effects": [],
       "folder": "Tl5NwrrruicoxKVe",
       "sort": 250000,
@@ -1465,7 +1465,7 @@
         "CJSsCwdnDobaXtrZ": 3
       },
       "_stats": {
-        "systemId": "worldofdarkness",
+        "systemId": "wod-advanced",
         "systemVersion": "2.3.0",
         "coreVersion": "10.291",
         "createdTime": 1668969282422,
@@ -1477,7 +1477,7 @@
       "_id": "MMeQl7m4FFmFqA74",
       "name": "Biker Jacket",
       "type": "Armor",
-      "img": "systems/worldofdarkness/assets/img/items/armor.svg",
+      "img": "systems/wod-advanced/assets/img/items/armor.svg",
       "effects": [],
       "folder": "7T6COUSjovPntqKN",
       "sort": 0,
@@ -1527,7 +1527,7 @@
         "CJSsCwdnDobaXtrZ": 3
       },
       "_stats": {
-        "systemId": "worldofdarkness",
+        "systemId": "wod-advanced",
         "systemVersion": "2.3.0",
         "coreVersion": "10.291",
         "createdTime": 1668969286805,
@@ -1539,7 +1539,7 @@
       "_id": "SoMxZN6aj6t8dRUU",
       "name": "Magpie’s Swag",
       "type": "Fetish",
-      "img": "systems/worldofdarkness/assets/img/items/fetish.svg",
+      "img": "systems/wod-advanced/assets/img/items/fetish.svg",
       "effects": [],
       "folder": "Ln790RMtDeh4YDwB",
       "sort": 0,
@@ -1571,7 +1571,7 @@
         "CJSsCwdnDobaXtrZ": 3
       },
       "_stats": {
-        "systemId": "worldofdarkness",
+        "systemId": "wod-advanced",
         "systemVersion": "2.3.0",
         "coreVersion": "10.291",
         "createdTime": 1668969307187,

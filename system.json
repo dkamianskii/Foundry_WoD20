@@ -1,8 +1,8 @@
 {
-    "id": "worldofdarkness",
-    "title": "World of Darkness 20th edition",
+    "id": "wod-advanced",
+    "title": "World of Darkness V20 Advanced",
     "description": "To play World of Darkness 20th ed. Support for all the larger and most of the smaller games of the gameline. Portions of the materials are the copyrights and trademarks of Paradox Interactive AB, and are used with permission. All rights reserved. For more information please visit worldofdarkness.com.",
-    "version": "7.2.9",
+    "version": "7.3.0",
     "compatibility": {
         "minimum": "14",
         "verified": "14",
@@ -72,12 +72,12 @@
         {
             "name": "lunarshapeshifting",
             "label": "Shapeshifting",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/lunarshapeshifting",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "lunar"
@@ -88,12 +88,12 @@
         {
             "name": "lunaraspects",
             "label": "Aspects",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/lunaraspects",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "lunar"
@@ -104,12 +104,12 @@
         {
             "name": "infernalshapeshifting",
             "label": "Shapeshifting",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/infernalshapeshifting",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "infernal"
@@ -120,12 +120,12 @@
         {
             "name": "infernalaspects",
             "label": "Aspects",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/infernalaspects",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "infernal"
@@ -136,12 +136,12 @@
         {
             "name": "devilbelform",
             "label": "Bel - Celestials",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/devilbelform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -153,12 +153,12 @@
         {
             "name": "devilnuskuform",
             "label": "Nusku - Flames",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/devilnuskuform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -170,12 +170,12 @@
         {
             "name": "devilqinguform",
             "label": "Qingu - Radience",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/devilqinguform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -187,12 +187,12 @@
         {
             "name": "scourgedaganform",
             "label": "Dagan - Awakening",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/scourgedaganform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -204,12 +204,12 @@
         {
             "name": "scourgeansharform",
             "label": "Anshar - Firmament",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/scourgeansharform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -221,12 +221,12 @@
         {
             "name": "scourgeellilform",
             "label": "Ellil - Wind",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/scourgeellilform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -238,12 +238,12 @@
         {
             "name": "malefactorkisharform",
             "label": "Kishar - Earth",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/malefactorkisharform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -255,12 +255,12 @@
         {
             "name": "malefactorantuform",
             "label": "Antu - Paths",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/malefactorantuform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -272,12 +272,12 @@
         {
             "name": "malefactormummuform",
             "label": "Mummu - Forge",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/malefactormummuform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -289,12 +289,12 @@
         {
             "name": "fiendninsunform",
             "label": "Ninsun - Patterns",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/fiendninsunform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -306,12 +306,12 @@
         {
             "name": "fiendneduform",
             "label": "Nedu - Portals",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/fiendneduform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -323,12 +323,12 @@
         {
             "name": "fiendshamashform",
             "label": "Shamash - Light",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/fiendshamashform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -340,12 +340,12 @@
         {
             "name": "defilerishharaform",
             "label": "Ishhara - Longing",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/defilerishharaform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -357,12 +357,12 @@
         {
             "name": "defileradadform",
             "label": "Adad - Storms",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/defileradadform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -374,12 +374,12 @@
         {
             "name": "defilermammetumform",
             "label": "Mammetum - Transfiguration",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/defilermammetumform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -391,12 +391,12 @@
         {
             "name": "devourerzaltuform",
             "label": "Zaltu - Beast",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/devourerzaltuform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -408,12 +408,12 @@
         {
             "name": "devourerninurtuform",
             "label": "Ninurtu - Wild",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/devourerninurtuform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -425,12 +425,12 @@
         {
             "name": "devoureraruruform",
             "label": "Aruru - Flesh",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/devoureraruruform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -442,12 +442,12 @@
         {
             "name": "slayernamtarform",
             "label": "Namtar - Death",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/slayernamtarform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -459,12 +459,12 @@
         {
             "name": "slayernergalform",
             "label": "Nergal - Spirit",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/slayernergalform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -476,12 +476,12 @@
         {
             "name": "slayerereshkigalform",
             "label": "Ereshkigal - Realms",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/slayerereshkigalform",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation",
                         "demon",
@@ -493,12 +493,12 @@
         {
             "name": "splats",
             "label": "Templates",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/splats",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation"
                     ]
@@ -508,12 +508,12 @@
         {
             "name": "advantages",
             "label": "Advantages",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/advantages",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation"
                     ]
@@ -523,12 +523,12 @@
         {
             "name": "features",
             "label": "Features",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/features",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation"
                     ]
@@ -538,12 +538,12 @@
         {
             "name": "powers",
             "label": "Powers",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/powers",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation"
                     ]
@@ -553,12 +553,12 @@
         {
             "name": "abilitytalent",
             "label": "Talents",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/abilitytalent",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation"
                     ]
@@ -568,12 +568,12 @@
         {
             "name": "abilityskill",
             "label": "Skills",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/abilityskill",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation"
                     ]
@@ -583,12 +583,12 @@
         {
             "name": "abilityknowledge",
             "label": "Knowledges",
-            "system": "worldofdarkness",
+            "system": "wod-advanced",
             "path": "packs/abilityknowledge",
             "type": "Item",
             "private": false,
             "flags": {
-                "worldofdarkness": {
+                "wod-advanced": {
                     "types": [
                         "creation"
                     ]
@@ -770,9 +770,9 @@
     "url": "https://github.com/JohanFalt/Foundry_WoD20",
     "bugs": "https://github.com/JohanFalt/Foundry_WoD20/issues",
     "changelog": "https://github.com/JohanFalt/Foundry_WoD20/wiki/Changelog",
-    "background": "systems/worldofdarkness/assets/img/graphics/wod.png",
-    "manifest": "https://github.com/JohanFalt/Foundry_WoD20/releases/download/v7.2.9/system.json",
-    "download": "https://github.com/JohanFalt/Foundry_WoD20/releases/download/v7.2.9/v7.2.9.zip",
+    "background": "systems/wod-advanced/assets/img/graphics/wod.png",
+    "manifest": "https://github.com/JohanFalt/Foundry_WoD20/releases/download/v7.3.0/system.json",
+    "download": "https://github.com/JohanFalt/Foundry_WoD20/releases/download/v7.3.0/v7.3.0.zip",
     "license": "LICENSE.txt"
 }
 

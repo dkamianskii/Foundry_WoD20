@@ -190,7 +190,7 @@
 			"mortal": "Sterbliche",
 			"werewolf": "Werwolf",
 			"mage": "Magus",
-			
+
 			"background": "Hintergrund",
 			"bloodbound": "Blutband / Vinculum",
 			"boon": "Segen",
@@ -971,8 +971,14 @@
 			"ragewarning": "Deine temporäre Wut ist größer als deine permanente Wut",
 			"gnosis": "Gnosis",
 			"willpower": "Willenskraft",
+			"currentwillpower": "Aktuelle Willenskraft",
+			"fullwillpower": "Volle Willenskraft",
+			"exhausted": "Erschöpft",
+			"willpowertrackhint": "Linksklick erhöht eine Willenskraftwunde; Rechtsklick entfernt sie.",
+			"exhaustedwillpowerpenalty": "Erschöpfte Willenskraft",
 			"imbalance": "Ungleichgewicht",
 			"willpowerchange": "Die Willenskraft basiert auf Fassung + Entschlossenheit in der Systemeinstellung und kann nicht verändert werden!",
+			"willpowerbuiltin": "Willenskraft ist in SC-Akteure integriert und kann nicht als Vorteil hinzugefügt werden.",
 			"noadvantages": "No advantage selected",
 			"path": {
 				"headline": "Pfad",
@@ -1427,6 +1433,7 @@
 			"both": "Beide",
 			"nochange": "Keine Änderung",
 			"usewillpower": "Nutze Willenskraft",
+			"usefullwillpower": "Volle Willenskraft verwenden",
 			"ignoreshpehre": "Ignore sphere when setting base difficulty",
 			"bio": {
 				"wronggeneration": "Keine gültige Generation",
@@ -1983,7 +1990,7 @@
 			"rollingremainactivetext": "Jeder Erfolg heilt eine Stufe Lebenspunkte von jeder Art von Schaden. Unabhängig davon, wie viel Schaden geheilt wird, gerät der Charakter in einen Berserkerrausch. Ein Werwolf erhält eine Kampfnarbe, wenn er erfolgreich aktiv bleibt.",
 			"addedautosucc": "Der Wurf addiert {0} automatische Erfolge",
 			"usingwillpower": "nutze Willenskraft",
-			"nowillpower": "{name} hat keine temporäre Willenskraft mehr!",
+			"nowillpower": "{name} hat keine Willenskraft mehr zum Ausgeben!",
 			"favored": "Ist ein bevorzugter Wurf",
 			"bonusdices": "Bonus dices",
 			"nobotchpossible": "No botch possible on this roll",
@@ -2138,7 +2145,8 @@
 			},
 			"general": {
 				"selectattribute": "Wähle das zu verwendende Attribut",
-				"numberdiceshint": "Um mehr als 10 Würfel auf einmal würfeln zu können, trage die Anzahl in das Feld oben ein."
+				"numberdiceshint": "Um mehr als 10 Würfel auf einmal würfeln zu können, trage die Anzahl in das Feld oben ein.",
+				"fullwillpowerhint": "Volle Willenskraft ignoriert leichte, aber nicht schwere Willenskraftwunden."
 			},
 			"bonus": {
 				"chosenattribute": "Wähle Attribut",

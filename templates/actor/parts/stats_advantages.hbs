@@ -1,22 +1,24 @@
 <div class="clearareaBox">
 
 	<div class="pullLeft" style="width: 33%;">
-		{{#if showVirtues}}		
-			{{> "systems/worldofdarkness/templates/actor/parts/stats_virtue.hbs"}}
+		{{#if showVirtues}}
+			{{> "systems/wod-advanced/templates/actor/parts/stats_virtue.hbs"}}
 		{{/if}}
 		{{#if showRenowns}}
-			{{> "systems/worldofdarkness/templates/actor/parts/stats_renown.hbs"}}
+			{{> "systems/wod-advanced/templates/actor/parts/stats_renown.hbs"}}
 		{{/if}}
 		{{#if showQuintessences}}
-			{{> "systems/worldofdarkness/templates/actor/parts/stats_quintessence.hbs"}}
+			{{> "systems/wod-advanced/templates/actor/parts/stats_quintessence.hbs"}}
 		{{/if}}
 		{{#if hasGroupedAdvantages}}
-			{{> "systems/worldofdarkness/templates/actor/parts/stats_groupedadvantages.hbs"}}
+			{{> "systems/wod-advanced/templates/actor/parts/stats_groupedadvantages.hbs"}}
 		{{/if}}
 		&nbsp;
 	</div>
 
 	<div class="pullLeft sheet-boxcontainer item-row" style="width: 33%;">
+
+		{{> "systems/wod-advanced/templates/actor/parts/stats_willpower.hbs"}}
 
 		{{#each advantages as |advantage id|}}
 			{{{getGetStatArea_v2 ../actor advantage}}}
@@ -34,12 +36,12 @@
 				</div>
 			{{/if}}
 		{{/each}}
-		
+
 	</div>
-	
+
 	<div class="healthBox" style="width: 33%; height: 100%; display: flex; flex-direction: column;">
 
-		{{> "systems/worldofdarkness/templates/actor/parts/stats_health.hbs"}}		
+		{{> "systems/wod-advanced/templates/actor/parts/stats_health.hbs"}}
 
 		<div class="clearareaBox sheet-headline headlineGroup splatFont" style="width: 100%; margin-top: 5px; padding-left: 35px;">
 			<div>{{localize 'wod.experience.experience'}}</div>

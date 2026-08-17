@@ -1,13 +1,13 @@
 import DropHelper from "../module/scripts/drop-helpers.js";
 
 const EXAMPLE_PC_ID = "ExamplePCTour001";
-const VAMPIRE_MODERN_UUID = "Compendium.worldofdarkness.splats.Item.DzvMAiNxSLTy1pcH";
+const VAMPIRE_MODERN_UUID = "Compendium.wod-advanced.splats.Item.DzvMAiNxSLTy1pcH";
 const VAMPIRE_FOLDER_ID = "LzJ6JKd9ysuHgk65";
-const TEMPLATES_PACK = "worldofdarkness.splats";
+const TEMPLATES_PACK = "wod-advanced.splats";
 
 const EXAMPLE_ACTORS = {
-	ExampleWerewolf1: "systems/worldofdarkness/tours/data/werewolf.json",
-	[EXAMPLE_PC_ID]: "systems/worldofdarkness/tours/data/actor-pc-tour.json"
+	ExampleWerewolf1: "systems/wod-advanced/tours/data/werewolf.json",
+	[EXAMPLE_PC_ID]: "systems/wod-advanced/tours/data/actor-pc-tour.json"
 };
 
 export class TourHelper extends foundry.nue.Tour {

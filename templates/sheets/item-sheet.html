@@ -19,7 +19,7 @@
 						<div class="area-box">
 
 							<div class="top-sidetext">
-								{{#if (eq data.system.type "wod.types.treasure")}} 
+								{{#if (eq data.system.type "wod.types.treasure")}}
 									{{captilize (localize "wod.types.treasure")}} - {{captilize (localize "wod.labels.level")}} {{data.system.level}}
 								{{/if}}
 							</div>
@@ -27,21 +27,21 @@
 							<div class="bioInformationArea floating-label-group">
 								<input class="sheet-infoValues editable" name="name" type="text" value="{{item.name}}" data-dtype="String" autocomplete="off" autofocus required />
 								<span class="floating-label">{{localize 'wod.bio.name'}}</span>
-							</div>													
-						</div>	
+							</div>
+						</div>
 					</div>
 
 					<div class="pullRight" style="width: auto;">
-						{{> "systems/worldofdarkness/templates/actor/parts/profile-img.html"}}		
+						{{> "systems/wod-advanced/templates/actor/parts/profile-img.html"}}
 					</div>
-				</div>				
-			</div>			
+				</div>
+			</div>
 		</header>
 
 		<section class="item-body">
 
 			<div class="dialog-area">
-			
+
 				{{#if userpermissions.itemAdministrator}}
 					<!-- type -->
 					<div class="infobox bioInformationArea floating-label-group">
@@ -49,7 +49,7 @@
 							{{selectOptions listData.TypeList selected=data.system.type localize=false}}
 						</select>
 						<span class="floating-label">{{localize "wod.labels.type"}}</span>
-					</div>	
+					</div>
 				{{/if}}
 
 				<!-- level -->
@@ -58,7 +58,7 @@
 						{{selectOptions listData.Level5Value selected=data.system.level localize=false}}
 					</select>
 					<span class="floating-label">{{localize "wod.labels.power.level"}}</span>
-				</div>	
+				</div>
 
 				<div class="infobox bioInformationArea floating-label-group">
 					<input class="sheet-infoValues editable" name="system.reference" type="text" value="{{data.system.reference}}" data-dtype="String" autocomplete="off" autofocus required />
@@ -69,7 +69,7 @@
 					<div class="clearareaBox">
 						<div class="headlineItem headlineBio splatFont">{{localize "wod.advantages.quintessence"}}</div>
 					</div>
-			
+
 					<div class="infobox clearareaBox">
 						<div class="pullLeft" style="margin-right: 10px;">
 							<div class="infobox bioInformationArea floating-label-group">
@@ -98,12 +98,12 @@
 					</div>
 
 					{{#if data.system.isrollable}}
-						{{> "systems/worldofdarkness/templates/sheets/parts/power_rollable.html"}}
+						{{> "systems/wod-advanced/templates/sheets/parts/power_rollable.html"}}
 					{{/if}}
 				</div>
 			{{/if}}
 
-			{{> "systems/worldofdarkness/templates/sheets/parts/item_bonus.html"}}
+			{{> "systems/wod-advanced/templates/sheets/parts/item_bonus.html"}}
 
             <!-- description -->
 			<div class="dialog-area">
@@ -113,7 +113,7 @@
 				<div class="infobox">
 
 					{{#if locked}}
-						<div class="headlineNormal textarea">{{{data.system.description}}}</div>					
+						<div class="headlineNormal textarea">{{{data.system.description}}}</div>
 					{{else}}
 						{{editor data.system.description target="system.description" engine="prosemirror" button=false owner=owner editable=true}}
 					{{/if}}
@@ -128,7 +128,7 @@
 				<div class="infobox">
 
 					{{#if locked}}
-						<div class="headlineNormal textarea">{{{data.system.details}}}</div>					
+						<div class="headlineNormal textarea">{{{data.system.details}}}</div>
 					{{else}}
 						{{editor data.system.details target="system.details" engine="prosemirror" button=false owner=owner editable=true}}
 					{{/if}}

@@ -4,7 +4,7 @@
 
     <div class="sheet-area flex-columns">
         <div class="headlineRow headlineList splatFont feature-itemlist">
-            <div class="largeBox">{{localize "TYPES.Item.Feature"}}</div>                
+            <div class="largeBox">{{localize "TYPES.Item.Feature"}}</div>
         </div>
 
         {{#if (gt backgrounds.length 0)}}
@@ -12,7 +12,7 @@
 
                 {{#each backgrounds as |item id|}}
 
-                    {{> "systems/worldofdarkness/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked unnamedtitle="wod.notes.unnamedbackground" edittitle="wod.labels.edit.background" deletetitle="wod.labels.remove.background" showtype=true}}
+                    {{> "systems/wod-advanced/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked unnamedtitle="wod.notes.unnamedbackground" edittitle="wod.labels.edit.background" deletetitle="wod.labels.remove.background" showtype=true}}
 
                 {{/each}}
 
@@ -24,7 +24,7 @@
 
                 {{#each merits as |item id|}}
 
-                    {{> "systems/worldofdarkness/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.merit" deletetitle="wod.labels.remove.merit" showtype=true}}
+                    {{> "systems/wod-advanced/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.merit" deletetitle="wod.labels.remove.merit" showtype=true}}
 
                 {{/each}}
 
@@ -36,7 +36,7 @@
 
                 {{#each flaws as |item id|}}
 
-                    {{> "systems/worldofdarkness/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.flaw" deletetitle="wod.labels.remove.flaw" showtype=true}}
+                    {{> "systems/wod-advanced/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.flaw" deletetitle="wod.labels.remove.flaw" showtype=true}}
 
                 {{/each}}
 
@@ -48,7 +48,7 @@
 
                 {{#each bloodbounds as |item id|}}
 
-                    {{> "systems/worldofdarkness/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.bloodbound" deletetitle="wod.labels.remove.bloodbound" showtype=true}}
+                    {{> "systems/wod-advanced/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.bloodbound" deletetitle="wod.labels.remove.bloodbound" showtype=true}}
 
                 {{/each}}
 
@@ -60,7 +60,7 @@
 
                 {{#each boons as |item id|}}
 
-                    {{> "systems/worldofdarkness/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.boon" deletetitle="wod.labels.remove.boon" showtype=true}}
+                    {{> "systems/wod-advanced/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.boon" deletetitle="wod.labels.remove.boon" showtype=true}}
 
                 {{/each}}
 
@@ -72,7 +72,7 @@
 
                 {{#each oaths as |item id|}}
 
-                    {{> "systems/worldofdarkness/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.oath" deletetitle="wod.labels.remove.oath" showtype=true}}
+                    {{> "systems/wod-advanced/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.oath" deletetitle="wod.labels.remove.oath" showtype=true}}
 
                 {{/each}}
 
@@ -84,7 +84,7 @@
 
                 {{#each shapeforms as |item id|}}
 
-                    {{> "systems/worldofdarkness/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.headline" deletetitle="wod.labels.remove.headline" showtype=true}}
+                    {{> "systems/wod-advanced/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.headline" deletetitle="wod.labels.remove.headline" showtype=true}}
 
                 {{/each}}
 
@@ -96,14 +96,14 @@
 
                 {{#each othertraits as |item id|}}
 
-                    {{> "systems/worldofdarkness/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.othertraits" deletetitle="wod.labels.remove.othertraits" showtype=true}}
+                    {{> "systems/wod-advanced/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.othertraits" deletetitle="wod.labels.remove.othertraits" showtype=true}}
 
                 {{/each}}
 
             </div>
         {{/if}}
 
-    </div>        
+    </div>
 
     <div class="sheet-area flex-columns">
         <div class="clearareaBox area-box">
@@ -114,7 +114,7 @@
                         <div class="pullLeft experienceValue">{{getTotalExperience actor "earned"}}</div>
                         <div class="pullRight pointer" style="margin-right: 15px;">
                             <i class="icon unfold button fa-solid fa-angles-right" title="{{localize 'wod.labels.show.experience'}}" data-sheet="{{config.sheettype.mortal}}" data-type="addexp"></i>
-                        </div>                                            
+                        </div>
                     </div>
                 </div>
 
@@ -135,8 +135,8 @@
                                     <a class="item-delete" title="{{localize 'wod.labels.remove.experience'}}" data-type="Experience" data-itemid="{{item.id}}" data-action="itemDelete"><i class="icon fa-solid fa-trash-can"></i></a>
                                 </div>
                             {{/if}}
-                        </div>                    
-                    {{/each}}            
+                        </div>
+                    {{/each}}
                 </div>
             </div>
 
@@ -144,10 +144,10 @@
                 <div class="headlineRow splatFont">
                     <div class="clearareaBox" style="width:100%">
                         <div class="pullLeft largeBox">{{localize "wod.labels.notes.expspend"}}</div>
-                        <div class="pullLeft experienceValue">{{getTotalExperience actor "spent"}}</div> 
+                        <div class="pullLeft experienceValue">{{getTotalExperience actor "spent"}}</div>
                         <div class="pullRight pointer" style="margin-right: 15px;">
                             <i class="icon unfold button fa-solid fa-angles-right" title="{{localize 'wod.labels.show.spentexp'}}" data-sheet="{{config.sheettype.mortal}}" data-type="spentexp"></i>
-                        </div>                                            
+                        </div>
                     </div>
                 </div>
 

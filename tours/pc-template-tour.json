@@ -1,5 +1,5 @@
 {
-	"namespace": "worldofdarkness",
+	"namespace": "wod-advanced",
 	"id": "pc-template-tour",
 	"title": "Create a PC with a Template",
 	"canBeResumed": true,
@@ -45,7 +45,7 @@
 		},
 		{
 			"id": "goto-templates-pack",
-			"selector": "li[data-pack='worldofdarkness.splats']",
+			"selector": "li[data-pack='wod-advanced.splats']",
 			"title": "Character creation → Templates",
 			"content": "Under <strong>WoD - Character creation</strong>, open the <strong>Templates</strong> pack. That pack holds ready-made setups for Vampire, Werewolf, Mage, and many others.",
 			"action": "openTemplatesPack"

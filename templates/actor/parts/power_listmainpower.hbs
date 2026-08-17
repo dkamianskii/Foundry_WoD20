@@ -4,28 +4,28 @@
 
         <div class="splatFont width-namebox">{{mainpower.name}}</div>
 
-        <div class="resource-value" 
-            data-value="{{mainpower.system.value}}" 
+        <div class="resource-value"
+            data-value="{{mainpower.system.value}}"
             data-itemid="{{mainpower._id}}"
             data-name="system.value">
 
-            {{#numLoop (add mainpower.system.max mainpower.system.level)}}    
-                {{#if (gt ../mainpower.system.max 5)}}   
-                    <span class="supernaturalAttribute resource-value-step" data-action="editDot" data-itemid="{{../mainpower._id}}" data-type="{{../config.sheettype.mortal}}" data-index="{{this}}"></span>                            
-                {{else}}                     
-                    <span class="resource-value-step" data-action="editDot" data-itemid="{{../mainpower._id}}" data-type="{{../config.sheettype.mortal}}" data-index="{{this}}"></span>                            
+            {{#numLoop (add mainpower.system.max mainpower.system.level)}}
+                {{#if (gt ../mainpower.system.max 5)}}
+                    <span class="supernaturalAttribute resource-value-step" data-action="editDot" data-itemid="{{../mainpower._id}}" data-type="{{../config.sheettype.mortal}}" data-index="{{this}}"></span>
+                {{else}}
+                    <span class="resource-value-step" data-action="editDot" data-itemid="{{../mainpower._id}}" data-type="{{../config.sheettype.mortal}}" data-index="{{this}}"></span>
                 {{/if}}
-                
+
             {{/numLoop}}
-        </div>      
+        </div>
     </div>
     <div class="iconBox">
 
-        {{#if (eq locked false)}} 
+        {{#if (eq locked false)}}
             <a class="pointer clearPower" title="{{localize 'wod.labels.power.clearpower'}}" data-action="powerClear" data-powertype="main" data-itemid="{{mainpower._id}}"><i class="icon fa-solid fa-lock"></i></a>
         {{/if}}
 
-        {{> "systems/worldofdarkness/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=mainpower locked=locked edittitle="wod.labels.edit.headline" deletetitle="wod.labels.remove.headline" collapseclass="power"}}
+        {{> "systems/wod-advanced/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=mainpower locked=locked edittitle="wod.labels.edit.headline" deletetitle="wod.labels.remove.headline" collapseclass="power"}}
     </div>
 </div>
 <div class="description" data-itemid="{{mainpower._id}}">
@@ -36,6 +36,6 @@
 
 <div>
     {{#each (getPowerList actor mainpower._id) as |item id|}}
-        {{> "systems/worldofdarkness/templates/actor/parts/power_listpower.hbs" item=item config=../config actor=../actor locked=../locked showclear=true}}
+        {{> "systems/wod-advanced/templates/actor/parts/power_listpower.hbs" item=item config=../config actor=../actor locked=../locked showclear=true}}
     {{/each}}
 </div>

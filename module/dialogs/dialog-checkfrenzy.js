@@ -19,10 +19,10 @@ export class WerewolfFrenzy {
         if (actor.type == "PC") {
             this.rank = actor.system.advantages.rank?.system?.permanent ?? 1;
 
-            this.isCrinos = !!actor?.items?.find(item => 
-                item.type === "Trait" && 
-                item.system?.type === "wod.types.shapeform" && 
-                item.name === "Crinos" && 
+            this.isCrinos = !!actor?.items?.find(item =>
+                item.type === "Trait" &&
+                item.system?.type === "wod.types.shapeform" &&
+                item.name === "Crinos" &&
                 item.system?.isactive
             );
             this.hasAuspice = actor.system.bio.splatfields.auspice.value;
@@ -41,7 +41,7 @@ export class WerewolfFrenzy {
             this.successesRequired = 5;
         }
         else {
-            this.successesRequired = 4;     
+            this.successesRequired = 4;
         }
     }
 }
@@ -51,7 +51,7 @@ export class VampireFrenzy {
         this.canRoll = false;
         this.close = false;
         this.rageBonus = 0;
-        this.totalDifficulty = 6;   
+        this.totalDifficulty = 6;
         this.type = data.type.toLowerCase();
         this.numSuccesses = 0;
         this.hasRolled = false;
@@ -65,7 +65,7 @@ export class DialogCheckFrenzy extends FormApplication {
         super(frenzy, {submitOnChange: true, closeOnSubmit: false});
         this.actor = actor;
         this.isDialog = true;
-        
+
         this.options.title = `${this.actor.name} - ${game.i18n.localize("wod.dialog.checkfrenzy.headline")}`;
     }
 
@@ -76,7 +76,7 @@ export class DialogCheckFrenzy extends FormApplication {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["wod20 wod-dialog checkfrenzy-dialog"],
-            template: "systems/worldofdarkness/templates/dialogs/dialog-checkfrenzy.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-checkfrenzy.hbs",
             closeOnSubmit: false,
             submitOnChange: true,
             resizable: true
@@ -84,8 +84,8 @@ export class DialogCheckFrenzy extends FormApplication {
     }
 
     getData() {
-        const data = super.getData();       
-        
+        const data = super.getData();
+
         data.config = CONFIG.worldofdarkness;
         data.actorData = this.actor.system;
 
@@ -141,9 +141,9 @@ export class DialogCheckFrenzy extends FormApplication {
         const element = event.currentTarget;
         const parent = $(element.parentNode);
         const steps = parent.find(".dialog-difficulty-button");
-        const index = element.value;   
+        const index = element.value;
 
-        this.object.totalDifficulty = parseInt(index);     
+        this.object.totalDifficulty = parseInt(index);
         steps.removeClass("active");
 
         steps.each(function (i) {
@@ -157,11 +157,11 @@ export class DialogCheckFrenzy extends FormApplication {
         const element = event.currentTarget;
         const parent = $(element.parentNode);
         const steps = parent.find(".dialog-moon-button");
-        const index = element.value;   
+        const index = element.value;
 
         this.object.selectedMoon = index;
 
-        this.object.canRoll = this._calculateDifficulty(false); 
+        this.object.canRoll = this._calculateDifficulty(false);
 
         steps.removeClass("active");
 
@@ -170,7 +170,7 @@ export class DialogCheckFrenzy extends FormApplication {
                 $(this).addClass("active");
             }
         });
-    }    
+    }
 
     /* clicked on check Frenzy */
     async _checkFrenzy(event) {
@@ -184,7 +184,7 @@ export class DialogCheckFrenzy extends FormApplication {
         try {
             if (this.actor.type !== "PC") {
                 frenzyBonus = parseInt(this.actor.system.advantages.rage.bonus);
-            }            
+            }
         }
         catch (e) {
             frenzyBonus = 0
@@ -195,14 +195,14 @@ export class DialogCheckFrenzy extends FormApplication {
                 this.object.canRoll = this.object.totalDifficulty > -1 ? true : false;
                 template.push(`${game.i18n.localize("wod.dialog.numbersuccesses")}: ${this.object.numSuccesses}`);
                 const selfcontrol = this.actor.api?.getAdvantage("selfcontrol");
-                numDices = parseInt(selfcontrol?.system?.roll ?? 0) + frenzyBonus + parseInt(this.object.rageBonus);            
+                numDices = parseInt(selfcontrol?.system?.roll ?? 0) + frenzyBonus + parseInt(this.object.rageBonus);
             }
             if (this.object.type == CONFIG.worldofdarkness.splat.werewolf) {
                 this.object.canRoll = this._calculateDifficulty(true);
-                template.push(`${game.i18n.localize("wod.dialog.neededsuccesses")}: ${this.object.successesRequired}`);            
+                template.push(`${game.i18n.localize("wod.dialog.neededsuccesses")}: ${this.object.successesRequired}`);
                 const rage = this.actor.api?.getAdvantage("rage");
-                numDices = parseInt(rage?.system?.roll ?? 0) + frenzyBonus + parseInt(this.object.rageBonus);     
-                
+                numDices = parseInt(rage?.system?.roll ?? 0) + frenzyBonus + parseInt(this.object.rageBonus);
+
                 if(this.object.numSuccesses)  {
                     extrainfo.push(`${game.i18n.localize("wod.dialog.numbersuccesses")}: ${this.object.numSuccesses}`);
                 }
@@ -211,9 +211,9 @@ export class DialogCheckFrenzy extends FormApplication {
         else {
             if (this.object.type == CONFIG.worldofdarkness.splat.werewolf) {
                 this.object.canRoll = this._calculateDifficulty(true);
-                template.push(`${game.i18n.localize("wod.dialog.neededsuccesses")}: ${this.object.successesRequired}`);            
-                numDices = parseInt(this.actor.system.advantages.rage.roll) + frenzyBonus + parseInt(this.object.rageBonus);     
-                
+                template.push(`${game.i18n.localize("wod.dialog.neededsuccesses")}: ${this.object.successesRequired}`);
+                numDices = parseInt(this.actor.system.advantages.rage.roll) + frenzyBonus + parseInt(this.object.rageBonus);
+
                 if(this.object.numSuccesses)  {
                     extrainfo.push(`${game.i18n.localize("wod.dialog.numbersuccesses")}: ${this.object.numSuccesses}`);
                 }
@@ -221,10 +221,10 @@ export class DialogCheckFrenzy extends FormApplication {
             else if (this.object.type == CONFIG.worldofdarkness.splat.vampire) {
                 this.object.canRoll = this.object.totalDifficulty > -1 ? true : false;
                 template.push(`${game.i18n.localize("wod.dialog.numbersuccesses")}: ${this.object.numSuccesses}`);
-                numDices = parseInt(this.actor.system.advantages.virtues.selfcontrol.roll) + frenzyBonus + parseInt(this.object.rageBonus);            
+                numDices = parseInt(this.actor.system.advantages.virtues.selfcontrol.roll) + frenzyBonus + parseInt(this.object.rageBonus);
             }
-        }              
-        
+        }
+
         if (await BonusHelper.CheckFrenzyDiff(this.actor)) {
             const mod = await BonusHelper.GetFrenzyDiff(this.actor);
 
@@ -238,7 +238,7 @@ export class DialogCheckFrenzy extends FormApplication {
             extrainfo.push(game.i18n.localize("wod.labels.bonus.frenzybonuschat") + ` ${mod}`);
         }
 
-        if (this.object.canRoll) {            
+        if (this.object.canRoll) {
             const frenzyRoll = new DiceRollContainer(this.actor);
             frenzyRoll.action = game.i18n.localize("wod.dialog.checkfrenzy.headline");
             frenzyRoll.dicetext = template;
@@ -248,7 +248,7 @@ export class DialogCheckFrenzy extends FormApplication {
             frenzyRoll.numDices = numDices;
             frenzyRoll.woundpenalty = 0;
             frenzyRoll.usewillpower = false;
-            frenzyRoll.difficulty = parseInt(this.object.totalDifficulty);       
+            frenzyRoll.difficulty = parseInt(this.object.totalDifficulty);
 
             const rollSuccesses = await DiceRoller(frenzyRoll);
             this.object.numSuccesses += rollSuccesses;
@@ -305,7 +305,7 @@ export class DialogCheckFrenzy extends FormApplication {
 
         this.object.close = true;
         this.close();
-    }    
+    }
 
     _calculateDifficulty(showMessage) {
         let baseDifficulty = -1;
@@ -359,7 +359,7 @@ export class DialogCheckFrenzy extends FormApplication {
             }
 
             return false;
-        }				
+        }
 
         if (this.object.rank == 3) {
             difficulty = baseDifficulty + 1;

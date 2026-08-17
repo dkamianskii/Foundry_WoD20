@@ -4,7 +4,7 @@ import SelectHelper from "../../scripts/select-helpers.js"
 import { calculateTotals } from "../../scripts/totals.js";
 
 export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
-	
+
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: [`wod20 wod-item`],
@@ -20,8 +20,8 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 
 		//this.locked = item.system.iscreated;
 		this.locked = item.permission < 3;
-		this.isCharacter = false;	
-		this.isGM = game.user.isGM;	
+		this.isCharacter = false;
+		this.isGM = game.user.isGM;
 		this.game = game;
 	}
 
@@ -30,12 +30,12 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 		let sheet = this.item.type;
 		sheet = sheet.toLowerCase().replace(" ", "");
 
-		return `systems/worldofdarkness/templates/sheets/${sheet}-sheet.html`;
+		return `systems/wod-advanced/templates/sheets/${sheet}-sheet.html`;
 	}
 
 	/** @override */
 	async getData() {
-		const itemData = foundry.utils.duplicate(this.item);		
+		const itemData = foundry.utils.duplicate(this.item);
 
 		if (!itemData.system.iscreated) {
 			itemData.system.version = game.system.version;
@@ -59,19 +59,19 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 		}
 		if (itemData.type == "Fetish") {
 			if ((itemData.system.type == "wod.types.fetish") && (!itemData.system.isrollable)) {
-				itemData.system.isrollable = true;	
+				itemData.system.isrollable = true;
 
 				await this.item.update(itemData);
 			}
 			if ((itemData.system.type == "wod.types.talen") && (itemData.system.isrollable)) {
-				itemData.system.isrollable = false;	
+				itemData.system.isrollable = false;
 
-				await this.item.update(itemData);	
-			}			
+				await this.item.update(itemData);
+			}
 		}
 		if (itemData.type == "Power") {
 			if ((itemData.system.type == "wod.types.artpower") && (!itemData.system.isrollable)) {
-				itemData.system.isrollable = true;	
+				itemData.system.isrollable = true;
 
 				await this.item.update(itemData);
 			}
@@ -87,10 +87,10 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 
 		data.locked = this.locked;
 		data.isCharacter = this.isCharacter;
-		data.isGM = game.user.isGM;	
+		data.isGM = game.user.isGM;
 		data.hasChimerical = false;
 		data.iswerewolf = false;
-		//data.canEdit = this.item.isOwner || game.user.isGM;		
+		//data.canEdit = this.item.isOwner || game.user.isGM;
 
 		if (this.item.actor != null) {
 			data.hasActor = true;
@@ -103,7 +103,7 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 			else if (data.actor.system?.listdata?.settings?.haschimericalhealth != undefined) {
 				data.hasChimerical = data.actor.system?.listdata?.settings?.haschimericalhealth;
 				data.iswerewolf = data.actor.type == CONFIG.worldofdarkness.sheettype.werewolf || data.actor.type == CONFIG.worldofdarkness.splat.changingbreed;
-			}			
+			}
 		}
 		else {
 			data.hasActor = false;
@@ -133,7 +133,7 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 		}
 
 		if (((data.item.system.type == "wod.types.apocalypticform") || (data.item.system.type == "wod.types.shapeform")) && (data.hasActor)) {
-			const items = [];	
+			const items = [];
 
 			for (const i of this.actor.items) {
 				if ((i.type == "Bonus") && (i.system.parentid == data.item._id)) {
@@ -142,7 +142,7 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 			}
 
 			data.bonus = items;
-		}	
+		}
 
 		if (data.item.system?.description != undefined) {
 			data.item.system.description = await foundry.applications.ux.TextEditor.implementation.enrichHTML(data.item.system.description, {async: true});
@@ -158,7 +158,7 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 			data.hasShapeIcon = icon.length > 0;
 			data.hasShapeTokenImage = tokenimage.length > 0;
 			data.shapeIconDisplay = data.hasShapeIcon ? icon : "icons/svg/mystery-man.svg";
-			
+
 			if (data.hasShapeTokenImage) {
 				data.shapeTokenDisplay = tokenimage;
 			}
@@ -375,7 +375,7 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
         const element = event.currentTarget;
         const parent = $(element.parentNode);
         const steps = parent.find(".item-bonusvalue-button");
-        const bonus = element.value;   
+        const bonus = element.value;
 
         steps.removeClass("active");
 
@@ -425,7 +425,7 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 		const game = dataset.game;
 		const id = dataset.typeid;
 		const itemData = foundry.utils.duplicate(this.item);
-		
+
 		if (type == "combination") {
 			if (itemData.system.property[id] != undefined) {
 				var e = document.getElementById("combination_name_"+id);
@@ -447,9 +447,9 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 			/* else {
 				ui.notifications.error(`Property row on item do not exist, rowId: ${id}`);
 			} */
-		}	
+		}
 
-		return;		
+		return;
 	}
 
 	async _onItemCreate(event) {
@@ -465,7 +465,7 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 				value: 0
 			}
 			itemData.system.property.push(property);
-		}	
+		}
 		if (type == "bonus") {
 			let bonus = {
 				name: "",
@@ -478,7 +478,7 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 			if (!Array.isArray(itemData.system.bonuslist)) {
 				itemData.system.bonuslist = [];
 			}
-			itemData.system.bonuslist.push(bonus);			
+			itemData.system.bonuslist.push(bonus);
 		}
 
 		await this.item.update(itemData);
@@ -490,8 +490,8 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
         event.stopPropagation();
 
 		const type = $(event.currentTarget).data("type");
-		const id = $(event.currentTarget).data("id");	
-		
+		const id = $(event.currentTarget).data("id");
+
 		if (type == "bonus") {
 			await BonusHelper.EditBonus(this.actor, this.item, id);
 		}
@@ -527,8 +527,8 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 
 			await this.item.update(itemData);
 		}
-		
-		this.render();  
+
+		this.render();
 	}
 
 	_onImageClear(event) {
@@ -551,7 +551,7 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 
 		const element = event.currentTarget;
 		const dataset = element.dataset;
-				
+
 		const index = Number(dataset.index);
 		const parent = $(element.parentNode);
 		const fieldStrings = parent[0].dataset.name;
@@ -566,14 +566,14 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 
 		if (fields[1] === "spheres") {
 			const itemData = foundry.utils.duplicate(this.item);
-			
+
 			if ((itemData.system[fields[2]] == 1) && (index == 0)) {
 				this._assignToItemField(fields, 0);
 
 				return;
 			}
 		}
-		
+
 		steps.each(function (i) {
 			if (i <= index) {
 				$(this).addClass("active");
@@ -584,13 +584,13 @@ export default class WoDItemSheet extends foundry.appv1.sheets.ItemSheet {
 	}
 
 	_assignToItemField(fields, value) {
-		const itemData = foundry.utils.duplicate(this.item);		
+		const itemData = foundry.utils.duplicate(this.item);
 
 		if (fields[1] === "spheres") {
 			itemData.system[fields[2]] = value;
 			this.item.update(itemData);
-		}		
-	}	
+		}
+	}
 }
 
 

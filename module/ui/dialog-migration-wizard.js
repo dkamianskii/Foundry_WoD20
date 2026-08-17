@@ -7,7 +7,7 @@ export class DialogMigrationWizard extends HandlebarsApplicationMixin(Applicatio
         this.currentPageIndex = 0;
         this.readMessageSetting = readMessageSetting;
         this.dontShowAgainChecked = false;
-        
+
         // Set localized title
         this.options.window.title = game.i18n.localize("wod.dialog.migrationwizard.title");
     }
@@ -42,13 +42,13 @@ export class DialogMigrationWizard extends HandlebarsApplicationMixin(Applicatio
 
     static PARTS = {
         body: {
-            template: 'systems/worldofdarkness/templates/dialogs/dialog-migration-wizard.hbs'
+            template: 'systems/wod-advanced/templates/dialogs/dialog-migration-wizard.hbs'
         }
     }
 
     async _prepareContext() {
         const data = await super._prepareContext();
-        
+
         data.config = CONFIG.worldofdarkness;
         data.messages = this.messages;
         data.currentPageIndex = this.currentPageIndex;
@@ -60,7 +60,7 @@ export class DialogMigrationWizard extends HandlebarsApplicationMixin(Applicatio
         data.readMessageSetting = this.readMessageSetting;
         data.showCheckbox = this.readMessageSetting !== null && data.isLastPage;
         data.dontShowAgainChecked = this.dontShowAgainChecked;
-        
+
         return data;
     }
 
@@ -88,7 +88,7 @@ export class DialogMigrationWizard extends HandlebarsApplicationMixin(Applicatio
     _onClose() {
         // If checkbox is checked and we have a setting name, save it
         if (this.dontShowAgainChecked && this.readMessageSetting) {
-            game.settings.set('worldofdarkness', this.readMessageSetting, true);
+            game.settings.set('wod-advanced', this.readMessageSetting, true);
         }
         this.close();
     }

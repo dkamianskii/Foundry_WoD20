@@ -3,15 +3,15 @@ import ActionHelper from "../../scripts/action-helpers.js";
 import CreateHelper from "../../scripts/create-helpers.js";
 
 export default class VampireActorSheet extends MortalActorSheet {
-	
+
 	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-sheet vampire"],
-			template: "systems/worldofdarkness/templates/actor/vampire-sheet.html"
+			template: "systems/wod-advanced/templates/actor/vampire-sheet.html"
 		});
 	}
-  
+
 	constructor(actor, options) {
 		super(actor, options);
 	}
@@ -20,7 +20,7 @@ export default class VampireActorSheet extends MortalActorSheet {
 	async getData() {
 		if (!this.actor.limited) {
 			const disciplineMax = await calculteMaxDiscipline(parseInt(this.actor.system.generation) - parseInt(this.actor.system.generationmod));
-			await keepAbilitiesDisciplinesCorrect(disciplineMax, this.actor);		
+			await keepAbilitiesDisciplinesCorrect(disciplineMax, this.actor);
 		}
 
 		const data = await super.getData();
@@ -35,9 +35,9 @@ export default class VampireActorSheet extends MortalActorSheet {
 
 	/** @override */
 	get template() {
-		return "systems/worldofdarkness/templates/actor/vampire-sheet.html";
+		return "systems/wod-advanced/templates/actor/vampire-sheet.html";
 	}
-	
+
 	/** @override */
 	activateListeners(html) {
 		super.activateListeners(html);
@@ -63,7 +63,7 @@ export default class VampireActorSheet extends MortalActorSheet {
 
 		html
 			.find(".macroBtn")
-			.click(this._onRollVampireDialog.bind(this));	
+			.click(this._onRollVampireDialog.bind(this));
 
 		// Select generation
 		html
@@ -73,10 +73,10 @@ export default class VampireActorSheet extends MortalActorSheet {
 		// Temp generation
 		html
 			.find('.pointer.selectGeneration')
-			.click(this._onSelectGeneration.bind(this));		
-	}	
+			.click(this._onSelectGeneration.bind(this));
+	}
 
-	_onRollVampireDialog(event) {		
+	_onRollVampireDialog(event) {
 		event.preventDefault();
 		const element = event.currentTarget;
 		const dataset = element.dataset;
@@ -85,7 +85,7 @@ export default class VampireActorSheet extends MortalActorSheet {
 			return;
 		}
 
-		ActionHelper.RollDialog(dataset, this.actor);		
+		ActionHelper.RollDialog(dataset, this.actor);
 	}
 
 	/* makes the alternations on the sheet based on generation */
@@ -93,7 +93,7 @@ export default class VampireActorSheet extends MortalActorSheet {
 		event.preventDefault();
 
 		const element = event.currentTarget;
-		const dataset = element.dataset;		
+		const dataset = element.dataset;
 
 		if (dataset.type != CONFIG.worldofdarkness.sheettype.vampire) {
 			return;
@@ -102,7 +102,7 @@ export default class VampireActorSheet extends MortalActorSheet {
 		const actorData = foundry.utils.duplicate(this.actor);
 		let selectedGeneration = actorData.system.generation;
 		let generationModifier = 0;
-		let error = false;				
+		let error = false;
 
 		if (dataset.source == "reduce") {
 			generationModifier = actorData.system.generationmod + 1;
@@ -113,7 +113,7 @@ export default class VampireActorSheet extends MortalActorSheet {
 		else {
 			try {
 				selectedGeneration = parseInt(element.value);
-	
+
 				if (isNaN(selectedGeneration)) {
 					error = true;
 				}
@@ -140,7 +140,7 @@ export default class VampireActorSheet extends MortalActorSheet {
 		await this.actor.update(actorData);
 		this.render();
 	}
-	
+
 	async _onDotCounterVampireChange(event) {
 		event.preventDefault();
 		const element = event.currentTarget;
@@ -160,7 +160,7 @@ export default class VampireActorSheet extends MortalActorSheet {
 			if (i <= index) {
 				$(this).addClass("active");
 			}
-		});		
+		});
 	}
 }
 

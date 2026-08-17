@@ -25,21 +25,21 @@
 							<div class="bioInformationArea floating-label-group">
 								<input class="sheet-infoValues editable" name="name" type="text" value="{{item.name}}" data-dtype="String" autocomplete="off" autofocus required />
 								<span class="floating-label">{{localize 'wod.bio.name'}}</span>
-							</div>														
-						</div>	
+							</div>
+						</div>
 					</div>
 
 					<div class="pullRight" style="width: auto;">
-						{{> "systems/worldofdarkness/templates/actor/parts/profile-img.html"}}		
+						{{> "systems/wod-advanced/templates/actor/parts/profile-img.html"}}
 					</div>
-				</div>				
-			</div>			
+				</div>
+			</div>
 		</header>
 
 		<section class="item-body">
 
 			<div class="dialog-area">
-				<div class="infobox bioInformationArea floating-label-group">					
+				<div class="infobox bioInformationArea floating-label-group">
 					<select class="sheet-infoValues smallbox editable" name="system.era">
 						{{selectOptions listData.WeaponEra selected=data.system.era localize=false}}
 					</select>
@@ -137,7 +137,7 @@
 									{{selectOptions listData.AttackAttributes selected=data.system.attack.attribute localize=false}}
 								</select>
 								<span class="floating-label">{{localize "wod.combat.weapon.attribute"}}</span>
-							</div>	
+							</div>
 						</div>
 
 						<div class="pullLeft">
@@ -146,7 +146,7 @@
 									{{selectOptions listData.AttackAbilities selected=data.system.attack.ability localize=false}}
 								</select>
 								<span class="floating-label">{{localize "wod.combat.weapon.ability"}}</span>
-							</div>	
+							</div>
 						</div>
 					</div>
 
@@ -163,11 +163,11 @@
 								{{selectOptions listData.DifficultyList selected=data.system.difficulty localize=false}}
 							</select>
 							<span class="floating-label">{{localize "wod.labels.difficulty"}}</span>
-						</div>					
+						</div>
 					</div>
 				{{/if}}
 
-				
+
 			</div>
 
 			<div class="dialog-area">
@@ -187,16 +187,16 @@
 									{{selectOptions listData.DamageAttribute selected=data.system.damage.attribute localize=false}}
 								</select>
 								<span class="floating-label">{{localize "wod.combat.weapon.attribute"}}</span>
-							</div>	
-						</div>				
-					
+							</div>
+						</div>
+
 						<div class="pullLeft" style="margin-right: 10px;">
 							<div class="bioInformationArea floating-label-group">
 								<input class="sheet-infoValues smallbox editable" name="system.damage.bonus" type="text" value="{{data.system.damage.bonus}}" data-dtype="Number" autocomplete="off" autofocus required />
 								<span class="floating-label">{{localize "wod.labels.bonus.headline"}}</span>
 							</div>
 						</div>
-					
+
 						<div class="pullLeft">
 							<div class="bioInformationArea floating-label-group">
 								<select class="sheet-infoValues smallbox editable" name="system.damage.type">
@@ -204,12 +204,12 @@
 									{{selectOptions config.damageTypes selected=data.system.damage.type localize=true}}
 								</select>
 								<span class="floating-label">{{localize "wod.labels.damagetype"}}</span>
-							</div>	
-						</div>				
+							</div>
+						</div>
 					</div>
 				</div>
 				{{/if}}
-			</div>			
+			</div>
 
 			<!-- description -->
 			<div class="dialog-area">
@@ -219,7 +219,7 @@
 				<div class="infobox">
 
 					{{#if locked}}
-						<div class="headlineNormal textarea">{{{data.system.description}}}</div>					
+						<div class="headlineNormal textarea">{{{data.system.description}}}</div>
 					{{else}}
 						{{editor data.system.description target="system.description" engine="prosemirror" button=false owner=owner editable=true}}
 					{{/if}}

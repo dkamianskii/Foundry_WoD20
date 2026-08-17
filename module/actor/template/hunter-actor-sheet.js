@@ -3,15 +3,15 @@ import ActionHelper from "../../scripts/action-helpers.js";
 import CreateHelper from "../../scripts/create-helpers.js";
 
 export default class HunterActorSheet extends MortalActorSheet {
-	
+
 	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-sheet hunter"],
-			template: "systems/worldofdarkness/templates/actor/hunter-sheet.html"
+			template: "systems/wod-advanced/templates/actor/hunter-sheet.html"
 		});
 	}
-  
+
 	constructor(actor, options) {
 		super(actor, options);
 	}
@@ -30,9 +30,9 @@ export default class HunterActorSheet extends MortalActorSheet {
 
 	/** @override */
 	get template() {
-		return "systems/worldofdarkness/templates/actor/hunter-sheet.html";
+		return "systems/wod-advanced/templates/actor/hunter-sheet.html";
 	}
-	
+
 	/** @override */
 	activateListeners(html) {
 		super.activateListeners(html);
@@ -48,20 +48,20 @@ export default class HunterActorSheet extends MortalActorSheet {
 
 		html
 			.find(".macroBtn")
-			.click(this._onRollHunterDialog.bind(this));		
-			
+			.click(this._onRollHunterDialog.bind(this));
+
 		// resource dots
 		html
 			.find(".resource-value > .resource-value-step")
 			.click(this._onDotCounterHunterChange.bind(this));
-		
+
 		// temporary squares
 		html
 			.find(".resource-counter > .resource-value-step")
 			.click(this._onDotCounterHunterChange.bind(this));
 	}
 
-	_onRollHunterDialog(event) {		
+	_onRollHunterDialog(event) {
 		event.preventDefault();
 		const element = event.currentTarget;
 		const dataset = element.dataset;
@@ -72,7 +72,7 @@ export default class HunterActorSheet extends MortalActorSheet {
 
 		ActionHelper.RollDialog(dataset, this.actor);
 	}
-	
+
 	async _onDotCounterHunterChange(event) {
 		event.preventDefault();
 
@@ -84,9 +84,9 @@ export default class HunterActorSheet extends MortalActorSheet {
 			return;
 		}
 
-		const parent = $(element.parentNode);	
-		const steps = parent.find(".resource-value-step");	
-		const index = Number(dataset.index);		
+		const parent = $(element.parentNode);
+		const steps = parent.find(".resource-value-step");
+		const index = Number(dataset.index);
 
 		let itemid = undefined;
 
@@ -118,22 +118,22 @@ export default class HunterActorSheet extends MortalActorSheet {
 		else {
 			const fieldStrings = parent[0].dataset.name;
 			const fields = fieldStrings.split(".");
-	
+
 			if (index < 0 || index > steps.length) {
 				return;
 			}
-			
+
 			await this._assignToActorField(fields, index + 1);
-		}			
+		}
 	}
 
 	async _assignToHunter(fields, value) {
 		const actorData = foundry.utils.duplicate(this.actor);
 
-		let area = fields[0];	
-		const ability = fields[1];	
+		let area = fields[0];
+		const ability = fields[1];
 
-		if (area === "advantages") {			
+		if (area === "advantages") {
 			const abilityType = fields[2];
 
 			if (fields.length == 3) {
@@ -161,5 +161,5 @@ export default class HunterActorSheet extends MortalActorSheet {
 		actorData.system.settings.isupdated = false;
 		await this.actor.update(actorData);
 		this.render();
-	}	
+	}
 }

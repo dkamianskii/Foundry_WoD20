@@ -3,15 +3,15 @@ import ActionHelper from "../../scripts/action-helpers.js"
 import CreateHelper from "../../scripts/create-helpers.js";
 
 export default class ChangingBreedActorSheet extends MortalActorSheet {
-	
+
 	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-sheet werewolf"],
-			template: "systems/worldofdarkness/templates/actor/changingbreed-sheet.html"
+			template: "systems/wod-advanced/templates/actor/changingbreed-sheet.html"
 		});
 	}
-  
+
 	constructor(actor, options) {
 		super(actor, options);
 	}
@@ -50,7 +50,7 @@ export default class ChangingBreedActorSheet extends MortalActorSheet {
 
 	/** @override */
 	get template() {
-		return "systems/worldofdarkness/templates/actor/changingbreed-sheet.html";
+		return "systems/wod-advanced/templates/actor/changingbreed-sheet.html";
 	}
 
 	/** @override */
@@ -69,7 +69,7 @@ export default class ChangingBreedActorSheet extends MortalActorSheet {
 		html
 			.find(".macroBtn")
 			.click(this._onRollWerewolfDialog.bind(this));
-		
+
 		html
 			.find(".resource-value > .resource-value-step")
 			.click(this._onDotCounterWerewolfChange.bind(this));
@@ -85,7 +85,7 @@ export default class ChangingBreedActorSheet extends MortalActorSheet {
 			.click(this._onShiftForm.bind(this));
 	}
 
-	_onRollWerewolfDialog(event) {		
+	_onRollWerewolfDialog(event) {
 		event.preventDefault();
 		const element = event.currentTarget;
 		const dataset = element.dataset;
@@ -97,7 +97,7 @@ export default class ChangingBreedActorSheet extends MortalActorSheet {
 
 		ActionHelper.RollDialog(dataset, this.actor);
 	}
-	
+
 	_onDotCounterWerewolfChange(event) {
 		event.preventDefault();
 		const element = event.currentTarget;
@@ -114,12 +114,12 @@ export default class ChangingBreedActorSheet extends MortalActorSheet {
 		const fields = fieldStrings.split(".");
 		const steps = parent.find(".resource-value-step");
 
-		if ((this.locked) && 
-				((fieldStrings != "data.system.advantages.rage.temporary") && 
-				(fieldStrings != "data.system.advantages.gnosis.temporary") && 
+		if ((this.locked) &&
+				((fieldStrings != "data.system.advantages.rage.temporary") &&
+				(fieldStrings != "data.system.advantages.gnosis.temporary") &&
 				(fieldStrings != "data.system.advantages.bloodpool.temporary") &&
-				(fieldStrings != "data.system.advantages.glory.temporary") && 
-				(fieldStrings != "data.system.advantages.honor.temporary") && 
+				(fieldStrings != "data.system.advantages.glory.temporary") &&
+				(fieldStrings != "data.system.advantages.honor.temporary") &&
 				(fieldStrings != "data.system.advantages.wisdom.temporary"))) {
 			ui.notifications.warn(game.i18n.localize("wod.system.sheetlocked"));
 			return;
@@ -165,8 +165,8 @@ export default class ChangingBreedActorSheet extends MortalActorSheet {
 
 			if (actorData.system.shapes[i].label == toForm) {
 				actorData.system.shapes[i].isactive = true;
-			}			
-		}		
+			}
+		}
 
 		actorData.system.settings.isupdated = false;
 		await this.actor.update(actorData);
@@ -195,7 +195,7 @@ export default class ChangingBreedActorSheet extends MortalActorSheet {
 				}
 			}
 		}
-		
+
 		actorData.system.settings.isupdated = false;
 		await this.actor.update(actorData);
 	}

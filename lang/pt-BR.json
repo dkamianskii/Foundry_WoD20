@@ -190,7 +190,7 @@
 			"mortal": "Mortal",
 			"werewolf": "Lobisomem",
 			"mage": "Mago",
-			
+
 			"background": "Antecedente",
 			"bloodbound": "Laço de Sangue / Vínculo",
 			"boon": "Favor",
@@ -971,8 +971,14 @@
 			"ragewarning": "Sua Fúria temporária é maior que a sua Fúria permanente",
 			"gnosis": "Gnose",
 			"willpower": "Força de Vontade",
+			"currentwillpower": "Força de Vontade atual",
+			"fullwillpower": "Força de Vontade total",
+			"exhausted": "Exausta",
+			"willpowertrackhint": "Clique esquerdo para agravar um ferimento de Força de Vontade; clique direito para removê-lo.",
+			"exhaustedwillpowerpenalty": "Força de Vontade exausta",
 			"imbalance": "Desequilíbrio",
 			"willpowerchange": "A Força de Vontade é baseada em Autocontrole + Determinação na Configuração do Sistema e não pode ser alterada!",
+			"willpowerbuiltin": "A Força de Vontade é integrada aos atores PJ e não pode ser adicionada como Vantagem.",
 			"noadvantages": "Nenhuma vantagem selecionada",
 			"path": {
 				"headline": "Trilhas",
@@ -1427,6 +1433,7 @@
 			"both": "Ambos",
 			"nochange": "Sem Mudança",
 			"usewillpower": "Usar Força de Vontade",
+			"usefullwillpower": "Usar Força de Vontade total",
 			"ignoreshpehre": "Ignorar esfera ao definir a dificuldade base",
 			"bio": {
 				"wronggeneration": "Não é uma geração válida",
@@ -1983,7 +1990,7 @@
 			"rollingremainactivetext": "Cada sucesso cura um nível de saúde de qualquer tipo de dano. Não importa quanto dano seja curado, o personagem entra em frenesi. Um lobisomem ganha uma Cicatriz de Batalha sempre que permanece ativo com sucesso.",
 			"addedautosucc": "A rolagem adiciona {0} sucessos automáticos",
 			"usingwillpower": "Usando Força de Vontade",
-			"nowillpower": "{name} não tem Força de Vontade temporária restante!",
+			"nowillpower": "{name} não tem mais Força de Vontade para gastar!",
 			"favored": "É uma rolagem favorável",
 			"bonusdices": "Dados de bônus",
 			"nobotchpossible": "Falha crítica impossível nesta rolagem",
@@ -2138,7 +2145,8 @@
 			},
 			"general": {
 				"selectattribute": "Seleciona qual atributo irá utilizar",
-				"numberdiceshint": "Para poder rolar mais de 10 dados de uma vez, preencha o número na caixa acima."
+				"numberdiceshint": "Para poder rolar mais de 10 dados de uma vez, preencha o número na caixa acima.",
+				"fullwillpowerhint": "A Força de Vontade total ignora ferimentos leves de Força de Vontade, mas não os pesados."
 			},
 			"bonus": {
 				"chosenattribute": "Atributo escolhido",

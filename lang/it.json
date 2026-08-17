@@ -190,7 +190,7 @@
 			"mortal": "Mortale",
 			"werewolf": "Licantropo",
 			"mage": "Mago",
-			
+
 			"background": "Background",
 			"bloodbound": "Legame di sangue",
 			"boon": "Favore",
@@ -971,8 +971,14 @@
 			"ragewarning": "La tua Furia temporanea è più alta della permanente",
 			"gnosis": "Gnosi",
 			"willpower": "Volontà",
+			"currentwillpower": "Volontà attuale",
+			"fullwillpower": "Volontà piena",
+			"exhausted": "Esausta",
+			"willpowertrackhint": "Clic sinistro per aggravare una ferita alla Volontà; clic destro per cancellarla.",
+			"exhaustedwillpowerpenalty": "Volontà esausta",
 			"imbalance": "Sbilanciamento",
 			"willpowerchange": "La Volontà si basa su Autocontrollo + Fermezza come da Impostazioni di Sistema e non può essere modificata!",
+			"willpowerbuiltin": "La Volontà è integrata negli attori PG e non può essere aggiunta come Vantaggio.",
 			"noadvantages": "No advantage selected",
 			"path": {
 				"headline": "Via",
@@ -1427,6 +1433,7 @@
 			"both": "Both",
 			"nochange": "No Change",
 			"usewillpower": "Use Willpower",
+			"usefullwillpower": "Usa Volontà piena",
 			"ignoreshpehre": "Ignore sphere when setting base difficulty",
 			"bio": {
 				"wronggeneration": "Generazione invalida",
@@ -1983,7 +1990,7 @@
 			"rollingremainactivetext": "Ogni successo guarisce un livello di salute di ogni tipo. Dopo il personaggio entra in uan frenesia berserk. Un Licantropo guadagna una Cicatrice di battaglia ogni volta che riesce a rimanere attivo.",
 			"addedautosucc": "Il tiro aggiunge {0} successi automatici",
 			"usingwillpower": "Using Willpower",
-			"nowillpower": "{name} has no temporary Willpower left!",
+			"nowillpower": "{name} non ha più Volontà da spendere!",
 			"favored": "Is a favored roll",
 			"bonusdices": "Bonus dices",
 			"nobotchpossible": "No botch possible on this roll",
@@ -2138,7 +2145,8 @@
 			},
 			"general": {
 				"selectattribute": "Seleziona l'attributo da usare",
-				"numberdiceshint": "To be able to roll more than 10 dices as once, fill in the number in the box above."
+				"numberdiceshint": "To be able to roll more than 10 dices as once, fill in the number in the box above.",
+				"fullwillpowerhint": "La Volontà piena ignora le ferite leggere alla Volontà, ma non quelle pesanti."
 			},
 			"bonus": {
 				"chosenattribute": "Attributo scelto",

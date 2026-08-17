@@ -32,7 +32,7 @@ export class Magicitem {
 }
 
 export class DialogItem extends FormApplication {
-    
+
     static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-dialog item-dialog"],
@@ -48,14 +48,14 @@ export class DialogItem extends FormApplication {
         this.isDialog = true;
         this.onRollComplete = options.onRollComplete;
         this._rollCompleted = false;
-        
+
         this.options.title = `${this.actor.name}`;
     }
 
     /** @override */
 	get template() {
-        return "systems/worldofdarkness/templates/dialogs/dialog-item.hbs";
-	}    
+        return "systems/wod-advanced/templates/dialogs/dialog-item.hbs";
+	}
 
     async getData() {
         const data = super.getData();
@@ -145,7 +145,7 @@ export class DialogItem extends FormApplication {
                     data.object.specialityText += this.actor.system.attributes.resolve.speciality;
                 }
             }
-        }        
+        }
         // virtues
         else if ((this.actor.system?.advantages.virtues != undefined) && (this.actor.system.advantages.virtues[data.object.dice1]?.roll != undefined)) {
             data.object.attributeValue = parseInt(this.actor.system.advantages.virtues[data.object.dice1].roll);
@@ -177,8 +177,8 @@ export class DialogItem extends FormApplication {
             if (abilityItem) {
                 data.object.abilityValue = parseInt(abilityItem.system.value);
                 data.object.abilityName = game.i18n.localize(abilityItem.system.label);
-                
-                if ((parseInt(abilityItem.system.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) || 
+
+                if ((parseInt(abilityItem.system.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) ||
                     (CONFIG.worldofdarkness.alwaysspeciality[actortype].includes(abilityItem.system.id))) {
                     data.object.hasSpeciality = true;
                     data.object.specialityText += abilityItem.system.speciality;
@@ -197,16 +197,16 @@ export class DialogItem extends FormApplication {
                 }
                 data.object.specialityText += this.actor.system.abilities[data.object.dice2].speciality;
             }
-        }             
+        }
         // virtues
         else if ((this.actor.system.advantages.virtues != undefined) && (this.actor.system.advantages.virtues[data.object.dice2]?.roll != undefined)) {
             data.object.abilityValue = parseInt(this.actor.system.advantages.virtues[data.object.dice2].roll);
             data.object.abilityName = game.i18n.localize(this.actor.system.advantages.virtues[data.object.dice2].label);
-        }    
+        }
         else if (data.object.dice2 == "path") {
             data.object.abilityValue = parseInt(this.actor.system.advantages.path?.roll);
             data.object.abilityName = game.i18n.localize(this.actor.system.advantages.path?.label);
-        } 
+        }
         else if ((data.object.dice1 == "art") && (data.object.type == "wod.types.artpower")) {
             if (!this.object.isUnleashing) {
                 const realm = data.object._lowestRank();
@@ -227,7 +227,7 @@ export class DialogItem extends FormApplication {
 
         html
             .find('.dialog-difficulty-button')
-            .click(this._setDifficulty.bind(this));        
+            .click(this._setDifficulty.bind(this));
 
         html
             .find('.actionbutton')
@@ -244,13 +244,13 @@ export class DialogItem extends FormApplication {
             return;
         }
 
-        event.preventDefault();      
-        
+        event.preventDefault();
+
         // add the lowest number of dices from selected Realms
         if (this.object.type == "wod.types.artpower") {
             this.object.isUnleashing = formData["isUnleashing"];
         }
-        
+
         this.object.useSpeciality = formData["specialty"];
         this.object.useWillpower = formData["useWillpower"];
 
@@ -278,10 +278,10 @@ export class DialogItem extends FormApplication {
         const element = event.currentTarget;
         const parent = $(element.parentNode);
         const steps = parent.find(".dialog-difficulty-button");
-        const index = parseInt(element.value);   
+        const index = parseInt(element.value);
 
-        this.object.difficulty = index;   
-        this.object.canRoll = this.object.difficulty > -1 ? true : false;     
+        this.object.difficulty = index;
+        this.object.canRoll = this.object.difficulty > -1 ? true : false;
 
         if (index < 0) {
             return;
@@ -295,7 +295,7 @@ export class DialogItem extends FormApplication {
             }
         });
     }
-    
+
     async _rollPower(event) {
         if (this.object.close) {
             this.close();
@@ -330,11 +330,11 @@ export class DialogItem extends FormApplication {
 
         if (CombatHelper.ignoresPain(this.actor)) {
             woundPenaltyVal = 0;
-        }				
+        }
         else {
             woundPenaltyVal = parseInt(this.actor.system.health.damage.woundpenalty);
         }
-        
+
         const dialogRoll = new DiceRollContainer(this.actor);
         dialogRoll.action = this.object.name;
         dialogRoll.attribute = this.object.dice1;
@@ -346,12 +346,12 @@ export class DialogItem extends FormApplication {
         dialogRoll.numSpecialDices = numSpecialDices;
         dialogRoll.specialDiceText = specialDiceText;
         dialogRoll.woundpenalty = parseInt(woundPenaltyVal);
-        dialogRoll.difficulty = parseInt(this.object.difficulty);          
+        dialogRoll.difficulty = parseInt(this.object.difficulty);
         dialogRoll.speciality = this.object.useSpeciality;
-        dialogRoll.specialityText = specialityText;      
-        dialogRoll.systemText = this.object.details;  
+        dialogRoll.specialityText = specialityText;
+        dialogRoll.systemText = this.object.details;
         dialogRoll.usewillpower = this.object.useWillpower;
-        
+
         const successes = await DiceRoller(dialogRoll);
 
         if (this.onRollComplete) {
@@ -364,6 +364,6 @@ export class DialogItem extends FormApplication {
     /* clicked to close form */
     _closeForm(event) {
         this.object.close = true;
-    }    
+    }
 
 }

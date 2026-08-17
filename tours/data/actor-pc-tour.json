@@ -440,7 +440,7 @@
   "flags": {},
   "_stats": {
     "coreVersion": "14.365",
-    "systemId": "worldofdarkness",
+    "systemId": "wod-advanced",
     "systemVersion": "7.2.2",
     "createdTime": 1784998406689,
     "modifiedTime": 1784998406693,
@@ -451,7 +451,7 @@
       "worldId": "wod",
       "uuid": "Actor.5W5GB4a3yzGXD3zQ",
       "coreVersion": "14.365",
-      "systemId": "worldofdarkness",
+      "systemId": "wod-advanced",
       "systemVersion": "7.2.2"
     }
   }

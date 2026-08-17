@@ -3,12 +3,12 @@
 <div class="sheet-area flex-columns">
 
     <div class="headlineRow splatFont">
-        <div class="largeBox">{{localize "wod.tab.power"}}</div>            
+        <div class="largeBox">{{localize "wod.tab.power"}}</div>
     </div>
 
     {{#each actor.system.listdata.powers.powerlist as |item id|}}
 
-        {{> "systems/worldofdarkness/templates/actor/parts/power_list.html" item=item config=../config actor=../actor locked=../locked showclear=false}}                
+        {{> "systems/wod-advanced/templates/actor/parts/power_list.html" item=item config=../config actor=../actor locked=../locked showclear=false}}
 
     {{/each}}
 

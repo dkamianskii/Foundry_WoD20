@@ -1,13 +1,13 @@
 <div class="clearareaBox" style="display: flex;">
 
 	<div class="pullLeft" style="width: 33%;">
-	
+
 		{{#if data.system.settings.hasvirtue}}
-			{{> "systems/worldofdarkness/templates/actor/parts/stats_virtue.html"}}
+			{{> "systems/wod-advanced/templates/actor/parts/stats_virtue.html"}}
 		{{else}}
 			&nbsp;
 		{{/if}}
-		
+
 	</div>
 
 	<div class="pullLeft" style="width: 33%;">
@@ -31,7 +31,7 @@
 		{{#if data.system.settings.hasnightmare}}
 			{{{getGetStatArea actor actor.system.advantages.nightmare "nightmare" false false true}}}
 		{{/if}}
-	
+
 		{{#if data.system.settings.haswillpower}}
 			{{{getGetStatArea actor actor.system.advantages.willpower "willpower" true true true}}}
 		{{/if}}
@@ -71,7 +71,7 @@
 
 			{{#if (ne actor.system.settings.variant 'spirit')}}
 
-				{{> "systems/worldofdarkness/templates/actor/parts/stats_health.html"}}
+				{{> "systems/wod-advanced/templates/actor/parts/stats_health.html"}}
 
 			{{else}}
 

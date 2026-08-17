@@ -29,7 +29,7 @@
 				{{{getGetStatArea actor actor.system.advantages.nightmare "nightmare" false false true}}}
 			</div>
 		{{/if}}
-	
+
 		{{#if data.system.settings.hasfaith}}
 			<div style="width: 33%;">
 				{{{getGetStatArea actor actor.system.advantages.faith "faith" true true true}}}
@@ -73,7 +73,7 @@
 			<div style="width: 33%;">
 				{{{getGetStatArea actor actor.system.advantages.spite "spite" true true true}}}
 			</div>
-		{{/if}}	
+		{{/if}}
 
 		{{#if data.system.settings.hassekhem}}
 			<div style="width: 33%;">
@@ -89,9 +89,9 @@
 
 		{{#if (eq data.type config.sheettype.exalted)}}
 			<div style="width: 33%;">
-				{{{getGetStatArea actor actor.system.advantages.essence "essence" false true false}}}				
+				{{{getGetStatArea actor actor.system.advantages.essence "essence" false true false}}}
 			</div>
-			
+
 			<div style="width: 33%;">
 				{{{getGetStatArea actor actor.system.advantages.essencepool "essencepool" false false true}}}
 
@@ -110,24 +110,24 @@
 				</div>
 			{{/if}}
 		{{/if}}
-	
+
 </div>
 
 <div class="clearareaBox" style="display: flex;">
 
 	{{#if actor.system.settings.hasvirtue}}
 		<div class="pullLeft" style="width: 33%;">
-		
-			{{> "systems/worldofdarkness/templates/actor/parts/stats_virtue.html"}}
-		
+
+			{{> "systems/wod-advanced/templates/actor/parts/stats_virtue.html"}}
+
 		</div>
 	{{/if}}
 
 	{{#if (ne actor.system.settings.variant 'spirit')}}
-	
+
 		<div class="healthBox" style="width: 33%; height: 100%; display: flex; flex-direction: column;">
 
-			{{> "systems/worldofdarkness/templates/actor/parts/stats_health.html"}}		
+			{{> "systems/wod-advanced/templates/actor/parts/stats_health.html"}}
 
 		</div>
 
@@ -145,7 +145,7 @@
 			<div class="pullLeft item-row">
 				<div>{{localize 'wod.experience.experience'}}</div>
 				<div class="total experienceValue">{{getTotalExperience actor "total"}}</div>
-			</div>		
+			</div>
 		</div>
 
 	{{/if}}

@@ -20,7 +20,7 @@ export class DialogShapeChange extends FormApplication {
         super(shape, {submitOnChange: true, closeOnSubmit: false});
         this.actor = actor;
         this.isDialog = true;
-        
+
         this.options.title = `${this.actor.name} - ${game.i18n.localize("wod.dialog.shapechange.headline")}`;
     }
 
@@ -31,7 +31,7 @@ export class DialogShapeChange extends FormApplication {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["wod20 wod-dialog shapechange-dialog"],
-            template: "systems/worldofdarkness/templates/dialogs/dialog-shapechange.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-shapechange.hbs",
             closeOnSubmit: false,
             submitOnChange: true,
             resizable: true
@@ -39,8 +39,8 @@ export class DialogShapeChange extends FormApplication {
     }
 
     getData() {
-        const data = super.getData();       
-        
+        const data = super.getData();
+
         data.config = CONFIG.worldofdarkness;
         data.actorData = this.actor.system;
         data.actorType = this.actor.type === "PC" ? this.actor.system.settings.splat : this.actor.type.toLowerCase();
@@ -49,20 +49,20 @@ export class DialogShapeChange extends FormApplication {
             // Build shapes structure from shape items for PC actors
             // This structure needs to match Legacy actor structure for template compatibility
             data.actorData.shapes = {};
-            
+
             // Get all shape items (Trait items with system.type === "wod.types.shapeform")
-            const shapeItems = this.actor.items.filter(item => 
-                item.type === "Trait" && 
+            const shapeItems = this.actor.items.filter(item =>
+                item.type === "Trait" &&
                 item.system?.type === "wod.types.shapeform"
             );
-            
+
             // Sort shapes by system.order
             shapeItems.sort((a, b) => {
                 const orderA = a.system?.order ?? 0;
                 const orderB = b.system?.order ?? 0;
                 return orderA - orderB;
             });
-            
+
             // Build shapes object matching Legacy actor structure
             // Shape names are mapped to lowercase keys (e.g., "Homid" -> "homid")
             for (const shapeItem of shapeItems) {
@@ -71,7 +71,7 @@ export class DialogShapeChange extends FormApplication {
                     isactive: shapeItem.system?.isactive ?? false
                 };
             }
-            
+
             // Store shapes in this.object.shapes for easy access in methods
             this.object.shapes = data.actorData.shapes;
         }
@@ -129,9 +129,9 @@ export class DialogShapeChange extends FormApplication {
         const element = event.currentTarget;
         const parent = $(element.parentNode);
         const steps = parent.find(".dialog-difficulty-button");
-        const diff = element.value;   
+        const diff = element.value;
 
-        this.object.difficulty = parseInt(diff);            
+        this.object.difficulty = parseInt(diff);
         steps.removeClass("active");
 
         steps.each(function (i) {
@@ -147,11 +147,11 @@ export class DialogShapeChange extends FormApplication {
         const element = event.currentTarget;
         const parent = $(element.parentNode);
         const steps = parent.find(".dialog-shapechange-button");
-        const shape = element.value;   
+        const shape = element.value;
 
         this.object.selectedShape = shape;
 
-        this.object.canRoll = await this._calculateDifficulty(); 
+        this.object.canRoll = await this._calculateDifficulty();
         this.object.successesRequired = await this._calculateSuccessesRequired();
         steps.removeClass("active");
 
@@ -163,21 +163,21 @@ export class DialogShapeChange extends FormApplication {
 
         this.render();
     }
-    
+
 
     /* clicked on check shift form */
     async _shiftform(event) {
         let template = [];
         let extraInfo = [];
-        let attribute = game.i18n.localize(this.actor.system.attributes.stamina.label);        
+        let attribute = game.i18n.localize(this.actor.system.attributes.stamina.label);
         let attributevalue = this.actor.system.attributes.stamina.total;
         let ability = "";
         let abilityvalue = 0;
         let woundpenalty = this.actor.system.health.damage.woundpenalty;
 
-        if (this.actor.type === "PC" && this.actor.api) {      
+        if (this.actor.type === "PC" && this.actor.api) {
             const primalurge = this.actor.api.getAbility("primalurge");
-            
+
             ability = game.i18n.localize(primalurge?.system?.label) ?? "";
             abilityvalue = primalurge?.system?.value ?? 0;
         }
@@ -192,9 +192,9 @@ export class DialogShapeChange extends FormApplication {
         template.push(`${ability} (${abilityvalue})`);
 
         extraInfo.push(`${game.i18n.localize("wod.dialog.numbersuccesses")}: ${this.object.numSuccesses}`);
-        extraInfo.push(`${game.i18n.localize("wod.dialog.neededsuccesses")}: ${this.object.successesRequired}`);        
+        extraInfo.push(`${game.i18n.localize("wod.dialog.neededsuccesses")}: ${this.object.successesRequired}`);
 
-        if (this.object.canRoll) {            
+        if (this.object.canRoll) {
             const shiftRoll = new DiceRollContainer(this.actor);
             shiftRoll.action = game.i18n.localize("wod.dialog.shapechange.headline");
             shiftRoll.attribute = "stamina";
@@ -204,11 +204,11 @@ export class DialogShapeChange extends FormApplication {
             shiftRoll.origin = "general";
             shiftRoll.numDices = parseInt(attributevalue) + parseInt(abilityvalue) + parseInt(this.object.bonus);
             shiftRoll.woundpenalty = parseInt(woundpenalty);
-            shiftRoll.difficulty = parseInt(this.object.difficulty);  
-            shiftRoll.usewillpower = this.object.useWillpower;                    
-            
+            shiftRoll.difficulty = parseInt(this.object.difficulty);
+            shiftRoll.usewillpower = this.object.useWillpower;
+
             const successes = await DiceRoller(shiftRoll);
-            
+
             this.object.numSuccesses += parseInt(successes);
 
             if (this.object.numSuccesses >= this.object.successesRequired) {
@@ -226,7 +226,7 @@ export class DialogShapeChange extends FormApplication {
     /* clicked to close form */
     _closeForm(event) {
         this.object.close = true;
-    }    
+    }
 
     async _calculateDifficulty() {
         if (this.object.shapes.homid?.isactive) {
@@ -245,7 +245,7 @@ export class DialogShapeChange extends FormApplication {
             this.object.difficulty = 6;
         }
         else {
-            this.object.difficulty = 0;            
+            this.object.difficulty = 0;
             return false;
         }
 

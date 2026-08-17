@@ -1,5 +1,5 @@
 export default class TokenHelper {
-    static async formShift(actor, fromForm, toForm) {        
+    static async formShift(actor, fromForm, toForm) {
 
         if (actor.type != CONFIG.worldofdarkness.sheettype.werewolf) {
             return;
@@ -17,13 +17,13 @@ export default class TokenHelper {
 		if(token) foundToken = true;
 
 		if (foundToken) {
-            
+
 
             await this._clearForms(token, actor);
             //await token.document.toggleActiveEffect(this._getEffectData(toForm));
             await this._applyEffect(token, toForm, true);
             await this._applyActorEffect(actor, toForm, true);
-		}			
+		}
     }
 
     static async _clearForms(token, actor) {
@@ -65,35 +65,35 @@ export default class TokenHelper {
             effectData = {
                 label: "form_homid",
                 //label: game.i18n.localize("wod.shapes.homid"),
-                icon: "systems/worldofdarkness/assets/img/werewolf/form/form_homid.svg"
+                icon: "systems/wod-advanced/assets/img/werewolf/form/form_homid.svg"
             }
         }
         if (toForm == "wod.shapes.glabro") {
             effectData = {
                 label: "form_glabro",
                 //label: game.i18n.localize("wod.shapes.glabro"),
-                icon: "systems/worldofdarkness/assets/img/werewolf/form/form_glabro.svg"
+                icon: "systems/wod-advanced/assets/img/werewolf/form/form_glabro.svg"
             }
         }
         if (toForm == "wod.shapes.crinos") {
             effectData = {
                 label: "form_crinos",
                 //label: game.i18n.localize("wod.shapes.crinos"),
-                icon: "systems/worldofdarkness/assets/img/werewolf/form/form_crinos.svg"
+                icon: "systems/wod-advanced/assets/img/werewolf/form/form_crinos.svg"
             }
         }
         if (toForm == "wod.shapes.hispo") {
             effectData = {
                 label: "form_hispo",
                 //label: game.i18n.localize("wod.shapes.hispo"),
-                icon: "systems/worldofdarkness/assets/img/werewolf/form/form_hispo.svg"
+                icon: "systems/wod-advanced/assets/img/werewolf/form/form_hispo.svg"
             }
         }
         if (toForm == "wod.shapes.lupus") {
             effectData = {
                 label: "form_lupus",
                 //label: game.i18n.localize("wod.shapes.lupus"),
-                icon: "systems/worldofdarkness/assets/img/werewolf/form/form_lupus.svg"
+                icon: "systems/wod-advanced/assets/img/werewolf/form/form_lupus.svg"
             }
         }
 
@@ -119,7 +119,7 @@ export default class TokenHelper {
     }
 }
 
-/* 
+/*
 
 export default class TokenHelper {
     static async formShift(actor, fromForm, toForm) {
@@ -142,7 +142,7 @@ export default class TokenHelper {
             if (await token.document.toggleActiveEffect(await this._getEffectData(toForm))) {
                 // effect was applied
             }
-		}			
+		}
     }
 
     static async _clearForms(token) {
@@ -184,35 +184,35 @@ export default class TokenHelper {
             effectData = {
                 id: "form_homid",
                 label: game.i18n.localize("wod.shapes.homid"),
-                icon: "systems/worldofdarkness/assets/img/werewolf/form/form_homid.svg"
+                icon: "systems/wod-advanced/assets/img/werewolf/form/form_homid.svg"
             }
         }
         if (toForm == "wod.shapes.glabro") {
             effectData = {
                 id: "form_glabro",
                 label: game.i18n.localize("wod.shapes.glabro"),
-                icon: "systems/worldofdarkness/assets/img/werewolf/form/form_glabro.svg"
+                icon: "systems/wod-advanced/assets/img/werewolf/form/form_glabro.svg"
             }
         }
         if (toForm == "wod.shapes.crinos") {
             effectData = {
                 id: "form_crinos",
                 label: game.i18n.localize("wod.shapes.crinos"),
-                icon: "systems/worldofdarkness/assets/img/werewolf/form/form_crinos.svg"
+                icon: "systems/wod-advanced/assets/img/werewolf/form/form_crinos.svg"
             }
         }
         if (toForm == "wod.shapes.hispo") {
             effectData = {
                 id: "form_hispo",
                 label: game.i18n.localize("wod.shapes.hispo"),
-                icon: "systems/worldofdarkness/assets/img/werewolf/form/form_hispo.svg"
+                icon: "systems/wod-advanced/assets/img/werewolf/form/form_hispo.svg"
             }
         }
         if (toForm == "wod.shapes.lupus") {
             effectData = {
                 id: "form_lupus",
                 label: game.i18n.localize("wod.shapes.lupus"),
-                icon: "systems/worldofdarkness/assets/img/werewolf/form/form_lupus.svg"
+                icon: "systems/wod-advanced/assets/img/werewolf/form/form_lupus.svg"
             }
         }
 

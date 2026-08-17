@@ -2,8 +2,8 @@ import { TourHelper } from "./tour.js";
 
 export async function tourSetup()
 {
-    try {        
-        const {files} = await foundry.applications.apps.FilePicker.implementation.browse("data", 'systems/worldofdarkness/tours');
+    try {
+        const {files} = await foundry.applications.apps.FilePicker.implementation.browse("data", 'systems/wod-advanced/tours');
         for(let i = 0; i < files.length; i++) {
             if(!files[i].endsWith(".json")) {
                 continue;
@@ -12,7 +12,7 @@ export async function tourSetup()
             if(tour.config.permission?.GM && !game.user.isGM) {
                 continue;
             }
-            game.tours.register("worldofdarkness",tour.id,tour);
+            game.tours.register("wod-advanced",tour.id,tour);
         }
     } catch(err) {
         return
@@ -24,8 +24,8 @@ export async function tourSetup()
     let header = $(event);
     let tourId = header[0].dataset.tourId;
     if(!tourId.includes('.')) {
-        tourId = `worldofdarkness.${ tourId}`;
+        tourId = `wod-advanced.${ tourId}`;
     }
-    let tour = game.tours.get(`worldofdarkness.${ header[0].dataset.tourId }`);
+    let tour = game.tours.get(`wod-advanced.${ header[0].dataset.tourId }`);
     tour?.start();
 } */

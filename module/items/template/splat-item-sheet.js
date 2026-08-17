@@ -14,8 +14,8 @@ const { HandlebarsApplicationMixin } = foundry.applications.api
 export default class SplatItemSheet extends HandlebarsApplicationMixin(WoDItemSheetV2) {
 
     constructor(item, options) {
-		super(item, options);      
-        
+		super(item, options);
+
         this.#dragDrop = this.#createDragDropHandlers();
 	}
 
@@ -56,22 +56,22 @@ export default class SplatItemSheet extends HandlebarsApplicationMixin(WoDItemSh
 
     static PARTS = {
         header: {
-            template: 'systems/worldofdarkness/templates/items/parts/header-sheet.hbs'
+            template: 'systems/wod-advanced/templates/items/parts/header-sheet.hbs'
         },
         tab: {
-            template: 'systems/worldofdarkness/templates/items/parts/navigation.hbs'
+            template: 'systems/wod-advanced/templates/items/parts/navigation.hbs'
         },
         stats: {
-            template: 'systems/worldofdarkness/templates/items/splat-sheet.hbs'
+            template: 'systems/wod-advanced/templates/items/splat-sheet.hbs'
         },
         bio: {
-            template: 'systems/worldofdarkness/templates/items/parts/splat-bio-tab.hbs'
+            template: 'systems/wod-advanced/templates/items/parts/splat-bio-tab.hbs'
         },
         abilities: {
-            template: 'systems/worldofdarkness/templates/items/parts/splat-abilities-sheet.hbs'
+            template: 'systems/wod-advanced/templates/items/parts/splat-abilities-sheet.hbs'
         },
         features: {
-            template: 'systems/worldofdarkness/templates/items/parts/splat-features-sheet.hbs'
+            template: 'systems/wod-advanced/templates/items/parts/splat-features-sheet.hbs'
         }
     }
 
@@ -138,7 +138,7 @@ export default class SplatItemSheet extends HandlebarsApplicationMixin(WoDItemSh
         data.tabs = this.getTabs();
         data.healthlevels = this.getHealthLevels(this.item);
         data.listData = SelectHelper.SetupItem(item);
-        //data.canEdit = this.item.isOwner || game.user.isGM;	
+        //data.canEdit = this.item.isOwner || game.user.isGM;
 
         if (item.actor != null) {
             data.hasActor = true;
@@ -181,12 +181,12 @@ export default class SplatItemSheet extends HandlebarsApplicationMixin(WoDItemSh
         }
 
         return context
-    }	  
+    }
 
     async render(force = false, options = {}) {
 		await super.render(force, options);
 	}
-    
+
     async _onRender() {
         const html = $(this.element);
 
@@ -252,7 +252,7 @@ export default class SplatItemSheet extends HandlebarsApplicationMixin(WoDItemSh
         }
         await sheet.render();
     }
-    
+
     #dragDrop
 
     #createDragDropHandlers () {
@@ -320,15 +320,15 @@ export default class SplatItemSheet extends HandlebarsApplicationMixin(WoDItemSh
         // Handle different data types
         switch (data.type) {
             // Abilities category change - handled by parent class
-            case 'Sort':                
+            case 'Sort':
                 return super._onDrop(event);
             // Item position reordering - handled locally
-            case 'SortOrder':                
+            case 'SortOrder':
                 return this._onReorderItem(event, data);
             case "SortBioFields":
                 return this._onReorderBioField(event, data);
             // Dropped Item from compendium/sidebar
-            case 'Item':                
+            case 'Item':
                 return this._onDropItem(event, data);
         }
     }
@@ -371,7 +371,7 @@ export default class SplatItemSheet extends HandlebarsApplicationMixin(WoDItemSh
             });
             return;
         }
-        
+
         // Only handle items of correct type
         if (data.itemtype !== "Advantage" && data.itemtype !== "Trait" && data.itemtype !== "Sphere" && data.itemtype !== "Realm") {
             // Clean up on early return
@@ -418,12 +418,12 @@ export default class SplatItemSheet extends HandlebarsApplicationMixin(WoDItemSh
                 sheet: this
             }
         );
-        
+
         // Always clean up drag-over classes after reorder attempt
         this.element.querySelectorAll('.drag-over-top, .drag-over-bottom, .drag-over').forEach(el => {
             el.classList.remove('drag-over-top', 'drag-over-bottom', 'drag-over');
         });
-    } 
+    }
 
     /**
      * Override _onDragOver to provide visual feedback for drag-and-drop operations.
@@ -438,7 +438,7 @@ export default class SplatItemSheet extends HandlebarsApplicationMixin(WoDItemSh
 
         // Item classes that support drag-over feedback
         const itemClasses = [".advantage-item", ".feature-item", ".power-item", ".ability-item", ".bio-field-item"];
-        
+
         // Check for any item drop target
         for (const itemClass of itemClasses) {
             const target = event.target.closest(itemClass);
@@ -478,7 +478,7 @@ export default class SplatItemSheet extends HandlebarsApplicationMixin(WoDItemSh
         itemCopy.uuid = droppedItem.uuid;
         const itemData = foundry.utils.duplicate(this.item);
 
-        if (droppedItem.type === "Ability") {    
+        if (droppedItem.type === "Ability") {
             if (droppedItem.system.type === "wod.abilities.ability") {
                 droppedItem.system.type = "wod.abilities.talent";
             }
@@ -496,13 +496,13 @@ export default class SplatItemSheet extends HandlebarsApplicationMixin(WoDItemSh
         if (droppedItem.type === "Trait") {
             if (droppedItem.system.type === "wod.types.shapeform") {
                 itemCopy.system.order = itemData.system.features.length;
-                itemData.system.features.push(itemCopy);            
+                itemData.system.features.push(itemCopy);
                 update = true;
             }
 
             if (droppedItem.system.type === "wod.types.apocalypticform") {
                 itemCopy.system.order = itemData.system.features.length;
-                itemData.system.features.push(itemCopy);            
+                itemData.system.features.push(itemCopy);
                 update = true;
             }
 
@@ -525,7 +525,7 @@ export default class SplatItemSheet extends HandlebarsApplicationMixin(WoDItemSh
 
         if ((droppedItem.type === "Sphere") || (droppedItem.type === "Realm") || (droppedItem.type === "Power")) {
             itemCopy.system.order = itemData.system.powers.length;
-            itemData.system.powers.push(itemCopy);            
+            itemData.system.powers.push(itemCopy);
             update = true;
         }
 
@@ -722,7 +722,7 @@ export const prepareFeaturesContext = async function (context, item) {
 
 function translateItemOrder(featureList) {
     if (!featureList) return [];
-    
+
     const list = [];
 
     for (const item of featureList) {
@@ -740,7 +740,7 @@ function translateItemOrder(featureList) {
         // Check if system.settings.order exists
         const hasSettingsOrderA = a.system.settings?.order !== undefined;
         const hasSettingsOrderB = b.system.settings?.order !== undefined;
-        
+
         if (hasSettingsOrderA && hasSettingsOrderB) {
             // Both have system.settings.order - sort by that
             return Number(a.system.settings.order) - Number(b.system.settings.order);
@@ -788,5 +788,5 @@ function checkItemValues(item) {
         return false;
     }
 
-    return true;    
+    return true;
 }

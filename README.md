@@ -36,7 +36,7 @@
 # World of Darkness 20th ed
 This is a non-official (fan-made) system for Foundry VTT.
 
-I would never require it by anyone or even expect someone to do but if you really want to feel free to [buy me a coffee](https://ko-fi.com/johanfk) 
+I would never require it by anyone or even expect someone to do but if you really want to feel free to [buy me a coffee](https://ko-fi.com/johanfk)
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/johanfk)
 
@@ -67,7 +67,7 @@ For Vampire (V20), Werewolf (Changing Breeds) (W20), Mage (M20), Changeling (C20
 
 
 # Foundry VTT
-[Foundry page](https://foundryvtt.com/packages/worldofdarkness)
+[Foundry page](https://foundryvtt.com/packages/wod-advanced)
 
 
 # Dark Pack Agreement
@@ -81,7 +81,7 @@ This material is NOT an official World of Darkness material.
 
 
 # Contributions
-- Original code for dot/box counters and how to get these to work from Foundry-V5 (credit to [erizocosmico](https://github.com/erizocosmico/foundry-V5)) 
+- Original code for dot/box counters and how to get these to work from Foundry-V5 (credit to [erizocosmico](https://github.com/erizocosmico/foundry-V5))
 - Code for the input/selector with permission from https://gitlab.com/MarlQ/mta
 
 Systems I have checked to learn general structure and the typical "how do you do this?":

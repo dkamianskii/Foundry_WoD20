@@ -4,15 +4,15 @@ import CreateHelper from "../../scripts/create-helpers.js";
 import { calculateHealth } from "../../scripts/health.js";
 
 export default class ChangelingActorSheet extends MortalActorSheet {
-	
+
 	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-sheet changeling"],
-			template: "systems/worldofdarkness/templates/actor/changeling-sheet.html"
+			template: "systems/wod-advanced/templates/actor/changeling-sheet.html"
 		});
 	}
-  
+
 	constructor(actor, options) {
 		super(actor, options);
 	}
@@ -65,9 +65,9 @@ export default class ChangelingActorSheet extends MortalActorSheet {
 
 	/** @override */
 	get template() {
-		return "systems/worldofdarkness/templates/actor/changeling-sheet.html";
+		return "systems/wod-advanced/templates/actor/changeling-sheet.html";
 	}
-	
+
 	/** @override */
 	activateListeners(html) {
 		super.activateListeners(html);
@@ -102,13 +102,13 @@ export default class ChangelingActorSheet extends MortalActorSheet {
 		html
 			.find(".switch")
 			.click(this._switchChangelingSetting.bind(this));
-			
+
 		html
 			.find(".willpower > .resource-value > .resource-value-step")
 			.on('contextmenu', this._handleImbalance.bind(this));
-	}	
+	}
 
-	_onRollChangelingDialog(event) {		
+	_onRollChangelingDialog(event) {
 		event.preventDefault();
 		const element = event.currentTarget;
 		const dataset = element.dataset;
@@ -117,7 +117,7 @@ export default class ChangelingActorSheet extends MortalActorSheet {
 			return;
 		}
 
-		ActionHelper.RollDialog(dataset, this.actor);		
+		ActionHelper.RollDialog(dataset, this.actor);
 	}
 
 	async _switchChangelingSetting(event) {
@@ -143,9 +143,9 @@ export default class ChangelingActorSheet extends MortalActorSheet {
 			actorData.system.settings.soak.chimerical[abilityType].isrollable = !actorData.system.settings.soak.chimerical[abilityType].isrollable;
 			actorData.system.settings.isupdated = false;
 			await this.actor.update(actorData);
-		}		
+		}
 	}
-	
+
 	async _onDotCounterChangelingChange(event) {
 		event.preventDefault();
 		const element = event.currentTarget;
@@ -178,20 +178,20 @@ export default class ChangelingActorSheet extends MortalActorSheet {
 				itemData.system.value = parseInt(index + 1);
 			}
 
-			await item.update(itemData);			
+			await item.update(itemData);
 		}
 		// updated actor
 		else {
 			const fieldStrings = parent[0].dataset.name;
-			const fields = fieldStrings.split(".");	
+			const fields = fieldStrings.split(".");
 
 			if (fields[2] == "health") {
 				return;
 			}
 
-			if ((this.locked) && 
-				((fieldStrings != "data.system.advantages.glamour.temporary") && 
-				(fieldStrings != "data.system.advantages.nightmare.temporary") && 
+			if ((this.locked) &&
+				((fieldStrings != "data.system.advantages.glamour.temporary") &&
+				(fieldStrings != "data.system.advantages.nightmare.temporary") &&
 				(fieldStrings != "data.system.advantages.banality.temporary"))) {
 				ui.notifications.warn(game.i18n.localize("wod.system.sheetlocked"));
 				return;
@@ -199,17 +199,17 @@ export default class ChangelingActorSheet extends MortalActorSheet {
 
 			if (index < 0 || index > steps.length) {
 				return;
-			}			
+			}
 
 			this._assignToChangeling(fields, index + 1);
 		}
-		
+
 		steps.removeClass("active");
 		steps.each(function (i) {
 			if (i <= index) {
 				$(this).addClass("active");
 			}
-		});		
+		});
 	}
 
 	async _onSquareChimericalChange(event) {
@@ -227,25 +227,25 @@ export default class ChangelingActorSheet extends MortalActorSheet {
 		if (type != CONFIG.worldofdarkness.sheettype.changeling) {
 			return;
 		}
-		
+
 		if (currentState < 0) {
 			return;
 		}
-		
+
 		const actorData = foundry.utils.duplicate(this.actor);
 
 		if (oldState == "") {
 			actorData.system.health.damage.chimerical.bashing = parseInt(actorData.system.health.damage.chimerical.bashing) + 1;
 		}
-		else if (oldState == "/") { 
+		else if (oldState == "/") {
 			actorData.system.health.damage.chimerical.bashing = parseInt(actorData.system.health.damage.chimerical.bashing) - 1;
-			actorData.system.health.damage.chimerical.lethal = parseInt(actorData.system.health.damage.chimerical.lethal) + 1;			
+			actorData.system.health.damage.chimerical.lethal = parseInt(actorData.system.health.damage.chimerical.lethal) + 1;
 		}
-		else if (oldState == "x") { 
+		else if (oldState == "x") {
 			actorData.system.health.damage.chimerical.lethal = parseInt(actorData.system.health.damage.chimerical.lethal) - 1;
 			actorData.system.health.damage.chimerical.aggravated = parseInt(actorData.system.health.damage.chimerical.aggravated) + 1;
 		}
-		else if (oldState == "*") { 
+		else if (oldState == "*") {
 			actorData.system.health.damage.chimerical.aggravated = parseInt(actorData.system.health.damage.chimerical.aggravated) - 1;
 		}
 
@@ -282,13 +282,13 @@ export default class ChangelingActorSheet extends MortalActorSheet {
 		if (oldState == "") {
 			return
 		}
-		else if (oldState == "/") { 
+		else if (oldState == "/") {
 			actorData.system.health.damage.chimerical.bashing = parseInt(actorData.system.health.damage.chimerical.bashing) - 1;
 		}
-		else if (oldState == "x") { 
+		else if (oldState == "x") {
 			actorData.system.health.damage.chimerical.lethal = parseInt(actorData.system.health.damage.chimerical.lethal) - 1;
 		}
-		else if (oldState == "*") { 
+		else if (oldState == "*") {
 			actorData.system.health.damage.chimerical.aggravated = parseInt(actorData.system.health.damage.chimerical.aggravated) - 1;
 		}
 
@@ -356,8 +356,8 @@ export default class ChangelingActorSheet extends MortalActorSheet {
 					actorData.system.advantages.glamour.permanent = value;
 				}
 			}
-	
-		}			
+
+		}
 		else if (fields[2] === "banality") {
 			if (fields[3] === "temporary") {
 				if (actorData.system.advantages.banality.temporary == value) {
@@ -375,17 +375,17 @@ export default class ChangelingActorSheet extends MortalActorSheet {
 					actorData.system.advantages.banality.permanent = value;
 				}
 			}
-	
+
 		}
 		else if (fields[2] === "nightmare")	 {
 			if (actorData.system.advantages.nightmare.temporary == value) {
 				actorData.system.advantages.nightmare.temporary = parseInt(actorData.system.advantages.nightmare.temporary) - 1;
-			}	
+			}
 			else {
 				actorData.system.advantages.nightmare.temporary = value;
 			}
 		}
-		
+
 		actorData.system.settings.isupdated = false;
 		await this.actor.update(actorData);
 	}

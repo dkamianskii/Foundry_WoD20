@@ -2,8 +2,8 @@
 
     {{#if (eq field.type "textbox")}}
 
-        {{> "systems/worldofdarkness/templates/actor/parts/description.hbs" proseheadline=field.label locked=../locked headline=false prosename=(concat "system.bio.splatfields." key ".value") prosevalue=field.value proseenriched=field.enriched}}
-        
+        {{> "systems/wod-advanced/templates/actor/parts/description.hbs" proseheadline=field.label locked=../locked headline=false prosename=(concat "system.bio.splatfields." key ".value") prosevalue=field.value proseenriched=field.enriched}}
+
     {{/if}}
 
 {{/each}}

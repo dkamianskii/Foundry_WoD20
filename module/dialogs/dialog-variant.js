@@ -11,7 +11,7 @@ export class Variant {
         if (actor.type == CONFIG.worldofdarkness.sheettype.changingbreed) {
             this.variant = actor.system.changingbreed;
         }
-        
+
         this.type = actor.type;
     }
 }
@@ -21,7 +21,7 @@ export class DialogVariant extends FormApplication {
         super(variant, {submitOnChange: true, closeOnSubmit: false});
         this.actor = actor;
         this.isDialog = true;
-        
+
         this.options.title = `${this.actor.name}`;
     }
 
@@ -32,7 +32,7 @@ export class DialogVariant extends FormApplication {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["wod20 wod-dialog dialog-top"],
-            template: "systems/worldofdarkness/templates/dialogs/dialog-variant.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-variant.hbs",
             closeOnSubmit: false,
             submitOnChange: true,
             resizable: true
@@ -43,7 +43,7 @@ export class DialogVariant extends FormApplication {
         const data = super.getData();
 
         data.actorData = this.actor.system;
-        data.config = CONFIG.worldofdarkness;    
+        data.config = CONFIG.worldofdarkness;
 
         if (this.actor.type != CONFIG.worldofdarkness.sheettype.changingbreed) {
             data.sheettype = this.actor.type.toLowerCase() + "Dialog";
@@ -73,7 +73,7 @@ export class DialogVariant extends FormApplication {
             return;
         }
 
-        event.preventDefault();       
+        event.preventDefault();
     }
 
     close() {

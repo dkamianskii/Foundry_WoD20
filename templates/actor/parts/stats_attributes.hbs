@@ -19,30 +19,30 @@
 						<div class="pullLeft resource-counter"><input class="item-active pointer resource-value-step" name="attribute.settings.isfavored" type="checkbox" data-type="{{../config.sheettype.exalted}}" data-key="{{key}}" data-attribute="true" {{isChecked attribute.settings.isfavorited}}></input></div>
 					{{/if}}
 
-					<label for="data.system.attributes.{{key}}.value" 
-						class="pullLeft vrollable {{#if (gt attribute.max 5)}}supernaturalAttribute{{/if}} ability-headlineWidth headlineNormal" 
+					<label for="data.system.attributes.{{key}}.value"
+						class="pullLeft vrollable {{#if (gt attribute.max 5)}}supernaturalAttribute{{/if}} ability-headlineWidth headlineNormal"
 						data-type="{{../config.sheettype.mortal}}"
 						data-key="{{key}}"
 						data-action="rollDice"
-						data-attribute="true">{{localize attribute.label}}</label>			
+						data-attribute="true">{{localize attribute.label}}</label>
 
-					<div class="{{#if (gt attribute.max 8)}}pullLeft{{else}}pullRight{{/if}} resource-value" 
+					<div class="{{#if (gt attribute.max 8)}}pullLeft{{else}}pullRight{{/if}} resource-value"
 						data-key="{{key}}"
-						data-value="{{attribute.value}}" 
+						data-value="{{attribute.value}}"
 						data-name="system.attributes.{{key}}.value">
 
 						{{#if (eqAny ../actor.system.settings.splat ../config.splat.werewolf ../config.splat.changingbreed ../config.splat.demon)}}
 							<span class="attribute-total">{{attribute.total}}</span>
 						{{/if}}
 
-						{{> "systems/worldofdarkness/templates/actor/parts/stat_value_dots.hbs"
+						{{> "systems/wod-advanced/templates/actor/parts/stat_value_dots.hbs"
 							max=attribute.max
 							value=attribute.value
 							locked=../locked
 							name=(concat "system.attributes." key ".value")
 							statKey=key
 							dotType=../config.splat.mortal}}
-						
+
 						{{#if (gte attribute.value 4)}}
 							{{#if (not ../locked)}}
 								<div class="{{#if (gt attribute.max 8)}}pullLeft{{else}}pullRight{{/if}} speciality-attribute-icon {{#if (and (eq attribute.speciality '') (gte attribute.value 4))}}item-warning{{/if}}{{#if (ne attribute.speciality '')}}item-notice{{/if}}" data-action="editAttribute">
@@ -57,14 +57,14 @@
 							<div class="{{#if (gt attribute.max 8)}}pullLeft{{else}}pullRight{{/if}} speciality-attribute-empty-icon">
 								&nbsp;
 							</div>
-						{{/if}}	
+						{{/if}}
 
-					</div>				
-				</div>				
+					</div>
+				</div>
 			{{/if}}
 
 			{{#if (bottenAttributes key)}}</div>{{/if}}
-		
-		{{/each}}	
-	</div> 
-</div>	
+
+		{{/each}}
+	</div>
+</div>

@@ -2,24 +2,24 @@
 
 	<div class="pullRight">
 		<!-- Macro icons -->
-		{{> "systems/worldofdarkness/templates/actor/parts/macro_icons.hbs"}}				        	
+		{{> "systems/wod-advanced/templates/actor/parts/macro_icons.hbs"}}
 	</div>
 
 	<div class="sheet-inner-area">
-		<div class="sheet-area">	
+		<div class="sheet-area">
 
 			<div style="display: flex;">
 
 				<div style="flex: 1; margin-left: auto;">
 					{{#if locked}}
-						<img class="profile-img {{#if (eq actor.img 'icons/svg/mystery-man.svg')}}defaultimage{{/if}}" src="{{actor.img}}" />	
+						<img class="profile-img {{#if (eq actor.img 'icons/svg/mystery-man.svg')}}defaultimage{{/if}}" src="{{actor.img}}" />
 					{{else}}
 					{{#if userpermissions.changeActorImage}}
 						<img class="profile-img {{#if (eq actor.img 'icons/svg/mystery-man.svg')}}defaultimage{{/if}} pointer" src="{{actor.img}}" title="{{actor.name}}" data-action="editImage" data-edit="img" />
 						{{else}}
-							<img class="profile-img {{#if (eq actor.img 'icons/svg/mystery-man.svg')}}defaultimage{{/if}}" src="{{actor.img}}" />	
+							<img class="profile-img {{#if (eq actor.img 'icons/svg/mystery-man.svg')}}defaultimage{{/if}}" src="{{actor.img}}" />
 						{{/if}}
-					{{/if}} 
+					{{/if}}
 				</div>
 
 				<div style="width: 320px; flex-direction: column;">
@@ -44,7 +44,7 @@
 									<span class="floating-label">{{localize 'wod.bio.nature'}}</span>
 								</div>
 							{{/if}}
-												
+
 							<div class="bioInformationArea floating-label-group">
 								{{#if locked}}
 									<input class="sheet-infoValues" type="text" value="{{actor.system.bio.demeanor}}" autocomplete="off" autofocus required />
@@ -53,7 +53,7 @@
 								{{/if}}
 								<span class="floating-label">{{localize 'wod.bio.demeanor'}}</span>
 							</div>
-							
+
 						{{/if}}
 
 						{{#if (ne (checkSystemsetting "viewBiotabPermission") "mini")}}
@@ -65,7 +65,7 @@
 								{{/if}}
 								<span class="floating-label">{{localize 'wod.bio.concept'}}</span>
 							</div>
-							
+
 							<div class="bioInformationArea floating-label-group">
 								{{#if locked}}
 									<input class="sheet-infoValues" type="text" value="{{actor.system.bio.derangement}}" autocomplete="off" autofocus required />
@@ -73,23 +73,23 @@
 									<input class="sheet-infoValues editable" name="system.bio.derangement" type="text" value="{{actor.system.bio.derangement}}" data-dtype="String" autocomplete="off" autofocus required />
 								{{/if}}
 								<span class="floating-label">{{localize 'wod.bio.derangement'}}</span>
-							</div>	
+							</div>
 						{{/if}}
-					</div>				
+					</div>
 				</div>
 
 				<!-- To list splat input and selects -->
-				{{> "systems/worldofdarkness/templates/actor/parts/bio_splatfields.hbs" locked=locked}}
-				
-			</div>			
-		</div>	
+				{{> "systems/wod-advanced/templates/actor/parts/bio_splatfields.hbs" locked=locked}}
 
-		<div class="sheet-area flex-columns">	
+			</div>
+		</div>
+
+		<div class="sheet-area flex-columns">
 
 			<div class="area-box">
 
 				<!-- To list splat textboxes -->
-				{{> "systems/worldofdarkness/templates/actor/parts/bio_splatboxes.hbs" locked=locked}}			
+				{{> "systems/wod-advanced/templates/actor/parts/bio_splatboxes.hbs" locked=locked}}
 
 				{{#if graphicsettings.useLinkPlatform}}
 					<div class="area-box headlineText splatFont">{{localize 'wod.bio.worldanvil'}}</div>
@@ -107,18 +107,18 @@
 					</div>
 				{{/if}}
 
-				{{> "systems/worldofdarkness/templates/actor/parts/description.hbs" proseheadline="wod.bio.appearance" locked=locked headline=false prosename="system.bio.appearance" locked=locked prosevalue=appearance proseenriched=enrichedAppearance}}
+				{{> "systems/wod-advanced/templates/actor/parts/description.hbs" proseheadline="wod.bio.appearance" locked=locked headline=false prosename="system.bio.appearance" locked=locked prosevalue=appearance proseenriched=enrichedAppearance}}
 
 				{{#if (ne (checkSystemsetting "viewBiotabPermission") "mini")}}
-					{{> "systems/worldofdarkness/templates/actor/parts/description.hbs" proseheadline="wod.bio.background" locked=locked headline=false prosename="system.bio.background" prosevalue=background proseenriched=enrichedBackground}}									
+					{{> "systems/wod-advanced/templates/actor/parts/description.hbs" proseheadline="wod.bio.background" locked=locked headline=false prosename="system.bio.background" prosevalue=background proseenriched=enrichedBackground}}
 				{{/if}}
 
 				{{#if isGM}}
-					{{> "systems/worldofdarkness/templates/actor/parts/description.hbs" proseheadline="wod.bio.tips" locked=locked headline=false prosename="system.bio.roleplaytip" prosevalue=roleplaytip proseenriched=enrichedRoleplaytip}}
+					{{> "systems/wod-advanced/templates/actor/parts/description.hbs" proseheadline="wod.bio.tips" locked=locked headline=false prosename="system.bio.roleplaytip" prosevalue=roleplaytip proseenriched=enrichedRoleplaytip}}
 				{{/if}}
 			</div>
-		</div>	
+		</div>
 
 	</div>
-	
+
 </section>

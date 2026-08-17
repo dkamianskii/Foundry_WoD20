@@ -153,7 +153,7 @@ export class SortArcanoiPower {
     }
 }
 
-export class SortHekauPower { 
+export class SortHekauPower {
     constructor(item) {
         this._id = item["_id"];
         this.name = item["name"];
@@ -178,7 +178,7 @@ export class SortHekauPower {
     }
 }
 
-export class SortNuminaPower { 
+export class SortNuminaPower {
     constructor(item) {
         this._id = item["_id"];
         this.name = item["name"];
@@ -210,7 +210,7 @@ export class DialogSortPower extends FormApplication {
         super(power, {submitOnChange: true, closeOnSubmit: false});
         this.actor = actor;
         this.isDialog = true;
-        
+
         this.options.title = `${this.actor.name}`;
     }
 
@@ -222,7 +222,7 @@ export class DialogSortPower extends FormApplication {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["wod20 wod-dialog sortdiscipline-dialog"],
-            template: "systems/worldofdarkness/templates/dialogs/dialog-sortpower.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-sortpower.hbs",
             closeOnSubmit: false,
             submitOnChange: true,
             resizable: true
@@ -248,7 +248,7 @@ export class DialogSortPower extends FormApplication {
 
             let powers = (this.actor?.items || []).filter(item => item.type === "Power" && item.system.type === this.object.variant);
             powers.sort((a, b) => a.name.localeCompare(b.name));
-            this.object.powerlist = powers;            
+            this.object.powerlist = powers;
         }
         else {
             if (this.object.isDiscipline) {
@@ -285,9 +285,9 @@ export class DialogSortPower extends FormApplication {
             }
         }
 
-        
 
-        data.config = CONFIG.worldofdarkness;    
+
+        data.config = CONFIG.worldofdarkness;
 
         return data;
     }
@@ -297,7 +297,7 @@ export class DialogSortPower extends FormApplication {
 
         html
             .find('.dialog-power-button')
-            .click(this._setPower.bind(this));        
+            .click(this._setPower.bind(this));
 
         html
             .find('.actionbutton')
@@ -314,7 +314,7 @@ export class DialogSortPower extends FormApplication {
             return;
         }
 
-        event.preventDefault();       
+        event.preventDefault();
     }
 
     close() {
@@ -327,9 +327,9 @@ export class DialogSortPower extends FormApplication {
         const element = event.currentTarget;
         const parent = $(element.parentNode);
         const steps = parent.find(".dialog-power-button");
-        const id = element.value;   
+        const id = element.value;
 
-        this.object.parentid = id;   
+        this.object.parentid = id;
         this.object.canSave = true;
 
         steps.removeClass("active");
@@ -345,7 +345,7 @@ export class DialogSortPower extends FormApplication {
         if (!this.object.canSave) {
             return;
         }
-    
+
         for (const item of this.actor.items) {
             if (item._id == this.object._id) {
                 const itemData = foundry.utils.duplicate(item);
@@ -362,5 +362,5 @@ export class DialogSortPower extends FormApplication {
     /* clicked to close form */
     _closeForm(event) {
         this.object.close = true;
-    }    
+    }
 }

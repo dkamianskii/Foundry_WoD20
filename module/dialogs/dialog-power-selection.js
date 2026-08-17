@@ -7,7 +7,7 @@ export class DialogPowerSelection extends HandlebarsApplicationMixin(Application
         this.actor = actor;
         this.buttonData = buttonData;
         this.buttons = buttonData.flatButtons;
-        
+
         // Set localized title
         this.options.window.title = game.i18n.localize("wod.labels.new.create");
     }
@@ -28,7 +28,7 @@ export class DialogPowerSelection extends HandlebarsApplicationMixin(Application
             createPower: async function(event, target) {
                 const powerType = target.dataset.powerType;
                 const buttonCallback = this.buttons[powerType]?.callback;
-                
+
                 if (buttonCallback) {
                     // Använd CreateHelper som context för callback
                     // Callback förväntar sig att actor är tillgänglig i closure
@@ -39,9 +39,9 @@ export class DialogPowerSelection extends HandlebarsApplicationMixin(Application
             toggleCategory: function(event, target) {
                 const category = target.closest('.power-category');
                 if (!category) return;
-                
+
                 const isExpanded = category.classList.contains('expanded');
-                
+
                 category.classList.toggle('expanded');
                 const buttonsDiv = category.querySelector('.power-category-buttons');
                 if (buttonsDiv) {
@@ -51,7 +51,7 @@ export class DialogPowerSelection extends HandlebarsApplicationMixin(Application
                         buttonsDiv.style.display = 'flex';
                     }
                 }
-                
+
                 // Uppdatera chevron-ikon
                 const icon = category.querySelector('.fa-chevron-right, .fa-chevron-down');
                 if (icon) {
@@ -69,29 +69,29 @@ export class DialogPowerSelection extends HandlebarsApplicationMixin(Application
 
     static PARTS = {
         body: {
-            template: 'systems/worldofdarkness/templates/dialogs/dialog-power-selection.hbs'
+            template: 'systems/wod-advanced/templates/dialogs/dialog-power-selection.hbs'
         }
     }
 
     async _prepareContext() {
         const data = await super._prepareContext();
-        
+
         // Bestäm sheettype
-        let splatname = (this.actor.system.settings.variantsheet === "" ? 
-            this.actor.system.settings.splat.toLowerCase() : 
+        let splatname = (this.actor.system.settings.variantsheet === "" ?
+            this.actor.system.settings.splat.toLowerCase() :
             this.actor.system.settings.variantsheet.toLowerCase());
         let sheettype = (splatname === "pc" ? "mortal" : splatname);
-        
+
         if ((sheettype == CONFIG.worldofdarkness.sheettype.changingbreed) || (sheettype == CONFIG.worldofdarkness.splat.changingbreed)) {
             sheettype = CONFIG.worldofdarkness.sheettype.werewolf;
         }
-        
+
         data.tab = "power";
         data.sheettype = sheettype;
         data.actor = this.actor;
         data.categories = this.buttonData.categories;
         data.config = CONFIG.worldofdarkness;
-        
+
         return data;
     }
 }

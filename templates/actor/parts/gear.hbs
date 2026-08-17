@@ -4,7 +4,7 @@
 
 	<div class="pullRight">
         <!-- Macro icons -->
-        {{> "systems/worldofdarkness/templates/actor/parts/macro_icons.hbs"}}				        	
+        {{> "systems/wod-advanced/templates/actor/parts/macro_icons.hbs"}}
     </div>
 
 	<div class="sheet-inner-area">
@@ -12,18 +12,18 @@
 			<span class="sheet-banner-text">{{localize 'wod.gear.headline'}}</span>
 		</div>
 
-		<div class="sheet-area flex-columns">	
-			{{> "systems/worldofdarkness/templates/actor/parts/description.hbs" locked=locked headline=true prosename="system.gear.notes" prosevalue=gear proseenriched=enrichedGear}}									
+		<div class="sheet-area flex-columns">
+			{{> "systems/wod-advanced/templates/actor/parts/description.hbs" locked=locked headline=true prosename="system.gear.notes" prosevalue=gear proseenriched=enrichedGear}}
 		</div>
 
 		<div class="sheet-headline sheet-banner splatFont">
 			<span class="sheet-banner-text">{{localize "wod.gear.money"}}</span>
 		</div>
 
-		<div class="sheet-area flex-columns" style="flex-flow: row nowrap;">	
+		<div class="sheet-area flex-columns" style="flex-flow: row nowrap;">
 			<div class="clearareaBox">
 				<div class="pullLeft" style="display: flex;">
-					<div class="area-box">		
+					<div class="area-box">
 
 						<div class="pullLeft bioInformationArea floating-label-group half">
 							{{#if locked}}
@@ -51,11 +51,11 @@
 			<span class="sheet-banner-text">{{localize "wod.gear.otheritems"}}</span>
 		</div>
 
-		<div class="sheet-area flex-columns">    
+		<div class="sheet-area flex-columns">
 			<div class="area-box">
 
 				<div class="headlineRow headlineList splatFont gear-itemlist">
-					<div class="width-namebox">{{localize "wod.gear.name"}}</div>     
+					<div class="width-namebox">{{localize "wod.gear.name"}}</div>
 					<div class="width-mediumbox">{{localize "wod.gear.type"}}</div>
 					<div class="width-abilitybox">{{localize "wod.dialog.dicepool"}}</div>
 					<div class="width-valuebox">{{localize "wod.combat.weapon.diff"}}</div>
@@ -108,7 +108,7 @@
 									<div class="width-abilitybox">&nbsp;</div>
 									<div class="width-valuebox">&nbsp;</div>
 								{{/if}}
-								
+
 							</div>
 							<div class="iconBox">
 								{{#if (isChecked item.system.isactive)}}
@@ -118,36 +118,36 @@
 								{{/if}}
 
 								{{#if (eq item.system.type "wod.types.treasure")}}
-									{{> "systems/worldofdarkness/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.treasure" deletetitle="wod.labels.remove.treasure"}}
+									{{> "systems/wod-advanced/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.treasure" deletetitle="wod.labels.remove.treasure"}}
 								{{else if (eq item.system.type "wod.types.relic")}}
-									{{> "systems/worldofdarkness/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.relic" deletetitle="wod.labels.remove.relic"}}
+									{{> "systems/wod-advanced/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.relic" deletetitle="wod.labels.remove.relic"}}
 								{{else if (eq item.system.type "wod.types.device")}}
-									{{> "systems/worldofdarkness/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.device" deletetitle="wod.labels.remove.device"}}
+									{{> "systems/wod-advanced/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.device" deletetitle="wod.labels.remove.device"}}
 								{{else if (eq item.system.type "wod.types.device")}}
-									{{> "systems/worldofdarkness/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.device" deletetitle="wod.labels.remove.device"}}
+									{{> "systems/wod-advanced/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.device" deletetitle="wod.labels.remove.device"}}
 								{{else if (eq item.system.type "wod.types.talisman")}}
-									{{> "systems/worldofdarkness/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.talisman" deletetitle="wod.labels.remove.talisman"}}
+									{{> "systems/wod-advanced/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.talisman" deletetitle="wod.labels.remove.talisman"}}
 								{{else if (eq item.system.type "wod.types.periapt")}}
-									{{> "systems/worldofdarkness/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.periapt" deletetitle="wod.labels.remove.periapt"}}
+									{{> "systems/wod-advanced/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.periapt" deletetitle="wod.labels.remove.periapt"}}
 								{{else if (eq item.system.type "wod.types.matrix")}}
-									{{> "systems/worldofdarkness/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.matrix" deletetitle="wod.labels.remove.matrix"}}
+									{{> "systems/wod-advanced/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.matrix" deletetitle="wod.labels.remove.matrix"}}
 								{{else if (eq item.system.type "wod.types.trinket")}}
-									{{> "systems/worldofdarkness/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.trinket" deletetitle="wod.labels.remove.trinket"}}
+									{{> "systems/wod-advanced/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.trinket" deletetitle="wod.labels.remove.trinket"}}
 								{{else if (eq item.system.type "wod.types.fetish")}}
-									{{> "systems/worldofdarkness/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.fetish" deletetitle="wod.labels.remove.fetish"}}
+									{{> "systems/wod-advanced/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.fetish" deletetitle="wod.labels.remove.fetish"}}
 								{{else if (eq item.system.type "wod.types.talen")}}
-									{{> "systems/worldofdarkness/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.talen" deletetitle="wod.labels.remove.talen"}}
+									{{> "systems/wod-advanced/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.talen" deletetitle="wod.labels.remove.talen"}}
 								{{else}}
-									{{> "systems/worldofdarkness/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.headline" deletetitle="wod.labels.remove.headline"}}
+									{{> "systems/wod-advanced/templates/actor/parts/list_icons.hbs" showsendchat=true showedit=true showdelete=true showtooltip=true item=item locked=../locked edittitle="wod.labels.edit.headline" deletetitle="wod.labels.remove.headline"}}
 								{{/if}}
-							</div>																			
-						</div>	
+							</div>
+						</div>
 						<div class="description" data-itemid="{{item._id}}">
 
 							{{{getToolTip_v2 item.system.description item.system.details item.system.bonuslist ../actor}}}
 
-						</div>			
-						
+						</div>
+
 					{{/each}}
 
 				</div>

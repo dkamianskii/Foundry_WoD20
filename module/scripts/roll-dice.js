@@ -1,5 +1,6 @@
 import BonusHelper from "./bonus-helpers.js";
 import CombatHelper from "./combat-helpers.js";
+import { getWillpowerState, spendWillpower } from "./willpower.js";
 
 let _diceColor;
 let _specialDiceType = "";
@@ -10,9 +11,9 @@ function _GetDiceColors(actor) {
 	if (actor == undefined) {
 		_diceColor = "black_";
 		return;
-	}		
+	}
 
-	let diceType = actor?.type.toLowerCase();	
+	let diceType = actor?.type.toLowerCase();
 
 	// For PC actors, use variantsheet or splat to determine dice type
 	if (actor.type === "PC") {
@@ -27,45 +28,45 @@ function _GetDiceColors(actor) {
 	if (actor?.system?.settings?.dicesetting != "") {
 		diceType = actor.system.settings.dicesetting;
 	}
-	if ((actor.system.settings.variantsheet == CONFIG.worldofdarkness.sheettype.changeling) && (actor.system.settings.dicesetting == "")) { 
+	if ((actor.system.settings.variantsheet == CONFIG.worldofdarkness.sheettype.changeling) && (actor.system.settings.dicesetting == "")) {
 		_diceColor = "blue_";
 	}
 	if ((actor.system.settings.variantsheet == CONFIG.worldofdarkness.sheettype.werewolf) && (actor.system.settings.dicesetting == "")) {
 		_diceColor = "brown_";
 	}
-	if ((actor.system.settings.variantsheet == CONFIG.worldofdarkness.sheettype.mage) && (actor.system.settings.dicesetting == "")) { 
+	if ((actor.system.settings.variantsheet == CONFIG.worldofdarkness.sheettype.mage) && (actor.system.settings.dicesetting == "")) {
 		_diceColor = "purple_";
 	}
-	if ((actor.system.settings.variantsheet == CONFIG.worldofdarkness.sheettype.vampire) && (actor.system.settings.dicesetting == "")) { 
+	if ((actor.system.settings.variantsheet == CONFIG.worldofdarkness.sheettype.vampire) && (actor.system.settings.dicesetting == "")) {
 		_diceColor = "red_";
 	}
-	if ((actor.system.settings.variantsheet == CONFIG.worldofdarkness.sheettype.wraith) && (actor.system.settings.dicesetting == "")) { 
+	if ((actor.system.settings.variantsheet == CONFIG.worldofdarkness.sheettype.wraith) && (actor.system.settings.dicesetting == "")) {
 		_diceColor = "death_";
 	}
 
 	if (diceType == CONFIG.worldofdarkness.sheettype.mortal.toLowerCase()) {
 		_diceColor = "blue_";
-	} 
+	}
 	if ((diceType == CONFIG.worldofdarkness.sheettype.werewolf.toLowerCase()) || (diceType == "changing breed")) {
 		_diceColor = "brown_";
 	}
-	if (diceType == CONFIG.worldofdarkness.sheettype.mage.toLowerCase()) { 
+	if (diceType == CONFIG.worldofdarkness.sheettype.mage.toLowerCase()) {
 		_diceColor = "purple_";
 	}
-	if (diceType == CONFIG.worldofdarkness.sheettype.vampire.toLowerCase()) { 
+	if (diceType == CONFIG.worldofdarkness.sheettype.vampire.toLowerCase()) {
 		_diceColor = "red_";
 	}
-	if (diceType == CONFIG.worldofdarkness.sheettype.changeling.toLowerCase()) { 
+	if (diceType == CONFIG.worldofdarkness.sheettype.changeling.toLowerCase()) {
 		_diceColor = "blue_";
 		_specialDiceType = "black_";
-	}	
-	if ((diceType == CONFIG.worldofdarkness.sheettype.hunter.toLowerCase()) || (diceType == CONFIG.worldofdarkness.sheettype.demon.toLowerCase())) { 
+	}
+	if ((diceType == CONFIG.worldofdarkness.sheettype.hunter.toLowerCase()) || (diceType == CONFIG.worldofdarkness.sheettype.demon.toLowerCase())) {
 		_diceColor = "orange_";
 	}
-	if ((diceType == CONFIG.worldofdarkness.sheettype.wraith.toLowerCase()) || (actor.system.settings.variantsheet == CONFIG.worldofdarkness.sheettype.wraith)) { 
+	if ((diceType == CONFIG.worldofdarkness.sheettype.wraith.toLowerCase()) || (actor.system.settings.variantsheet == CONFIG.worldofdarkness.sheettype.wraith)) {
 		_diceColor = "death_";
 	}
-	if (diceType == CONFIG.worldofdarkness.sheettype.mummy.toLowerCase()) { 
+	if (diceType == CONFIG.worldofdarkness.sheettype.mummy.toLowerCase()) {
 		_diceColor = "yellow_";
 	}
 	if (diceType == "none") {
@@ -93,7 +94,7 @@ export class DiceRollContainer {
 
 		this.speciality = false;
 		this.usewillpower = false;
-		this.specialityText = "";		
+		this.specialityText = "";
 		this.systemText = "";
 		this.powerType = "";
 		this.incomingDamage = 0;
@@ -105,7 +106,7 @@ export class DiceRollContainer {
  * @returns {"off"|"core"|"playersguide"}
  */
 export function GetEvocationTormentMode() {
-	return game.settings.get("worldofdarkness", "demonEvocationTorment") || "off";
+	return game.settings.get("wod-advanced", "demonEvocationTorment") || "off";
 }
 
 /**
@@ -221,7 +222,7 @@ function _EvaluateEvocationTorment(dices, difficulty, permanentTorment, mode) {
 
 /**
  * Spend one temporary Willpower point.
- * PC actors store Willpower as an Advantage item; legacy actors use system.advantages.willpower.
+ * PC actors use the actor-owned wound track; legacy actors use temporary Willpower.
  * @param {Actor} actor
  * @returns {Promise<boolean>} true if a point was spent
  */
@@ -231,18 +232,7 @@ async function _spendTemporaryWillpower(actor) {
 	}
 
 	if (actor.type === "PC") {
-		const willpower = actor.items.find(item =>
-			item.type === "Advantage" && item.system?.id === "willpower"
-		);
-
-		if (!willpower || parseInt(willpower.system.temporary) <= 0) {
-			return false;
-		}
-
-		await willpower.update({
-			"system.temporary": parseInt(willpower.system.temporary) - 1
-		});
-		return true;
+		return spendWillpower(actor);
 	}
 
 	const current = parseInt(actor.system.advantages?.willpower?.temporary ?? 0);
@@ -262,18 +252,18 @@ export async function DiceRoller(diceRoll) {
 	let difficulty = diceRoll.difficulty;
 	let specialityText = diceRoll.specialityText;
 	const systemText = diceRoll.systemText;
-	let targetlist = diceRoll.targetlist;	
+	let targetlist = diceRoll.targetlist;
 	let usewillpower = diceRoll.usewillpower;
 
 	let diceResult;
 
 	// multi damage dices
 	const allDiceResult = [];
-	let rollInfo = "";	
-	
+	let rollInfo = "";
+
 	// dices to Dice So Nice :)
 	const allDices = [];
-	
+
 	let rolledDices;
 	let success;
 	let bonusSuccesses = 0;
@@ -284,13 +274,14 @@ export async function DiceRoller(diceRoll) {
 	let rollResult = "";
 	let info = [];
 	let systemtext = [];
-	
+	let exhaustionPenalty = 0;
+
 
 	difficulty = difficulty < CONFIG.worldofdarkness.lowestDifficulty ? CONFIG.worldofdarkness.lowestDifficulty : difficulty;
 
 	if (actor != undefined) {
 		if (await BonusHelper.CheckAttributeAutoBuff(actor, diceRoll.attribute)) {
-			bonusSuccesses = await BonusHelper.GetAttributeAutoBuff(actor, diceRoll.attribute);			
+			bonusSuccesses = await BonusHelper.GetAttributeAutoBuff(actor, diceRoll.attribute);
 		}
 	}
 
@@ -303,14 +294,19 @@ export async function DiceRoller(diceRoll) {
 				ui.notifications.warn(game.i18n.format("wod.dice.nowillpower", {name: actor.name}));
 			}
 		}
-		else if (CONFIG.worldofdarkness.willpowerBonusDice) {
+		else if ((actor?.type !== "PC") && CONFIG.worldofdarkness.willpowerBonusDice) {
 			canBotch = false;
 			diceRoll.numDices += 3;
 		}
 		else {
+			canBotch = false;
 			rolledAnySuccesses = true;
 			bonusSuccesses += 1;
 		}
+	}
+
+	if ((actor?.type === "PC") && getWillpowerState(actor).exhausted) {
+		exhaustionPenalty = -2;
 	}
 
 	if ((diceRoll.origin == "soak") && (!CONFIG.worldofdarkness.useOnesSoak)) {
@@ -340,34 +336,36 @@ export async function DiceRoller(diceRoll) {
 		diceResult.successes = success;
 		diceResult.rolledAnySuccesses = rolledAnySuccesses;
 
-		let numberDices = target.numDices + diceRoll.woundpenalty;
+		let numberDices = (parseInt(target.numDices) || 0)
+			+ (parseInt(diceRoll.woundpenalty) || 0)
+			+ exhaustionPenalty;
 
-		if (numberDices < 0) {
-			numberDices = 0;
+		if (numberDices < 1) {
+			numberDices = 1;
 		}
 
 		while (numberDices > rolledDices) {
 			let chosenDiceColor = _diceColor;
 			let roll = await new Roll("1d10");
-			await roll.evaluate();	
+			await roll.evaluate();
 			allDices.push(roll);
 
 			// Increment the number of dices that've been rolled
 			rolledDices += 1;
-			
+
 			// Evaluate each roll term
 			roll.terms[0].results.forEach((dice) => {
 
-				if (dice.result == 10) {				
+				if (dice.result == 10) {
 					if ((CONFIG.worldofdarkness.usespecialityAddSuccess) && (diceRoll.speciality)) {
 						success += CONFIG.worldofdarkness.specialityAddSuccess;
 					}
 					else if (CONFIG.worldofdarkness.usetenAddSuccess) {
 						success += CONFIG.worldofdarkness.tenAddSuccess;
-					}             
+					}
 					else {
 						success += 1;
-					}   
+					}
 					if (CONFIG.worldofdarkness.useexplodingDice) {
 						if ((CONFIG.worldofdarkness.explodingDice == "speciality") && (diceRoll.speciality)) {
 							rolledDices -= 1;
@@ -387,17 +385,17 @@ export async function DiceRoller(diceRoll) {
 					success += 1;
 				}
 				else if ((dice.result == 1) && (actor !== undefined)) {
-					if ((CONFIG.worldofdarkness.usehandleOnes) && (canBotch) && 
-							(!actor.system.attributes[diceRoll.attribute]?.isfavorited) && (!actor.system.attributes[diceRoll.ability]?.isfavorited) && 
+					if ((CONFIG.worldofdarkness.usehandleOnes) && (canBotch) &&
+							(!actor.system.attributes[diceRoll.attribute]?.isfavorited) && (!actor.system.attributes[diceRoll.ability]?.isfavorited) &&
 							(!actor.system.abilities[diceRoll.attribute]?.isfavorited) && (!actor.system.abilities[diceRoll.ability]?.isfavorited)) {
 						success = success - CONFIG.worldofdarkness.handleOnes;
 					}
 					// special rules regardingh Exalted
-					else if ((actor.system.attributes[diceRoll.attribute]?.isfavorited) || (actor.system.attributes[diceRoll.ability]?.isfavorited) && 
+					else if ((actor.system.attributes[diceRoll.attribute]?.isfavorited) || (actor.system.attributes[diceRoll.ability]?.isfavorited) &&
 							(actor.system.abilities[diceRoll.attribute]?.isfavorited) || (actor.system.abilities[diceRoll.ability]?.isfavorited)) {
 						isfavorited = true;
 					}
-		
+
 					rolledOne = true;
 				}
 
@@ -407,14 +405,14 @@ export async function DiceRoller(diceRoll) {
 
 				let result = {
 					value: parseInt(dice.result),
-					color: chosenDiceColor				
+					color: chosenDiceColor
 				}
 
 				diceResult.dices.push(result);
 			});
 		}
 
-		if ((usewillpower && !CONFIG.worldofdarkness.willpowerBonusDice) && (success < 1)) {
+		if ((actor?.type !== "PC") && (usewillpower && !CONFIG.worldofdarkness.willpowerBonusDice) && (success < 1)) {
 			success = 1;
 		}
 		else if (success < 0) {
@@ -432,7 +430,7 @@ export async function DiceRoller(diceRoll) {
 		}
 		else {
 			rollResult = "fail";
-		}	
+		}
 
 		// if setting of speciality not allow botch is in effect it is a fail instead
 		if ((rollResult == "botch") && (!CONFIG.worldofdarkness.specialityAllowBotch) && (diceRoll.speciality)) {
@@ -451,7 +449,7 @@ export async function DiceRoller(diceRoll) {
 			rollInfo += " + ";
 		}
 		rollInfo += property;
-	} 
+	}
 
 	if ((diceRoll.bonus > 0) && (diceRoll.dicetext.length > 0)) {
 		rollInfo += ` + ${diceRoll.bonus}`;
@@ -466,11 +464,14 @@ export async function DiceRoller(diceRoll) {
 			rollInfo += " ";
 		}
 		rollInfo += diceRoll.damageCode;
-	}	
+	}
 
 	// if any wound penalty show in message
 	if ((diceRoll.woundpenalty < 0) && (actor != undefined) && (actor.system.health != undefined) && (actor.system.health.damage.woundlevel != "")) {
 		info.push(`${game.i18n.localize(actor.system.health.damage.woundlevel)} (${diceRoll.woundpenalty})`);
+	}
+	if (exhaustionPenalty < 0) {
+		info.push(`${game.i18n.localize("wod.advantages.exhaustedwillpowerpenalty")} (${exhaustionPenalty})`);
 	}
 
 	if (diceRoll.speciality) {
@@ -481,7 +482,7 @@ export async function DiceRoller(diceRoll) {
 	}
 	else {
 		specialityText = "";
-	}	
+	}
 
 	const numericDifficulty = difficulty;
 	difficulty = `${game.i18n.localize("wod.labels.difficulty")}: ${difficulty}`;
@@ -498,17 +499,17 @@ export async function DiceRoller(diceRoll) {
 	}
 	if (usewillpower) {
 		let willpowerText = "";
-		if (CONFIG.worldofdarkness.willpowerBonusDice) {
+		if ((actor?.type !== "PC") && CONFIG.worldofdarkness.willpowerBonusDice) {
 			willpowerText = ` (+3 ${game.i18n.localize("wod.dice.bonusdices")})`;
 		}
-		info.push(game.i18n.localize("wod.dice.usingwillpower") + willpowerText);				
+		info.push(game.i18n.localize("wod.dice.usingwillpower") + willpowerText);
 	}
 	if (!canBotch) {
 		info.push(game.i18n.localize("wod.dice.nobotchpossible"));
 	}
 	if (systemText != "") {
 		systemtext.push(systemText);
-	}	
+	}
 	if (bonusSuccesses > 0) {
 		let text = game.i18n.localize("wod.dice.addedautosucc");
 		info.push(text.replace("{0}", bonusSuccesses));
@@ -553,14 +554,14 @@ export async function DiceRoller(diceRoll) {
             type: diceRoll.origin,
             action: diceRoll.action,
             title: rollInfo,
-			info: info,		
-			systemtext: systemtext,	
+			info: info,
+			systemtext: systemtext,
 			multipleresult: allDiceResult
         }
     };
 
     // Render the chat card template
-    const template = `systems/worldofdarkness/templates/dialogs/roll-template.hbs`;
+    const template = `systems/wod-advanced/templates/dialogs/roll-template.hbs`;
     const html = await foundry.applications.handlebars.renderTemplate(template, templateData);
 
     const chatData = {
@@ -603,14 +604,14 @@ export async function InitiativeRoll(diceRoll) {
 	// set correct dice colors
 	_GetDiceColors(actor);
 
-	let roll = new Roll("1d10");	
+	let roll = new Roll("1d10");
 	await roll.evaluate();
 	roll.terms[0].results.forEach((dice) => {
 		init += parseInt(dice.result) + parseInt(actor.system.initiative.total);
 
 		let result = {
 			value: parseInt(dice.result),
-			color: _diceColor		
+			color: _diceColor
 		}
 
 		diceResult.dices.push(result);
@@ -624,14 +625,14 @@ export async function InitiativeRoll(diceRoll) {
 		if (!CombatHelper._inTurn(token)) {
 			await token.document.toggleCombatant();
 
-			if (token.combatant.system.initiative == undefined) {      
+			if (token.combatant.system.initiative == undefined) {
 				await token.combatant.update({initiative: init});
 				rolledInitiative = true;
 			}
-			
+
 			tokenAdded = true;
 		}
-	}	
+	}
 
 	if (actor.type != CONFIG.worldofdarkness.sheettype.spirit) {
 		if (parseInt(actor.system.attributes.dexterity.total) >= parseInt(actor.system.attributes.wits.total)) {
@@ -639,7 +640,7 @@ export async function InitiativeRoll(diceRoll) {
 		}
 		else {
 			initAttribute = game.i18n.localize(actor.system.attributes.wits.label) + " " + actor.system.attributes.wits.total;
-		}			
+		}
 	}
 	else {
 		initAttribute = game.i18n.localize(actor.system.advantages.willpower.label) + " " + actor.system.advantages.willpower.permanent;
@@ -671,13 +672,13 @@ export async function InitiativeRoll(diceRoll) {
             type: diceRoll.origin,
             action: game.i18n.localize("wod.dice.rollinginitiative"),
             title: rollInfo,
-						info: info,			
+						info: info,
 						multipleresult: allDiceResult
         }
     };
 
     // Render the chat card template
-    const template = `systems/worldofdarkness/templates/dialogs/roll-template.hbs`;
+    const template = `systems/wod-advanced/templates/dialogs/roll-template.hbs`;
     const html = await foundry.applications.handlebars.renderTemplate(template, templateData);
 
     const chatData = {

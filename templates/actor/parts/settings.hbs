@@ -17,7 +17,7 @@
 		{{!-- Bio --}}
 		<div class="tab settings-bio" data-group="settings" data-tab="bio">
 
-				
+
 
 			<div class="space headlineGroup splatFont">{{localize 'wod.settings.splatfields'}}</div>
 
@@ -48,7 +48,7 @@
 		{{!-- Stats & Advantages --}}
 		<div class="tab settings-statsadv" data-group="settings" data-tab="statsadv">
 
-			<div class="space headlineGroup splatFont">{{localize 'wod.attributes.attributes'}}</div>		
+			<div class="space headlineGroup splatFont">{{localize 'wod.attributes.attributes'}}</div>
 
 			<div class="sheet-area flex-columns">
 				<div class="clearareaBox">
@@ -63,25 +63,25 @@
 					</div>
 
 					{{#each actor.system.attributes as |attribute key|}}
-				
+
 						{{#if attribute.isvisible}}
 							<div class="clearareaBox">
-								<label for="data.system.attributes.{{key}}.value" class="pullLeft headlineNormal settings-leftwidth">{{localize attribute.label}}</label>	
+								<label for="data.system.attributes.{{key}}.value" class="pullLeft headlineNormal settings-leftwidth">{{localize attribute.label}}</label>
 								<input class="pullLeft sheet-infoValues numberBox" type="text" value="{{attribute.value}}" readonly />
-								<input class="pullLeft sheet-infoValues numberBox inputdata {{#if (eq ../locked false)}}editable{{/if}}" type="text" value="{{attribute.bonus}}" name="system.attributes.{{key}}.bonus" 
+								<input class="pullLeft sheet-infoValues numberBox inputdata {{#if (eq ../locked false)}}editable{{/if}}" type="text" value="{{attribute.bonus}}" name="system.attributes.{{key}}.bonus"
 									data-source="attribute"
 									data-attribute="{{key}}"
 									data-dtype="Number" {{#if locked}}readonly{{/if}} />
 								<input class="pullLeft sheet-infoValues numberBox" type="text" value="{{attribute.total}}" readonly />
 								{{#if (ne ../actor.system.settings.splat ../config.splat.vampire)}}
-									<input class="pullLeft sheet-infoValues numberBox {{#if (eq ../locked false)}}editable{{/if}}" type="text" value="{{attribute.max}}" name="system.attributes.{{key}}.max" 
-										data-value="{{attribute.max}}" 
-										data-name="data.system.attributes.{{key}}.max" 
+									<input class="pullLeft sheet-infoValues numberBox {{#if (eq ../locked false)}}editable{{/if}}" type="text" value="{{attribute.max}}" name="system.attributes.{{key}}.max"
+										data-value="{{attribute.max}}"
+										data-name="data.system.attributes.{{key}}.max"
 										data-dtype="Number" {{#if locked}}readonly{{/if}} />
 								{{/if}}
 							</div>
 						{{/if}}
-						
+
 					{{/each}}
 				</div>
 				<div class="clearareaBox information-area">
@@ -102,7 +102,7 @@
 							{{else}}
 								<input class="sheet-infoValues half editable" type="text" name="system.settings.attributes.defaultmaxvalue" value="{{actor.system.settings.attributes.defaultmaxvalue}}" data-dtype="Number" autofocus required />
 							{{/if}}
-						</div>				
+						</div>
 					</div>
 					<div class="clearareaBox information-area">{{localize "wod.labels.settings.maxattribute"}}</div>
 				</div>
@@ -111,7 +111,7 @@
 			<div class="headlineGroup splatFont">{{localize 'wod.abilities.abilities'}}</div>
 
 			<div class="sheet-area flex-columns">
-				{{> "systems/worldofdarkness/templates/actor/parts/stats_abilities.hbs" showheadline=false useroll=false showvalues=false showvisibleicon=true}}
+				{{> "systems/wod-advanced/templates/actor/parts/stats_abilities.hbs" showheadline=false useroll=false showvalues=false showvisibleicon=true}}
 			</div>
 
 			{{#if (ne actor.system.settings.splat "vampire")}}
@@ -124,7 +124,7 @@
 							{{else}}
 								<input class="sheet-infoValues half editable" type="text" name="system.settings.abilities.defaultmaxvalue" value="{{actor.system.settings.abilities.defaultmaxvalue}}" data-dtype="Number" autofocus required />
 							{{/if}}
-						</div>				
+						</div>
 					</div>
 					<div class="clearareaBox information-area">{{localize "wod.labels.settings.maxability"}}</div>
 				</div>
@@ -215,7 +215,7 @@
 						{{else}}
 							<input class="sheet-infoValues half editable" type="text" name="system.settings.powers.defaultmaxvalue" value="{{actor.system.settings.powers.defaultmaxvalue}}" data-dtype="Number" autofocus required />
 						{{/if}}
-					</div>				
+					</div>
 				</div>
 				<div class="clearareaBox information-area">{{localize "wod.labels.settings.power.maxratinghint"}}</div>
 			</div>

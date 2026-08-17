@@ -89,7 +89,7 @@ export class RangedWeapon {
 
         this.canRoll = this.difficulty > -1 ? true : false;
         this.close = false;
-        this.sheettype = ""; 
+        this.sheettype = "";
     }
 }
 
@@ -108,7 +108,7 @@ export class Damage {
         this.weaponType = "Damage";
 
         this.dice1 = item.system.damage["attribute"];
-        this.dice2 = "";        
+        this.dice2 = "";
         this.bonus = parseInt(item.system.damage["bonus"]);
         this.dodgebonus = 0;
         this.accuracy = parseInt(item.system.damage["bonus"]);
@@ -136,7 +136,7 @@ export class Damage {
         if ((item.system.modename != undefined) && (item.system.modename == "spray")) {
             this.modename = "spray";
             this.numberoftargets = parseInt(item.system.numberoftargets);
-        }        
+        }
 
         this.system = item.system["description"];
 
@@ -151,7 +151,7 @@ export class DialogWeapon extends FormApplication {
         super(weapon, {submitOnChange: true, closeOnSubmit: false});
         this.actor = actor;
         this.isDialog = true;
-        
+
         this.options.title = `${this.actor.name}`;
     }
 
@@ -163,7 +163,7 @@ export class DialogWeapon extends FormApplication {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["wod20 wod-dialog weapon-dialog"],
-            template: "systems/worldofdarkness/templates/dialogs/dialog-weapon.hbs",
+            template: "systems/wod-advanced/templates/dialogs/dialog-weapon.hbs",
             closeOnSubmit: false,
             submitOnChange: true,
             resizable: true
@@ -177,7 +177,7 @@ export class DialogWeapon extends FormApplication {
         let abilitySpeciality = "";
         let specialityText = "";
 
-        data.actorData = this.actor.system;        
+        data.actorData = this.actor.system;
         data.config = CONFIG.worldofdarkness;
 
         if (this.actor.type == "PC") {
@@ -197,10 +197,10 @@ export class DialogWeapon extends FormApplication {
         else {
             data.actorData.type = this.actor.type;
 
-            if (this.actor.system?.listdata?.meleeAbilities.length > 0) 
+            if (this.actor.system?.listdata?.meleeAbilities.length > 0)
                 data.config.meleeAbilities = this.actor.system.listdata.meleeAbilities;
 
-            if (this.actor.system?.listdata?.rangedAbilities.length > 0) 
+            if (this.actor.system?.listdata?.rangedAbilities.length > 0)
                 data.config.rangedAbilities = this.actor.system.listdata.rangedAbilities;
 
             if ((data.actorData.type != CONFIG.worldofdarkness.sheettype.changingbreed) && (data.actorData.type != CONFIG.worldofdarkness.splat.changingbreed)) {
@@ -208,8 +208,8 @@ export class DialogWeapon extends FormApplication {
             }
             else {
                 data.object.sheettype = "werewolfDialog";
-            }       
-        }        
+            }
+        }
 
         let actortype = this.actor.type.toLowerCase();
 
@@ -229,10 +229,10 @@ export class DialogWeapon extends FormApplication {
             if (parseInt(data.actorData.attributes[data.object.dice1].value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
                 data.object.hasSpeciality = true;
                 attributeSpeciality = data.actorData.attributes[data.object.dice1].speciality;
-            }            
+            }
         }
         // is dice1 an Advantage
-        else if (data.actorData[data.object.dice1]?.roll != undefined) { 
+        else if (data.actorData[data.object.dice1]?.roll != undefined) {
             data.object.attributeValue = parseInt(data.actorData[data.object.dice1].roll);
             data.object.attributeName = game.i18n.localize(data.actorData[data.object.dice1].label);
 
@@ -262,8 +262,8 @@ export class DialogWeapon extends FormApplication {
                 if (abilityItem) {
                     data.object.abilityValue = parseInt(abilityItem.system.value);
                     data.object.abilityName = game.i18n.localize(abilityItem.system.label);
-                    
-                    if ((parseInt(abilityItem.system.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) || 
+
+                    if ((parseInt(abilityItem.system.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) ||
                         (CONFIG.worldofdarkness.alwaysspeciality[actortype].includes(abilityItem.system.id))) {
                         data.object.hasSpeciality = true;
                         abilitySpeciality = abilityItem.system.speciality;
@@ -278,7 +278,7 @@ export class DialogWeapon extends FormApplication {
                 data.object.abilityName = game.i18n.localize(data.actorData.abilities[data.object.dice2].label);
             }
             else {
-                data.object.abilityName = (data.actorData.abilities[data.object.dice2].altlabel == "") ? game.i18n.localize(data.actorData.abilities[data.object.dice2].label) : data.actorData.abilities[data.object.dice2].altlabel;            
+                data.object.abilityName = (data.actorData.abilities[data.object.dice2].altlabel == "") ? game.i18n.localize(data.actorData.abilities[data.object.dice2].label) : data.actorData.abilities[data.object.dice2].altlabel;
             }
 
             if ((parseInt(data.actorData.abilities[data.object.dice2].value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) || (CONFIG.worldofdarkness.alwaysspeciality[actortype].includes(data.actorData.abilities[data.object.dice2]._id))) {
@@ -293,7 +293,7 @@ export class DialogWeapon extends FormApplication {
                 if (!item) {
                     return;
                 }
-                
+
                 this.object.abilityValue = parseInt(item.system.value);
                 this.object.abilityName = item.system.label;
 
@@ -336,7 +336,7 @@ export class DialogWeapon extends FormApplication {
 
         html
             .find('.dialog-difficulty-button')
-            .click(this._setDifficulty.bind(this));        
+            .click(this._setDifficulty.bind(this));
 
         html
             .find('.dialog-numbertargets-button')
@@ -348,7 +348,7 @@ export class DialogWeapon extends FormApplication {
 
         html
             .find('.dialog-mode-button')
-            .click(this._setMode.bind(this));            
+            .click(this._setMode.bind(this));
 
         html
             .find('.actionbutton')
@@ -365,8 +365,8 @@ export class DialogWeapon extends FormApplication {
             return;
         }
 
-        event.preventDefault();       
-        
+        event.preventDefault();
+
         this.object.useSpeciality = formData["specialty"];
         this.object.useWillpower = formData["useWillpower"];
 
@@ -409,10 +409,10 @@ export class DialogWeapon extends FormApplication {
         const element = event.currentTarget;
         const parent = $(element.parentNode);
         const steps = parent.find(".dialog-difficulty-button");
-        const index = parseInt(element.value);   
+        const index = parseInt(element.value);
 
-        this.object.difficulty = index + this.object.modedifficulty;   
-        this.object.canRoll = this.object.difficulty > -1 ? true : false;     
+        this.object.difficulty = index + this.object.modedifficulty;
+        this.object.canRoll = this.object.difficulty > -1 ? true : false;
 
         if (index < 0) {
             return;
@@ -433,9 +433,9 @@ export class DialogWeapon extends FormApplication {
         const element = event.currentTarget;
         const parent = $(element.parentNode);
         const steps = parent.find(".dialog-numbertargets-button");
-        const index = parseInt(element.value);   
+        const index = parseInt(element.value);
 
-        this.object.numberoftargets = index;   
+        this.object.numberoftargets = index;
 
         if (index < 0) {
             return;
@@ -448,7 +448,7 @@ export class DialogWeapon extends FormApplication {
                 $(this).addClass("active");
             }
         });
-    }    
+    }
 
     _setMode(event) {
         const element = event.currentTarget;
@@ -461,7 +461,7 @@ export class DialogWeapon extends FormApplication {
         this.object.modedifficulty = 0;
 
         if (key == "") {
-            steps.removeClass("active");            
+            steps.removeClass("active");
             return;
         }
 
@@ -471,18 +471,18 @@ export class DialogWeapon extends FormApplication {
             this.object.numberoftargets = 1;
         }
         if (key == "burst") {
-            this.object.modebonus = 3;        
-            this.object.modedifficulty = 1; 
+            this.object.modebonus = 3;
+            this.object.modedifficulty = 1;
             this.object.numberoftargets = 1;
         }
         if (key == "fullauto") {
-            this.object.modebonus = 10;        
-            this.object.modedifficulty = 2;    
+            this.object.modebonus = 10;
+            this.object.modedifficulty = 2;
             this.object.numberoftargets = 1;
         }
         if (key == "spray") {
-            this.object.modebonus = 10;         
-            this.object.modedifficulty = 2;   
+            this.object.modebonus = 10;
+            this.object.modedifficulty = 2;
             this.object.numberoftargets = 1;
         }
 
@@ -545,7 +545,7 @@ export class DialogWeapon extends FormApplication {
         if (!this.object.canRoll) {
             ui.notifications.warn(game.i18n.localize("wod.dialog.missingdifficulty"));
             return;
-        }    
+        }
 
         let template = [];
         let numDices = 0;
@@ -578,7 +578,7 @@ export class DialogWeapon extends FormApplication {
 
             if (CONFIG.worldofdarkness.usePenaltyDamage) {
                 if (CombatHelper.ignoresPain(this.actor)) {
-                    woundPenaltyVal = 0;			}				
+                    woundPenaltyVal = 0;			}
                 else {
                     woundPenaltyVal = parseInt(this.actor.system.health.damage.woundpenalty);
                 }
@@ -609,16 +609,16 @@ export class DialogWeapon extends FormApplication {
                     weaponRoll.extraInfo.push(game.i18n.localize("wod.dialog.weapon.usingspray"));
                 }
             }
-    
+
             if (CombatHelper.ignoresPain(this.actor)) {
-                woundPenaltyVal = 0;			}				
+                woundPenaltyVal = 0;			}
             else {
                 woundPenaltyVal = parseInt(this.actor.system.health.damage.woundpenalty);
             }
 
             numDices = parseInt(this.object.attributeValue) + parseInt(this.object.abilityValue) + parseInt(this.object.bonus);
-        }            
-        
+        }
+
         let specialityText = "";
         this.object.close = true;
 
@@ -642,16 +642,16 @@ export class DialogWeapon extends FormApplication {
         }
 
         weaponRoll.numDices = numDices;
-        weaponRoll.difficulty = difficulty;          
+        weaponRoll.difficulty = difficulty;
         weaponRoll.dicetext = template;
         weaponRoll.usewillpower = this.object.useWillpower;
         weaponRoll.woundpenalty = parseInt(woundPenaltyVal);
-        
-        if (weaponRoll.origin == "attack") {            
+
+        if (weaponRoll.origin == "attack") {
             weaponRoll.systemText = this.object.system;
             weaponRoll.speciality = this.object.useSpeciality;
             weaponRoll.specialityText = specialityText;
-        }        
+        }
         else {
             if (!CONFIG.worldofdarkness.usePenaltyDamage) {
                 weaponRoll.woundpenalty = 0;
@@ -663,8 +663,8 @@ export class DialogWeapon extends FormApplication {
         if ((weaponRoll.origin == "attack") && (this.object.rollattack)) {
             weaponRoll.bonus = parseInt(this.object.bonus);
 
-            let item = await this.actor.getEmbeddedDocument("Item", this.object._id);            
-            
+            let item = await this.actor.getEmbeddedDocument("Item", this.object._id);
+
             // Uppdatera rolldamage från det hämtade objektet för att säkerställa aktuellt värde
             this.object.rolldamage = item.system.damage?.isrollable ?? false;
 
@@ -674,13 +674,13 @@ export class DialogWeapon extends FormApplication {
                 await item.update(itemData);
             }
 
-            const numberOfSuccesses = await DiceRoller(weaponRoll);   
-            
+            const numberOfSuccesses = await DiceRoller(weaponRoll);
+
             // DEBUGGING: Logga värden för att identifiera problem
             //console.log("Attack roll - numberOfSuccesses:", numberOfSuccesses);
             //console.log("Attack roll - this.object.rolldamage:", this.object.rolldamage);
             //console.log("Attack roll - item.system.damage:", item.system.damage);
-            
+
             if ((numberOfSuccesses > 0) && (this.object.rolldamage)) {
                 // add number of successes to Damage roll
                 item.system.extraSuccesses = parseInt(numberOfSuccesses) - 1;
@@ -692,10 +692,10 @@ export class DialogWeapon extends FormApplication {
             }
             else {
                 // DEBUGGING: Logga varför damage inte triggas
-                //console.log("Damage roll not triggered - numberOfSuccesses:", numberOfSuccesses, 
+                //console.log("Damage roll not triggered - numberOfSuccesses:", numberOfSuccesses,
                 //           "rolldamage:", this.object.rolldamage);
             }
-        } 
+        }
         else {
             weaponRoll.bonus = parseInt(this.object.bonus) +  parseInt(this.object.dodgebonus);
 
@@ -707,7 +707,7 @@ export class DialogWeapon extends FormApplication {
                 if (numberTargets > maxnumberTargets) {
                     numberTargets = maxnumberTargets;
                 }
-                
+
                 const targetlist = [];
                 let rolledSuccesses = maxnumberTargets;
 
@@ -756,6 +756,6 @@ export class DialogWeapon extends FormApplication {
     /* clicked to close form */
     _closeForm(event) {
         this.object.close = true;
-    }   
+    }
 }
 

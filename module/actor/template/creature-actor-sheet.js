@@ -3,15 +3,15 @@ import ActionHelper from "../../scripts/action-helpers.js";
 import CreateHelper from "../../scripts/create-helpers.js";
 
 export default class CreatureActorSheet extends MortalActorSheet {
-	
+
 	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-sheet creature"],
-			template: "systems/worldofdarkness/templates/actor/creature-sheet.html"
+			template: "systems/wod-advanced/templates/actor/creature-sheet.html"
 		});
 	}
-  
+
 	constructor(actor, options) {
 		super(actor, options);
 
@@ -43,7 +43,7 @@ export default class CreatureActorSheet extends MortalActorSheet {
 					}
 				}
 			}
-		}		
+		}
 
 		data.actor.system.listdata.forms = forms;
 
@@ -57,9 +57,9 @@ export default class CreatureActorSheet extends MortalActorSheet {
 
 	/** @override */
 	get template() {
-		return "systems/worldofdarkness/templates/actor/creature-sheet.html";
+		return "systems/wod-advanced/templates/actor/creature-sheet.html";
 	}
-	
+
 	/** @override */
 	activateListeners(html) {
 		super.activateListeners(html);
@@ -87,7 +87,7 @@ export default class CreatureActorSheet extends MortalActorSheet {
 			.change(event => this._onsheetChange(event));
 	}
 
-	_onRollCreatureDialog(event) {		
+	_onRollCreatureDialog(event) {
 		event.preventDefault();
 		const element = event.currentTarget;
 		const dataset = element.dataset;
@@ -114,12 +114,12 @@ export default class CreatureActorSheet extends MortalActorSheet {
 		const fields = fieldStrings.split(".");
 		const steps = parent.find(".resource-value-step");
 
-		if ((this.locked) && 
-				((fieldStrings != "advantages.rage.temporary") && 
+		if ((this.locked) &&
+				((fieldStrings != "advantages.rage.temporary") &&
 				(fieldStrings != "advantages.gnosis.temporary") &&
 				(fieldStrings != "advantages.glamour.temporary") &&
 				(fieldStrings != "advantages.banality.temporary") &&
-				(fieldStrings != "advantages.essence.temporary") && 
+				(fieldStrings != "advantages.essence.temporary") &&
 				(fieldStrings != "advantages.bloodpool.temporary"))) {
 			ui.notifications.warn(game.i18n.localize("wod.system.sheetlocked"));
 			return;

@@ -16,7 +16,7 @@ export default class CreateHelper {
 		}
 
 		if (type == "demon") {
-			if (game.settings.get('worldofdarkness', 'demonSystemSettings') == "20th") {
+			if (game.settings.get('wod-advanced', 'demonSystemSettings') == "20th") {
 				era = "modern20";
 			}
 		}
@@ -43,7 +43,7 @@ export default class CreateHelper {
 			actorCopy.system.abilities.technology.type = "skill";
 		}
 		if (type == "demon") {
-			if (game.settings.get('worldofdarkness', 'demonSystemSettings') != "20th") {
+			if (game.settings.get('wod-advanced', 'demonSystemSettings') != "20th") {
 				actorCopy.system.abilities.technology.type = "skill";
 			}
 		}
@@ -76,7 +76,7 @@ export default class CreateHelper {
 		}
 
 		if (type == "demon") {
-			if (game.settings.get('worldofdarkness', 'demonSystemSettings') == "20th") {
+			if (game.settings.get('wod-advanced', 'demonSystemSettings') == "20th") {
 				era = "modern20";
 			}
 		}
@@ -103,7 +103,7 @@ export default class CreateHelper {
 			updates["system.abilities.technology.type"] = "skill";
 		}
 		if (type == "demon") {
-			if (game.settings.get('worldofdarkness', 'demonSystemSettings') != "20th") {
+			if (game.settings.get('wod-advanced', 'demonSystemSettings') != "20th") {
 				updates["system.abilities.technology.type"] = "skill";
 			}
 		}
@@ -122,9 +122,9 @@ export default class CreateHelper {
 
 		return updates;
 	}
-    
+
     static async SetMortalAbilities(actor, era) {
-		console.log(`WoD | Set Mortal Abilities - ${era}`);		
+		console.log(`WoD | Set Mortal Abilities - ${era}`);
 
 		if (era == "victorian") {
 			await AbilityHelper.CreateAbility(actor, "wod.types.skillsecondability", "Ride", parseInt(actor.system.settings.abilities.defaultmaxvalue));
@@ -155,7 +155,7 @@ export default class CreateHelper {
 			await AbilityHelper.CreateAbility(actor, "wod.types.skillsecondability", game.i18n.localize("wod.abilities.archery"), parseInt(actor.system.settings.abilities.defaultmaxvalue), false, true);
 			await AbilityHelper.CreateAbility(actor, "wod.types.skillsecondability", game.i18n.localize("wod.abilities.commerce"), parseInt(actor.system.settings.abilities.defaultmaxvalue));
 			await AbilityHelper.CreateAbility(actor, "wod.types.skillsecondability", game.i18n.localize("wod.abilities.ride"), parseInt(actor.system.settings.abilities.defaultmaxvalue));
-			
+
 			await AbilityHelper.CreateAbility(actor, "wod.types.knowledgesecondability", game.i18n.localize("wod.abilities.ancientmedicine"), parseInt(actor.system.settings.abilities.defaultmaxvalue));
 			await AbilityHelper.CreateAbility(actor, "wod.types.knowledgesecondability", game.i18n.localize("wod.abilities.astrology"), parseInt(actor.system.settings.abilities.defaultmaxvalue));
             await AbilityHelper.CreateAbility(actor, "wod.types.knowledgesecondability", game.i18n.localize("wod.abilities.customs"), parseInt(actor.system.settings.abilities.defaultmaxvalue));
@@ -164,15 +164,15 @@ export default class CreateHelper {
 			await AbilityHelper.CreateAbility(actor, "wod.types.knowledgesecondability", game.i18n.localize("wod.abilities.seneschal"), parseInt(actor.system.settings.abilities.defaultmaxvalue));
 			await AbilityHelper.CreateAbility(actor, "wod.types.knowledgesecondability", game.i18n.localize("wod.abilities.writing"), parseInt(actor.system.settings.abilities.defaultmaxvalue));
 		}
-	}	
+	}
 
 	static async SetOrpheusAbilities(actorCopy, actor) {
 		console.log(`WoD | Set Orpheus Abilities - Modern`);
 		const era = 'modern';
 
 		await this.SetAbilities(actorCopy, "orpheus", era);
-		actorCopy.system.abilities.technology.type = "skill";		
-		
+		actorCopy.system.abilities.technology.type = "skill";
+
 		AbilityHelper.CreateTrait_nowait(actor, "wod.types.talentsecondability", "Intrigue", parseInt(actor.system.settings.abilities.defaultmaxvalue));
 		AbilityHelper.CreateTrait_nowait(actor, "wod.types.othertraits", "Dead-Eyes", 0);
 		AbilityHelper.CreateTrait_nowait(actor, "wod.types.othertraits", "Detect Nature Group", 0);
@@ -198,7 +198,7 @@ export default class CreateHelper {
 		return actorCopy;
 	}
 
-	static async SetVampireAbilities(actor, era) {	
+	static async SetVampireAbilities(actor, era) {
 		console.log(`WoD | Set Vampire Abilities`);
 
 		if (era == "victorian") {
@@ -240,14 +240,14 @@ export default class CreateHelper {
 		}
 	}
 
-	static async SetChangelingAbilities(actor) {	
+	static async SetChangelingAbilities(actor) {
 		console.log(`WoD | Set Changeling Abilities`);
 		let exists = false;
 
 		try {
 			let itemData = {
 				name: "actor",
-				type: "Trait",					
+				type: "Trait",
 				system: {
 					iscreated: true,
 					version: game.system.version,
@@ -258,8 +258,8 @@ export default class CreateHelper {
 			exists = await AbilityHelper.CheckItemExists(actor, "Trait", "wod.types.realms", "actor");
 			if (!exists) {
 				await actor.updateSource({ items: [itemData]});
-			}			
-			
+			}
+
 			itemData = {
 				name: "fae",
 				type: "Trait",
@@ -274,7 +274,7 @@ export default class CreateHelper {
 			if (!exists) {
 				await actor.updateSource({ items: [itemData]});
 			}
-	
+
 			itemData = {
 				name: "nature",
 				type: "Trait",
@@ -289,7 +289,7 @@ export default class CreateHelper {
 			if (!exists) {
 				await actor.updateSource({ items: [itemData]});
 			}
-	
+
 			itemData = {
 				name: "prop",
 				type: "Trait",
@@ -304,7 +304,7 @@ export default class CreateHelper {
 			if (!exists) {
 				await actor.updateSource({ items: [itemData]});
 			}
-	
+
 			itemData = {
 				name: "scene",
 				type: "Trait",
@@ -319,7 +319,7 @@ export default class CreateHelper {
 			if (!exists) {
 				await actor.updateSource({ items: [itemData]});
 			}
-	
+
 			itemData = {
 				name: "time",
 				type: "Trait",
@@ -329,7 +329,7 @@ export default class CreateHelper {
 					label: "wod.realms.time",
 					type: "wod.types.realms"
 				}
-			};				
+			};
 			exists = await AbilityHelper.CheckItemExists(actor, "Trait", "wod.types.realms", "time");
 			if (!exists) {
 				await actor.updateSource({ items: [itemData]});
@@ -338,10 +338,10 @@ export default class CreateHelper {
 		catch (err) {
             err.message = `Failed SetChangelingAbilities Actor ${actor.name}: ${err.message}`;
             console.error(err);
-        }		
+        }
 	}
 
-	static async SetWerewolfAbilities(actor, era) {	
+	static async SetWerewolfAbilities(actor, era) {
 		console.log(`WoD | Set Werewolf Abilities - ${era}`);
 
 		if (era == "victorian") {
@@ -356,22 +356,22 @@ export default class CreateHelper {
 		}
 	}
 
-	static async SetDemonAbilities(actor) {	
+	static async SetDemonAbilities(actor) {
 		console.log(`WoD | Set Demon Abilities`);
 
 		try {
 			const items = actor.items.filter(item => item.type === "Trait" && item.system.type === "wod.types.apocalypticform");
 			const exists = items.length >= 8;
 
-			if ((game.settings.get('worldofdarkness', 'demonCreateForms')) && (!exists))  {
+			if ((game.settings.get('wod-advanced', 'demonCreateForms')) && (!exists))  {
 				console.log(`CREATION: Adds missing Apocalyptic Forms to ${actor.name}`);
 
 				const number = 8 - items.length;
-				
+
 				for (let i = 1; i <= number; i++) {
 					let itemData = {
 						name: game.i18n.localize("wod.labels.new.apocalypticform"),
-						type: "Trait",						
+						type: "Trait",
 						system: {
 							iscreated: true,
 							version: game.system.version,
@@ -386,7 +386,7 @@ export default class CreateHelper {
 		catch (err) {
             err.message = `Failed SetDemonAbilities Actor ${actor.name}: ${err.message}`;
             console.error(err);
-        }		
+        }
 	}
 
 	static async SetCreatureAbilities(actor) {
@@ -399,7 +399,7 @@ export default class CreateHelper {
 					actor.system.abilities[ability].isvisible = false;
 				}
 			}
-		}	
+		}
 
 		return actor;
 	}
@@ -414,7 +414,7 @@ export default class CreateHelper {
 					updates["system.abilities." + ability + ".isvisible"] = false;
 				}
 			}
-		}	
+		}
 
 		return updates;
 	}
@@ -438,7 +438,7 @@ export default class CreateHelper {
 			}
 			else {
 				updates["system.advantages.willpower.permanent"] = 2;
-			}			
+			}
 		}
 		else {
 			updates["system.attributes.composure.isvisible"] = false;
@@ -447,10 +447,10 @@ export default class CreateHelper {
 		}
 
 		if (CONFIG.worldofdarkness.rollSettings) {
-			willpower = actor.system.advantages.willpower.permanent; 
+			willpower = actor.system.advantages.willpower.permanent;
 		}
 		else {
-			willpower = actor.system.advantages.willpower.permanent > actor.system.advantages.willpower.temporary ? actor.system.advantages.willpower.temporary : actor.system.advantages.willpower.permanent; 
+			willpower = actor.system.advantages.willpower.permanent > actor.system.advantages.willpower.temporary ? actor.system.advantages.willpower.temporary : actor.system.advantages.willpower.permanent;
 		}
 
 		updates["system.advantages.willpower.roll"] = willpower;
@@ -472,7 +472,7 @@ export default class CreateHelper {
 		updates["system.settings.soak.aggravated.isrollable"] = false;
 
 		updates["system.settings.haspath"] = true;
-		updates["system.settings.hasbloodpool"] = true;		
+		updates["system.settings.hasbloodpool"] = true;
 		updates["system.settings.hasvirtue"] = true;
 
 		updates["system.settings.powers.hasdisciplines"] = true;
@@ -567,7 +567,7 @@ export default class CreateHelper {
 		actor.system.settings.soak.chimerical.bashing.isrollable = true;
 		actor.system.settings.soak.chimerical.lethal.isrollable = true;
 		actor.system.settings.soak.chimerical.aggravated.isrollable = false;
-		
+
 		actor.system.settings.hasglamour = true;
 		actor.system.settings.hasbanality = true;
 
@@ -582,7 +582,7 @@ export default class CreateHelper {
 		updates["system.settings.soak.chimerical.bashing.isrollable"] = true;
 		updates["system.settings.soak.chimerical.lethal.isrollable"] = true;
 		updates["system.settings.soak.chimerical.aggravated.isrollable"] = false;
-		
+
 		updates["system.settings.hasglamour"] = true;
 		updates["system.settings.hasbanality"] = true;
 
@@ -623,7 +623,7 @@ export default class CreateHelper {
 		actor.system.settings.hasvirtue = true;
 		actor.system.settings.hasfaith = true;
 		actor.system.settings.hastorment = true;
-		
+
 		actor.system.settings.powers.haslores = true;
 
 		actor.system.advantages.virtues.selfcontrol.label = "wod.advantages.virtue.conviction";
@@ -641,7 +641,7 @@ export default class CreateHelper {
 		updates["system.settings.hasvirtue"] = true;
 		updates["system.settings.hasfaith"] = true;
 		updates["system.settings.hastorment"] = true;
-		
+
 		updates["system.settings.powers.haslores"] = true;
 
 		updates["system.advantages.virtues.selfcontrol.label"] = "wod.advantages.virtue.conviction";
@@ -746,7 +746,7 @@ export default class CreateHelper {
 		actor.system.settings.soak.lethal.isrollable = true;
 		actor.system.settings.soak.aggravated.isrollable = true;
 
-		
+
 
 		return actor;
 	}
@@ -812,12 +812,12 @@ export default class CreateHelper {
 		actorData.system.settings.variant = variant;
 
 		if (actorData.system.settings.variant == 'general') {
-			actorData.system.settings.hasbloodpool = true;	
+			actorData.system.settings.hasbloodpool = true;
 			actorData.system.settings.hasvirtue = true;
 			actorData.system.settings.haspath = true;
 		}
 		if (actorData.system.settings.variant == 'kindredeast') {
-			actorData.system.settings.hasbloodpool = false;	
+			actorData.system.settings.hasbloodpool = false;
 			actorData.system.settings.hasvirtue = false;
 			actorData.system.settings.haspath = false;
 		}
@@ -837,7 +837,7 @@ export default class CreateHelper {
 		actorData.system.settings.haswillpower = true;
 
 		actorData.system.settings.hasrage = false;
-		actorData.system.settings.hasgnosis = false;						
+		actorData.system.settings.hasgnosis = false;
 		actorData.system.settings.haspath = false;
 		actorData.system.settings.hasbloodpool = false;
 		actorData.system.settings.hasvirtue = false;
@@ -859,14 +859,14 @@ export default class CreateHelper {
 		actorData.system.settings.powers.hascharms = false;
 		actorData.system.settings.powers.haspowers = false;
 		actorData.system.settings.powers.hashekau = false;
-		actorData.system.settings.powers.hasnumina = false;		
+		actorData.system.settings.powers.hasnumina = false;
 
 		actorData.system.settings.powers.hashorrors = false;
 		actorData.system.settings.powers.hasstains = false;
 		actorData.system.settings.hasvitality = false;
 		actorData.system.settings.hasspite = false;
 
-		actorData.system.settings.hasquintessence = false;		
+		actorData.system.settings.hasquintessence = false;
 
 		if (actorData.type == CONFIG.worldofdarkness.sheettype.mortal) {
 			actorData.system.settings.variantsheet = "";
@@ -914,23 +914,23 @@ export default class CreateHelper {
 				actorData.system.settings.variantsheet = CONFIG.worldofdarkness.sheettype.werewolf;
 			}
 			if (variant == 'truefaith') {
-				actorData.system.settings.hasfaith = true;	
-				actorData.system.settings.powers.haspowers = true;			
+				actorData.system.settings.hasfaith = true;
+				actorData.system.settings.powers.haspowers = true;
 			}
 		}
 
 		return actorData;
-	}	
+	}
 
 	static async SetCreatureVariant(actorData, variant) {
 		actorData.system.settings.variant = variant;
 
 		actorData.system.settings.haswillpower = true;
 		actorData.system.settings.soak.bashing.isrollable = true;
-		actorData.system.settings.powers.haspowers = true;	
-		
+		actorData.system.settings.powers.haspowers = true;
+
 		actorData.system.settings.hasrage = false;
-		actorData.system.settings.hasgnosis = false;						
+		actorData.system.settings.hasgnosis = false;
 		actorData.system.settings.haspath = false;
 		actorData.system.settings.hasbloodpool = false;
 		actorData.system.settings.hasvirtue = false;
@@ -950,13 +950,13 @@ export default class CreateHelper {
 		actorData.system.settings.powers.hasedges = false;
 		actorData.system.settings.powers.haslores = false;
 		actorData.system.settings.powers.hascharms = false;
-		actorData.system.settings.powers.hashekau = false;			
+		actorData.system.settings.powers.hashekau = false;
 
 		if (actorData.type == CONFIG.worldofdarkness.sheettype.creature) {
 			actorData.system.settings.variantsheet = "";
 
 			if (variant == 'general') {
-				
+
 			}
 			if (variant == 'chimera') {
 				actorData.system.settings.hasglamour = true;
@@ -976,7 +976,7 @@ export default class CreateHelper {
 			}
 			if (variant == 'spirit') {
 				actorData.system.settings.hasrage = true;
-				actorData.system.settings.hasgnosis = true;	
+				actorData.system.settings.hasgnosis = true;
 				actorData.system.settings.hasessence = true;
 				actorData.system.settings.powers.hasgifts = true;
 				actorData.system.settings.powers.hascharms = true;
@@ -991,14 +991,14 @@ export default class CreateHelper {
 			}
 			if (variant == 'anurana') {
 				actorData.system.settings.hasrage = true;
-				actorData.system.settings.hasgnosis = true;	
+				actorData.system.settings.hasgnosis = true;
 				actorData.system.settings.soak.lethal.isrollable = true;
 				actorData.system.settings.soak.aggravated.isrollable = true;
 				actorData.system.settings.variantsheet = CONFIG.worldofdarkness.sheettype.werewolf;
 			}
 			if (variant == 'samsa') {
 				actorData.system.settings.hasrage = true;
-				actorData.system.settings.hasgnosis = true;	
+				actorData.system.settings.hasgnosis = true;
 				actorData.system.settings.powers.hasgifts = true;
 				actorData.system.settings.soak.lethal.isrollable = true;
 				actorData.system.settings.soak.aggravated.isrollable = true;
@@ -1006,14 +1006,14 @@ export default class CreateHelper {
 			}
 			if (variant == 'kerasi') {
 				actorData.system.settings.hasrage = true;
-				actorData.system.settings.hasgnosis = true;	
+				actorData.system.settings.hasgnosis = true;
 				actorData.system.settings.soak.lethal.isrollable = true;
 				actorData.system.settings.soak.aggravated.isrollable = true;
 				actorData.system.settings.variantsheet = CONFIG.worldofdarkness.sheettype.werewolf;
 			}
 			if (variant == 'yeren') {
 				actorData.system.settings.hasrage = true;
-				actorData.system.settings.hasgnosis = true;	
+				actorData.system.settings.hasgnosis = true;
 				actorData.system.settings.powers.hasgifts = true;
 				actorData.system.settings.soak.lethal.isrollable = true;
 				actorData.system.settings.soak.aggravated.isrollable = true;
@@ -1296,9 +1296,9 @@ export default class CreateHelper {
 
 			if ((_a === null) || (_a === void 0)) {
 				void 0;
-			}                
+			}
 			else {
-				_a.render(true);  
+				_a.render(true);
 			}
 		}
 	}
@@ -1398,7 +1398,7 @@ export default class CreateHelper {
 				}
 			};
 		}
-		if (type == "ritual") { 	
+		if (type == "ritual") {
 			itemData = {
 				name: game.i18n.localize("wod.labels.new.ritual"),
 				type: "Power",
@@ -1409,7 +1409,7 @@ export default class CreateHelper {
 				}
 			};
 		}
-		if (type == "combination") {		
+		if (type == "combination") {
 			itemData = {
 				name: game.i18n.localize("wod.labels.new.combination"),
 				type: "Power",
@@ -1647,7 +1647,7 @@ export default class CreateHelper {
 				callback: async () => {
 					let itemData = {
 						name: game.i18n.localize("wod.labels.new.talent"),
-						type: "Ability",					
+						type: "Ability",
 						system: {
 							label: game.i18n.localize("wod.labels.new.talent"),
 							max: actor.system.settings.abilities.defaultmaxvalue,
@@ -1737,7 +1737,7 @@ export default class CreateHelper {
 				callback: async () => {
 					let itemData = {
 						name: game.i18n.localize("wod.labels.new.naturalweapon"),
-						type: "Melee Weapon",					
+						type: "Melee Weapon",
 						system: {
 							isnatural: true,
 							isweapon: true,
@@ -1811,33 +1811,33 @@ export default class CreateHelper {
 		if (!actor || actor.type !== "PC") {
 			return [];
 		}
-		
+
 		const games = new Set();
-		
+
 		// Lägg till actor's huvudspel
 		if (actor.system.settings?.game) {
 			games.add(actor.system.settings.game);
 		}
-		
+
 		// Analysera alla Power items på actorn
-		const powerItems = actor.items.filter(item => 
+		const powerItems = actor.items.filter(item =>
 			item.type === "Power" && item.system?.game
 		);
-		
+
 		for (const item of powerItems) {
 			if (item.system.game) {
 				games.add(item.system.game);
 			}
 		}
-		
+
 		// Analysera Rote items (tillhör mage)
-		const roteItems = actor.items.filter(item => 
+		const roteItems = actor.items.filter(item =>
 			item.type === "Rote"
 		);
 		if (roteItems.length > 0) {
 			games.add("mage");
 		}
-		
+
 		return Array.from(games);
 	}
 
@@ -1874,7 +1874,7 @@ export default class CreateHelper {
 			exalted: "wod.games.exalted",
 			other: "wod.labels.other"
 		};
-		
+
 		const labelKey = gameLabels[gameName] || "wod.labels.other";
 		return game.i18n.localize(labelKey);
 	}
@@ -1882,7 +1882,7 @@ export default class CreateHelper {
 	static async CreateButtonsPowerv2(actor) {
 		// Hämta vilka spel som är relevanta för denna actor
 		const actorGames = this.getActorGames(actor);
-		
+
 		// Definiera alla buttons med deras game-tillhörighet
 		const allButtons = {
 			gift: {
@@ -2204,7 +2204,7 @@ export default class CreateHelper {
 				}
 			}
 		};
-		
+
 		// Lägg till rote om actor har spheres
 		if (actor.system.settings.hasspheres) {
 			allButtons.rote = {
@@ -2239,14 +2239,14 @@ export default class CreateHelper {
 			delete allButtons.lorepower;
 			delete allButtons.demonritual;
 		}
-		
+
 		// Gruppera buttons efter game
 		const categories = {};
 		const flatButtons = {};
-		
+
 		for (const [key, buttonData] of Object.entries(allButtons)) {
 			const game = buttonData.game || "other";
-			
+
 			// Skapa kategori om den inte finns
 			if (!categories[game]) {
 				categories[game] = {
@@ -2255,14 +2255,14 @@ export default class CreateHelper {
 					buttons: {}
 				};
 			}
-			
+
 			// Lägg till button i kategori
 			categories[game].buttons[key] = buttonData.button;
-			
+
 			// Lägg till i flatButtons för callback-hantering
 			flatButtons[key] = buttonData.button;
 		}
-		
+
 		// Sortera knappar i varje kategori så att "rote" kommer först i Mage-kategorin
 		for (const [game, category] of Object.entries(categories)) {
 			if (game === "mage" && category.buttons.rote) {
@@ -2278,7 +2278,7 @@ export default class CreateHelper {
 				categories[game].buttons = sortedButtons;
 			}
 		}
-		
+
 		return {
 			categories: categories,
 			flatButtons: flatButtons
@@ -2773,14 +2773,14 @@ export default class CreateHelper {
 		}
 	}
 
-	/* 
-		Create the buttons for create Power Items 
+	/*
+		Create the buttons for create Power Items
 		mortal
 		vampire
-		
+
 	*/
 	static async CreateButtonsPower(actor) {
-		let buttons = {};		
+		let buttons = {};
 		let system = actor.type.toLowerCase();
 
 		if (actor.system.settings.variantsheet != "") {
@@ -2926,7 +2926,7 @@ export default class CreateHelper {
 					label: game.i18n.localize("wod.types.horror"),
 					callback: async () => {
 						let itemData = await this.CreateItemPower("horror", system);
-	
+
 						await this.CreateItem(actor, itemData);
 						return;
 					}
@@ -2937,14 +2937,14 @@ export default class CreateHelper {
 					label: game.i18n.localize("wod.types.stain"),
 					callback: async () => {
 						let itemData = await this.CreateItemPower("stain", system);
-	
+
 						await this.CreateItem(actor, itemData);
 						return;
 					}
 				};
 			}
 		}
-		
+
 		if (actor.type == CONFIG.worldofdarkness.sheettype.mage) {
 			buttons.rote = {
 				label: game.i18n.localize("wod.types.rote"),
@@ -2972,7 +2972,7 @@ export default class CreateHelper {
 					label: game.i18n.localize("wod.types.art"),
 					callback: async () => {
 						let itemData = await this.CreateItemPower("art", system);
-	
+
 						await this.CreateItem(actor, itemData);
 						return;
 					}
@@ -2981,7 +2981,7 @@ export default class CreateHelper {
 					label: game.i18n.localize("wod.types.artpower"),
 					callback: async () => {
 						let itemData = await this.CreateItemPower("artpower", system);
-	
+
 						await this.CreateItem(actor, itemData);
 						return;
 					}
@@ -2992,7 +2992,7 @@ export default class CreateHelper {
 					label: game.i18n.localize("wod.types.sliver"),
 					callback: async () => {
 						let itemData = await this.CreateItemPower("sliver", system);
-	
+
 						await this.CreateItem(actor, itemData);
 						return;
 					}
@@ -3025,7 +3025,7 @@ export default class CreateHelper {
 					label: game.i18n.localize("wod.types.arcanoi"),
 					callback: async () => {
 						let itemData = await this.CreateItemPower("arcanoi", system);
-	
+
 						await this.CreateItem(actor, itemData);
 						return;
 					}
@@ -3034,7 +3034,7 @@ export default class CreateHelper {
 					label: game.i18n.localize("wod.types.arcanoipower"),
 					callback: async () => {
 						let itemData = await this.CreateItemPower("arcanoipower", system);
-	
+
 						await this.CreateItem(actor, itemData);
 						return;
 					}
@@ -3090,7 +3090,7 @@ export default class CreateHelper {
 					}
 				};
 			}
-			
+
 		}
 
 		if (actor.type == CONFIG.worldofdarkness.sheettype.exalted) {
@@ -3133,7 +3133,7 @@ export default class CreateHelper {
 					return;
 				}
 			};
-			
+
 		}
 
 		if (actor.system.settings.powers.hascharms) {

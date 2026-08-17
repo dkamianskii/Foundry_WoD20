@@ -22,10 +22,10 @@ export default class RealmItemSheet extends HandlebarsApplicationMixin(WoDItemSh
 
     static PARTS = {
         header: {
-            template: 'systems/worldofdarkness/templates/items/parts/header-sheet.hbs'
+            template: 'systems/wod-advanced/templates/items/parts/header-sheet.hbs'
         },
         stats: {
-            template: 'systems/worldofdarkness/templates/items/realm-sheet.hbs'
+            template: 'systems/wod-advanced/templates/items/realm-sheet.hbs'
         }
     }
 
@@ -49,7 +49,7 @@ export default class RealmItemSheet extends HandlebarsApplicationMixin(WoDItemSh
         const actor = this.item.actor;
 
         data.listData = SelectHelper.SetupItem(item);
-        //data.canEdit = this.item.isOwner || game.user.isGM;	
+        //data.canEdit = this.item.isOwner || game.user.isGM;
 
         if (item.actor != null) {
 			data.hasActor = true;

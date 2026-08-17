@@ -12,8 +12,8 @@ export default class DropHelper {
         const droppedItem = await Item.implementation.fromDropData(data);
         const itemData = foundry.utils.duplicate(droppedItem);
 
-        if ((actor.type != "PC") && 
-            ((droppedItem.type === "Ability") || 
+        if ((actor.type != "PC") &&
+            ((droppedItem.type === "Ability") ||
                 (droppedItem.type === "Advantage") ||
                 (droppedItem.type === "Sphere") ||
                 (droppedItem.type === "Realm") ||
@@ -26,17 +26,22 @@ export default class DropHelper {
 			return;
 		}
 
-        if (droppedItem.type === "Splat") {  
+        if (droppedItem.type === "Splat") {
             update = await this.DropSplatToActor(actor, droppedItem);
         }
 
-        if (droppedItem.type === "Ability") {  
+        if (droppedItem.type === "Ability") {
             if (!droppedItem.system.type || droppedItem.system.type === "" || droppedItem.system.type === "wod.abilities.ability") {
                 droppedItem.system.type = "wod.abilities.talent";
             }
         }
 
         if (droppedItem.type === "Advantage") {
+            if ((actor.type === "PC") && (droppedItem.system.id === "willpower")) {
+                ui.notifications.warn(game.i18n.localize("wod.advantages.willpowerbuiltin"));
+                return false;
+            }
+
             const items = actor.items.filter(item => item.type === "Advantage" && item.system.id === droppedItem.system.id && item.system.id !== "");
 
             if (items.length > 0) {
@@ -69,7 +74,7 @@ export default class DropHelper {
             return;
         }
 
-        if (droppedItem.type === "Bonus") {            
+        if (droppedItem.type === "Bonus") {
             itemData.system.isremovable = true;
             update = true;
         }
@@ -116,25 +121,25 @@ export default class DropHelper {
             // Search for actor sheet element - support both legacy and V14 formats
             while (target && target !== document.body) {
                 const id = target.id;
-                
+
                 // Check for legacy format: ActorSheet-Actor-{id}
                 if (target.tagName === 'DIV' && typeof id === 'string' && id.includes('ActorSheet-Actor-')) {
                     hoveredSheetActorId = id.replace(/^.*ActorSheet-Actor-/, '');
                     break;
                 }
-                
+
                 // Check for PC Actor format: PCActorSheet-Actor-{id} (form element, not div)
                 if (typeof id === 'string' && id.includes('PCActorSheet-Actor-')) {
                     hoveredSheetActorId = id.replace(/^.*PCActorSheet-Actor-/, '');
                     break;
                 }
-                
+
                 // Check for V14 format: check if element has data-actor-id attribute or is inside an actor sheet
                 if (target.dataset?.actorId) {
                     hoveredSheetActorId = target.dataset.actorId;
                     break;
                 }
-                
+
                 // Check if we're inside an actor sheet window (V14 uses different structure)
                 const windowApp = target.closest('.window-app.actor-sheet, .window-app[data-appid*="Actor"]');
                 if (windowApp) {
@@ -151,7 +156,7 @@ export default class DropHelper {
                         break;
                     }
                 }
-                
+
                 // Also check for actor-sheet class directly
                 if (target.classList?.contains('actor-sheet') || target.closest('.actor-sheet')) {
                     const actorSheet = target.closest('.actor-sheet') || target;
@@ -169,7 +174,7 @@ export default class DropHelper {
                         break;
                     }
                 }
-                
+
                 target = target.parentElement;
             }
 
@@ -197,11 +202,11 @@ export default class DropHelper {
                 }
 
                 if (isCopied) {
-                    document.body.style.cursor = 'copy';                
+                    document.body.style.cursor = 'copy';
                 }
                 else {
-                    document.body.style.cursor = 'grabbing';                
-                }                
+                    document.body.style.cursor = 'grabbing';
+                }
             }
         }
 
@@ -248,7 +253,7 @@ export default class DropHelper {
                 clone.style.display = '';
                 clone.style.pointerEvents = 'none';
             }
-            
+
             // Search for actor sheet element - support both legacy and V14 formats
             while (target && target !== document.body) {
                 const id = target.id;
@@ -262,19 +267,19 @@ export default class DropHelper {
                     newActorId = id.replace(/^.*ActorSheet-Actor-/, '');
                     break;
                 }
-                
+
                 // Check for PC Actor format: PCActorSheet-Actor-{id} (form element, not div)
                 if (typeof id === 'string' && id.includes('PCActorSheet-Actor-')) {
                     newActorId = id.replace(/^.*PCActorSheet-Actor-/, '');
                     break;
                 }
-                
+
                 // Check for V14 format: check if element has data-actor-id attribute
                 if (target.dataset?.actorId) {
                     newActorId = target.dataset.actorId;
                     break;
                 }
-                
+
                 // Check if we're inside an actor sheet window (V14 uses different structure)
                 const windowApp = target.closest('.window-app.actor-sheet, .window-app[data-appid*="Actor"]');
                 if (windowApp) {
@@ -291,7 +296,7 @@ export default class DropHelper {
                         break;
                     }
                 }
-                
+
                 // Also check for actor-sheet class directly
                 if (target.classList?.contains('actor-sheet') || target.closest('.actor-sheet')) {
                     const actorSheet = target.closest('.actor-sheet') || target;
@@ -345,7 +350,7 @@ export default class DropHelper {
         function activateDragBetweenActors(e) {
             isDragging = true;
             wasDragged = true;
-            original.dataset.wasDragged = "true";               
+            original.dataset.wasDragged = "true";
 
             const parent = original.parentElement;
             if (!parent) return;
@@ -363,7 +368,7 @@ export default class DropHelper {
             clone.style.height = `${rect.height}px`;
             clone.style.zIndex = 10000; // Högre z-index för att vara säker på att den är överst
             clone.style.pointerEvents = 'none';
-            
+
             // Förbättrad visuell feedback
             clone.style.opacity = '0.85';
             clone.style.transform = 'scale(0.95)'; // Lite mindre för bättre visuell feedback
@@ -390,13 +395,13 @@ export default class DropHelper {
             // HandleDragDrop uses mouse events, while Foundry V14 DragDrop API uses drag events
             // They can coexist - Foundry V14 handles internal sorting, HandleDragDrop handles drag-between-actors
             // Only activate if we're actually dragging (not just clicking)
-            
+
             // Check if parent has data-drag attribute (used for Foundry V14 DragDrop API)
             const parent = original.parentElement;
             if (!parent) return;
-            
+
             const hasDataDrag = parent.hasAttribute('data-drag') || parent.closest('[data-drag]') !== null;
-            
+
             // If this element uses Foundry V14 DragDrop API, we need to be careful
             // Only activate HandleDragDrop if we're dragging to a different actor sheet
             // We'll check this in onMouseMove by detecting if we're outside the current sheet
@@ -404,17 +409,17 @@ export default class DropHelper {
                 // For elements with data-drag, delay activation until we confirm we're dragging to another sheet
                 // This prevents conflicts with Foundry V14's internal sorting
                 let hasStartedDrag = false;
-                
+
                 const checkDragTarget = (moveEvent) => {
                     if (hasStartedDrag) return;
-                    
+
                     // Check if mouse has moved significantly (actual drag, not just click)
                     const deltaX = Math.abs(moveEvent.clientX - e.clientX);
                     const deltaY = Math.abs(moveEvent.clientY - e.clientY);
-                    
+
                     if (deltaX > 5 || deltaY > 5) {
                         hasStartedDrag = true;
-                        
+
                         // Check if we're dragging outside the current sheet
                         const currentSheet = htmlElement;
                         if (!currentSheet || !currentSheet.getBoundingClientRect) {
@@ -422,12 +427,12 @@ export default class DropHelper {
                             const sheetElement = original.closest('.app.window-app.actor-sheet, .wod-sheet');
                             if (sheetElement) {
                                 const sheetRect = sheetElement.getBoundingClientRect();
-                                const isOutsideSheet = 
-                                    moveEvent.clientX < sheetRect.left || 
+                                const isOutsideSheet =
+                                    moveEvent.clientX < sheetRect.left ||
                                     moveEvent.clientX > sheetRect.right ||
-                                    moveEvent.clientY < sheetRect.top || 
+                                    moveEvent.clientY < sheetRect.top ||
                                     moveEvent.clientY > sheetRect.bottom;
-                                
+
                                 if (isOutsideSheet) {
                                     isCtrlPressed = moveEvent.ctrlKey;
                                     activateDragBetweenActors(e);
@@ -444,33 +449,33 @@ export default class DropHelper {
                             return;
                         }
                         const sheetRect = currentSheet.getBoundingClientRect();
-                        const isOutsideSheet = 
-                            moveEvent.clientX < sheetRect.left || 
+                        const isOutsideSheet =
+                            moveEvent.clientX < sheetRect.left ||
                             moveEvent.clientX > sheetRect.right ||
-                            moveEvent.clientY < sheetRect.top || 
+                            moveEvent.clientY < sheetRect.top ||
                             moveEvent.clientY > sheetRect.bottom;
-                        
+
                         if (isOutsideSheet) {
                             // Now activate HandleDragDrop for drag-between-actors
                             isCtrlPressed = moveEvent.ctrlKey;
                             activateDragBetweenActors(e);
                         }
-                        
+
                         // Cleanup listener
                         document.removeEventListener('mousemove', checkDragTarget);
                         document.removeEventListener('mouseup', cleanupCheck);
                     }
                 };
-                
+
                 const cleanupCheck = () => {
                     document.removeEventListener('mousemove', checkDragTarget);
                     document.removeEventListener('mouseup', cleanupCheck);
                 };
-                
+
                 // Listen for mousemove to detect if we're dragging outside
                 document.addEventListener('mousemove', checkDragTarget);
                 document.addEventListener('mouseup', cleanupCheck);
-                
+
                 return; // Don't activate HandleDragDrop immediately for data-drag elements
             }
 
@@ -531,6 +536,11 @@ export default class DropHelper {
         const advantagesToUpdate = [];
 
         for (const advantage of existingAdvantages) {
+            if (advantage.system.id === "willpower") {
+                idsToDelete.push(advantage.id);
+                continue;
+            }
+
             const updateData = {
                 _id: advantage.id,
                 "system.settings.isremovable": true
@@ -599,6 +609,10 @@ export default class DropHelper {
         const advantages = droppedItem.system.advantages;
 
         for (const obj in advantages) {
+            if (advantages[obj]?.system?.id === "willpower") {
+                continue;
+            }
+
             const advantageData = await this.ImportAdvantage(actor, advantages[obj]);
 
             if (advantageData === false) {
@@ -610,7 +624,7 @@ export default class DropHelper {
             }
 
             itemlistData.push(advantageData);
-            
+
             if (advantageData.system.id == "willpower") {
                 actorData.system.settings.haswillpower = true;
             }
@@ -627,7 +641,7 @@ export default class DropHelper {
                 actorData.system.settings.hasquintessence = true;
             }
         }
-        
+
         // Import features
         const features = droppedItem.system.features;
 
@@ -635,8 +649,8 @@ export default class DropHelper {
         const featuresArray = Object.keys(features).map(key => ({
             key,
             feature: features[key],
-            order: features[key].system?.type === "wod.types.shapeform" 
-                ? Number(features[key].system?.order || 0) 
+            order: features[key].system?.type === "wod.types.shapeform"
+                ? Number(features[key].system?.order || 0)
                 : Infinity
         }));
 
@@ -648,16 +662,16 @@ export default class DropHelper {
         // Import all features in one pass
         for (const { key, feature } of featuresArray) {
             const featureData = await this.ImportFeatures(actor, feature);
-            
+
             if (featureData === false) {
                 continue;
             }
-            
+
             // Set isactive for first shapeform only
             if (featureData.system?.type === "wod.types.shapeform") {
                 featureData.system.isactive = (firstShapeform && key === firstShapeform.key);
             }
-            
+
             itemlistData.push(featureData);
         }
 
@@ -683,7 +697,7 @@ export default class DropHelper {
         if (itemlistData.length > 0) {
             await actor.createEmbeddedDocuments("Item", itemlistData);
         }
-     
+
         // Merge splat specific bio fields
         const newObjects = await this.PopulateBio(actor, droppedItem);
         actorData.system.bio.splatfields = actorData.system.bio.splatfields || {};
@@ -698,7 +712,7 @@ export default class DropHelper {
         }
 
         actorData.system.settings.attributes.defaultmaxvalue = droppedItem.system.settings.attributes.defaultmaxvalue;
-        actorData.system.settings.abilities.defaultmaxvalue = droppedItem.system.settings.abilities.defaultmaxvalue;   
+        actorData.system.settings.abilities.defaultmaxvalue = droppedItem.system.settings.abilities.defaultmaxvalue;
         actorData.system.settings.abilities.defaultmaxvalue = droppedItem.system.settings.powers.defaultmaxvalue;
 
         // Clear health
@@ -706,13 +720,13 @@ export default class DropHelper {
 
         const health = droppedItem.system.health;
         let totalHealthLevels = 0;
-        
+
         for (const healthlevel in CONFIG.worldofdarkness.woundLevels) {
             totalHealthLevels += parseInt(health[healthlevel].value);
         }
 
         actorData.system.traits.health.totalhealthlevels.value = totalHealthLevels;
-        actorData.system.traits.health.totalhealthlevels.max = totalHealthLevels;  
+        actorData.system.traits.health.totalhealthlevels.max = totalHealthLevels;
 
         const soaklevel = droppedItem.system.settings.soak;
 
@@ -736,7 +750,7 @@ export default class DropHelper {
         actorData.system.settings.game = droppedItem.system.settings.game;
         actorData.system.settings.variant = droppedItem.system.settings.variant;
         actorData.system.settings.variantsheet = droppedItem.system.settings.variantsheet;
-        actorData.system.settings.dicesetting = "";        
+        actorData.system.settings.dicesetting = "";
 
         actorData.system.settings.iscreated = true;
         actorData.system.settings.isupdated = false;
@@ -765,7 +779,7 @@ export default class DropHelper {
             await actor.deleteEmbeddedDocuments("Item", allItemIds);
         }
 
-        
+
 
         // Prepare actor data updates - reset to default PC actor state
         let actorData = foundry.utils.duplicate(actor);
@@ -793,6 +807,11 @@ export default class DropHelper {
             aggravated: 0,
             woundlevel: "",
             woundpenalty: 0
+        };
+
+        actorData.system.willpower.damage = {
+            light: 0,
+            heavy: 0
         };
 
         // Reset health levels to default (all value: 1, total: 1)
@@ -886,12 +905,12 @@ export default class DropHelper {
         actorData.system.settings.era = "wod.era.modern";
 
         // Reset advantage flags
-        actorData.system.settings.haswillpower = false;
+        actorData.system.settings.haswillpower = true;
         actorData.system.settings.hasgnosis = false;
         actorData.system.settings.hasvirtue = false;
         actorData.system.settings.hasrenown = false;
         actorData.system.settings.hasquintessence = false;
-        
+
         // Reset power flags
         actorData.system.settings.hasdisciplines = false;
         actorData.system.settings.hascombinationdisciplines = false;
@@ -908,7 +927,7 @@ export default class DropHelper {
         actorData.system.settings.usechimerical = false;
 
         // Keep usesplatfont from game settings (as per default PC actor)
-        actorData.system.settings.usesplatfont = game.settings.get('worldofdarkness', 'useSplatFonts') ?? true;
+        actorData.system.settings.usesplatfont = game.settings.get('wod-advanced', 'useSplatFonts') ?? true;
 
         // Reset default max values to standard (5)
         actorData.system.settings.attributes.defaultmaxvalue = 5;
@@ -948,7 +967,7 @@ export default class DropHelper {
         return true;
     }
 
- 
+
     static async DropToActor(actor, clone, destinationId, options = {}) {
         if (destinationId == actor._id) {
             // same sheet ignore
@@ -980,7 +999,7 @@ export default class DropHelper {
             const parent = await actor.items.get(itemData.system.parentid);
             itemData.system.parentid = parent.name.toLowerCase();
             itemData.system.parentid = await ItemHelper.GetPowerId(itemData, destinationActor);
-        }        
+        }
 
         const bonuslist = BonusHelper.asBonuslist(itemData.system.bonuslist);
         if (bonuslist.length > 0) {
@@ -994,16 +1013,16 @@ export default class DropHelper {
 
         if (!isCopy) {
             if (((item.type === "Melee Weapon") && (!item.system.isnatural)) || (item.type === "Ranged Weapon") || (item.type === "Armor") || (item.type === "Fetish") || (item.type === "Item")) {
-                actor.deleteEmbeddedDocuments("Item", [itemId]); 
-            }  
-        }  
+                actor.deleteEmbeddedDocuments("Item", [itemId]);
+            }
+        }
 
         return true;
-    }  
+    }
 
     // makes sure that the advantage settings are set accordingly to if you have the adventage or not.
     static SetAdvantageSettings(advantage, actorData) {
-        let haswillpower = false; 
+        let haswillpower = actorData.type === "PC";
         let hasgnosis = false;
         let hasvirtue = false;
         let hasrenown = false;
@@ -1085,7 +1104,7 @@ export default class DropHelper {
             if (item !== undefined) {
                 const loadedData = foundry.utils.duplicate(item);
                 mergedData = this.PopulateAdvantage(loadedData, advantage);
-            }            
+            }
         }
 
         // if not in world use what you got
@@ -1101,11 +1120,11 @@ export default class DropHelper {
     static async ImportFeatures(actor, feature) {
         // Check if feature already exists on actor (by itemuuid to avoid duplicates)
         if (feature.uuid) {
-            const existingFeature = actor.items.find(i => 
-                i.type === "Trait" && 
+            const existingFeature = actor.items.find(i =>
+                i.type === "Trait" &&
                 i.system.itemuuid === feature.uuid
             );
-            
+
             if (existingFeature) {
                 console.log(`WoD | Installing Splat | Feature ${feature.name} already exists (itemuuid: ${feature.uuid}).`);
                 return false;
@@ -1152,11 +1171,11 @@ export default class DropHelper {
         }
 
         if (power.uuid) {
-            const existingFeature = actor.items.find(i => 
-                i.type === power.type && 
+            const existingFeature = actor.items.find(i =>
+                i.type === power.type &&
                 i.system.settings?.itemuuid === power.uuid
             );
-            
+
             if (existingFeature) {
                 console.log(`WoD | Installing Splat | Power ${power.name} already exists (itemuuid: ${power.uuid}).`);
                 return false;
@@ -1198,8 +1217,8 @@ export default class DropHelper {
 
 
     static async ImportAbility(actor, ability) {
-        // If ability.uuid begins with Compendium, e.g., Compendium.worldofdarkness.lunarshapeshifting.Item.4wb0jZskSDXKmkWZ
-        // search in the pack worldofdarkness.lunarshapeshifting for the full uuid
+        // If ability.uuid begins with Compendium, e.g., Compendium.wod-advanced.lunarshapeshifting.Item.4wb0jZskSDXKmkWZ
+        // search in the pack wod-advanced.lunarshapeshifting for the full uuid
         // If ability.uuid begins with Item, it's in the world, so search game.items for the uuid or _id.
         if (actor.system.abilities[ability.system.id] !== undefined) {
             console.log(`WoD |Installing Splat | Ability ${ability.name} already exists.`);
@@ -1219,10 +1238,10 @@ export default class DropHelper {
 
                 if (!loadedData.system.settings.alwaysspeciality) {
                     loadedData.system.settings.alwaysspeciality = (CONFIG.worldofdarkness.alwaysspeciality?.[actor.system.settings.game] ?? []).includes(loadedData.system.id);
-                } 
+                }
 
                 mergedData = await this.PopulateAbility(loadedData, ability);
-            }            
+            }
         }
 
         // if not found look into the world for the Item.
@@ -1250,7 +1269,7 @@ export default class DropHelper {
 
             mergedData = {
                 name: ability.name,
-                type: "Ability",                
+                type: "Ability",
                 system: {
                     id: ability.system.id,
                     reference: ability.system.reference,
@@ -1289,9 +1308,9 @@ export default class DropHelper {
                     label: "wod.bio.vampire.generation",
                     value: 13,
                     mod: 0,
-                    type: "select",                
+                    type: "select",
                     listdata: "Generation"
-                }; 
+                };
     }
 
     /**
@@ -1422,7 +1441,7 @@ export default class DropHelper {
         // if (loadedData.system.id === "paradox") {
         //     loadedData.system.settings.isvisible = false;
         // }
-        
+
         loadedData.system.settings.itemuuid = advantage.uuid;
         loadedData.system.settings.version = game.system.version;
         loadedData.system.settings.order = advantage.system.settings.order;
@@ -1448,7 +1467,7 @@ export default class DropHelper {
 
         loadedData.system.settings.iscreated = true;
         loadedData.system.settings.isvisible = true;
-        
+
         loadedData.system.settings.itemuuid = power.uuid;
         loadedData.system.settings.version = game.system.version;
         loadedData.system.settings.order = power.system.settings?.order ?? power.system.order;
@@ -1472,7 +1491,7 @@ export default class DropHelper {
     /**
      * Handles reordering of embedded objects in a list (e.g., advantages in Splat Items).
      * Updates order values for all items in the list based on their new positions.
-     * 
+     *
      * @param {Item} item - The Item document containing the list
      * @param {DragEvent} event - Drop event from drag-and-drop operation
      * @param {Object} data - Drag data containing:
@@ -1491,7 +1510,7 @@ export default class DropHelper {
     static async ReorderEmbeddedItemsInList(item, event, data, options) {
         // 1. Validation
         if (data.documentid !== item._id) return false;
-        
+
         // 2. Get list from item document
         const listPath = data.list.split('.');
         let list = item;
@@ -1499,22 +1518,22 @@ export default class DropHelper {
             if (list?.[key] === undefined) return false;
             list = list[key];
         }
-        
+
         if (!Array.isArray(list)) return false;
-        
+
         // 3. Find dragged item index
         const draggedIndex = list.findIndex(item => item._id === data.itemid);
         if (draggedIndex === -1) return false;
-        
+
         // 4. Find target position
         const dropTarget = event.target.closest(options.itemClass);
         let targetIndex;
-        
+
         if (dropTarget) {
             const targetId = dropTarget.dataset.itemid;
             targetIndex = list.findIndex(item => item._id === targetId);
             if (targetIndex === -1) return false;
-            
+
             // Determine before/after based on mouse position
             const rect = dropTarget.getBoundingClientRect();
             const midpoint = rect.top + rect.height / 2;
@@ -1527,10 +1546,10 @@ export default class DropHelper {
             if (!container) return false;
             targetIndex = list.length;
         }
-        
+
         // 5. Validate that position actually changes
         if (targetIndex === draggedIndex || targetIndex === draggedIndex + 1) return false;
-        
+
         // 6. Create documentData and get listRef
         const itemData = foundry.utils.duplicate(item);
         const listPathArray = data.list.split('.');
@@ -1538,18 +1557,18 @@ export default class DropHelper {
         for (const key of listPathArray) {
             listRef = listRef[key];
         }
-        
+
         // 7. Move item in listRef
         const [movedItem] = listRef.splice(draggedIndex, 1);
-        
+
         // Adjust target index if item moved from lower position
         let adjustedTargetIndex = targetIndex;
         if (draggedIndex < targetIndex) {
             adjustedTargetIndex--;
         }
-        
+
         listRef.splice(adjustedTargetIndex, 0, movedItem);
-        
+
         // 8. Update order values for all items
         const orderPath = options.orderProperty.split('.');
         listRef.forEach((item, index) => {
@@ -1564,20 +1583,20 @@ export default class DropHelper {
             // Set order value
             orderRef[orderPath[orderPath.length - 1]] = index;
         });
-        
+
         // 9. Save and render
         await item.update(itemData);
         if (options.sheet) {
             options.sheet.render();
         }
-        
+
         return true;
     }
 
     /**
      * Handles reordering of Item documents on an Actor (e.g., advantages on PC Actor).
      * Updates order values for all items based on their new positions.
-     * 
+     *
      * @param {Actor} actor - The Actor document
      * @param {DragEvent} event - Drop event from drag-and-drop operation
      * @param {Object} data - Drag data containing:
@@ -1595,7 +1614,7 @@ export default class DropHelper {
     static async ReorderActorItems(actor, event, data, options) {
         // 1. Validation
         if (data.documentid !== actor._id) return false;
-        
+
         // 2. Filter items from actor.items based on type and optionally group
         let list = actor.items.filter(item => {
             // Filter by item type based on data.list
@@ -1621,39 +1640,39 @@ export default class DropHelper {
             // Add more types here as needed
             return false;
         });
-        
+
         if (!Array.isArray(list) || list.length === 0) return false;
-        
+
         // 2.5. Sort list by order to match visual order
         const orderPath = options.orderProperty.split('.');
         list.sort((a, b) => {
             let orderA = a;
             let orderB = b;
-            
+
             // Navigate to order property
             for (const key of orderPath) {
                 orderA = orderA?.[key];
                 orderB = orderB?.[key];
             }
-            
+
             const numA = Number(orderA) ?? 999;
             const numB = Number(orderB) ?? 999;
             return numA - numB;
         });
-        
+
         // 3. Find dragged item index
         const draggedIndex = list.findIndex(item => item._id === data.itemid);
         if (draggedIndex === -1) return false;
-        
+
         // 4. Find target position
         const dropTarget = event.target.closest(options.itemClass);
         let targetIndex;
-        
+
         if (dropTarget) {
             const targetId = dropTarget.dataset.itemid;
             targetIndex = list.findIndex(item => item._id === targetId);
             if (targetIndex === -1) return false;
-            
+
             // Determine before/after based on mouse position
             const rect = dropTarget.getBoundingClientRect();
             const midpoint = rect.top + rect.height / 2;
@@ -1666,7 +1685,7 @@ export default class DropHelper {
             if (!container) return false;
             targetIndex = list.length;
         }
-        
+
         // 5. Validate that position actually changes
         // If targetIndex equals draggedIndex, no change is needed
         // If targetIndex equals draggedIndex + 1 and we're placing after (mouse in lower half),
@@ -1680,23 +1699,23 @@ export default class DropHelper {
                 return false; // Dropping on ourselves
             }
         }
-        
+
         // 6. Move item in array
         const [movedItem] = list.splice(draggedIndex, 1);
-        
+
         // Adjust target index if item moved from lower position
         if (draggedIndex < targetIndex) {
             targetIndex--;
         }
-        
+
         list.splice(targetIndex, 0, movedItem);
-        
+
         // 7. Update order values for all items
         const updates = list.map((item, index) => {
             // Use dot-notation for nested property updates in Foundry V14
             const updateData = {};
             const orderPath = options.orderProperty.split('.');
-            
+
             // Build nested structure: { system: { settings: { order: index } } }
             let current = updateData;
             for (let i = 0; i < orderPath.length - 1; i++) {
@@ -1704,21 +1723,21 @@ export default class DropHelper {
                 current = current[orderPath[i]];
             }
             current[orderPath[orderPath.length - 1]] = index;
-            
+
             return {
                 _id: item._id,
                 ...updateData
             };
         });
-        
+
         // 8. Update all items in a batch
         await actor.updateEmbeddedDocuments("Item", updates);
-        
+
         // 9. Render
         if (options.sheet) {
             options.sheet.render();
         }
-        
+
         return true;
     }
 }

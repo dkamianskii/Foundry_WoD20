@@ -5,15 +5,15 @@ import CreateHelper from "../../scripts/create-helpers.js";
 import BonusHelper from "../../scripts/bonus-helpers.js";
 
 export default class MageActorSheet extends MortalActorSheet {
-	
+
 	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-sheet mage"],
-			template: "systems/worldofdarkness/templates/actor/mage-sheet.html"
+			template: "systems/wod-advanced/templates/actor/mage-sheet.html"
 		});
 	}
-  
+
 	constructor(actor, options) {
 		super(actor, options);
 	}
@@ -42,12 +42,12 @@ export default class MageActorSheet extends MortalActorSheet {
 
 	/** @override */
 	get template() {
-		return "systems/worldofdarkness/templates/actor/mage-sheet.html";
+		return "systems/wod-advanced/templates/actor/mage-sheet.html";
 	}
-	
+
 	/** @override */
 	activateListeners(html) {
-		super.activateListeners(html);		
+		super.activateListeners(html);
 		ActionHelper.SetupDotCounters(html);
 
 		// Everything below here is only needed if the sheet is editable
@@ -81,18 +81,18 @@ export default class MageActorSheet extends MortalActorSheet {
 			.click(this._onParadoxChange.bind(this));
 	}
 
-	_onRollMageDialog(event) {		
+	_onRollMageDialog(event) {
 		event.preventDefault();
 		const element = event.currentTarget;
 		const dataset = element.dataset;
 
 		if (dataset.type != CONFIG.worldofdarkness.sheettype.mage) {
 			return;
-		}			
-		
+		}
+
 		ActionHelper.RollDialog(dataset, this.actor);
 	}
-	
+
 	async _onDotCounterMageChange(event) {
 		event.preventDefault();
 		const element = event.currentTarget;
@@ -114,7 +114,7 @@ export default class MageActorSheet extends MortalActorSheet {
 
 		if (index < 0 || index > steps.length) {
 			return;
-		}		
+		}
 
 		if (dataset.itemid != undefined) {
 			const itemid = dataset.itemid;
@@ -133,11 +133,11 @@ export default class MageActorSheet extends MortalActorSheet {
 		}
 		else {
 			const fieldStrings = parent[0].dataset.name;
-			const fields = fieldStrings.split(".");				
-	
+			const fields = fieldStrings.split(".");
+
 			this._assignToMage(fields, index + 1);
-		}	
-		
+		}
+
 		steps.removeClass("active");
 
 		steps.each(function (i) {
@@ -156,20 +156,20 @@ export default class MageActorSheet extends MortalActorSheet {
 
 		const allStates = ["", ...Object.keys(states)];
 		const currentState = allStates.indexOf(oldState);
-		
+
 		if (currentState < 0) {
 			return;
 		}
-		
+
 		const actorData = foundry.utils.duplicate(this.actor);
-		
+
 		const result = calculateQuintessenceChange(
 			oldState,
 			parseInt(actorData.system.quintessence.temporary),
 			parseInt(actorData.system.paradox.temporary),
 			parseInt(actorData.system.paradox.permanent)
 		);
-		
+
 		if (result && result.quintessenceTemporary !== undefined) {
 			actorData.system.quintessence.temporary = result.quintessenceTemporary;
 			actorData.system.settings.isupdated = false;
@@ -186,7 +186,7 @@ export default class MageActorSheet extends MortalActorSheet {
 
 		const allStates = ["", ...Object.keys(states)];
 		const currentState = allStates.indexOf(oldState);
-		
+
 		if (currentState < 0) {
 			return;
 		}
@@ -199,7 +199,7 @@ export default class MageActorSheet extends MortalActorSheet {
 			parseInt(actorData.system.paradox.temporary),
 			parseInt(actorData.system.paradox.permanent)
 		);
-		
+
 		if (result) {
 			if (result.quintessenceTemporary !== undefined) {
 				actorData.system.quintessence.temporary = result.quintessenceTemporary;

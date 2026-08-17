@@ -9,7 +9,7 @@ import MigrationWizard from "./ui/migration-wizard-helper.js";
  */
 export const UpdateWorld = async function (installedVersion, migrationVersion) {
     let updateWorld = false;
-    let isError = false;    
+    let isError = false;
 
     if (_compareVersion(installedVersion, migrationVersion)) {
         updateWorld = true;
@@ -24,7 +24,7 @@ export const UpdateWorld = async function (installedVersion, migrationVersion) {
             try {
                 const actor = game.actors.getInvalid(id);
                 console.error(`Actor ${actor.name} is of a not valid type ${actor.type} and have been removed from the system`);
-                //if (actor.type === "Spirit") 
+                //if (actor.type === "Spirit")
                 // await actor.delete()
             }
             catch(err) {
@@ -43,7 +43,7 @@ export const UpdateWorld = async function (installedVersion, migrationVersion) {
                 console.error(`invalidDocumentIds ${item.name}: ${err.message}`);
                 console.error(err);
             }
-        }        
+        }
 
         //World Actors
         for (const actor of game.actors) {
@@ -92,7 +92,7 @@ export const UpdateWorld = async function (installedVersion, migrationVersion) {
                 console.error(err);
                 isError = true;
             }
-        }        
+        }
     }
 
     try {
@@ -113,7 +113,7 @@ export const UpdateWorld = async function (installedVersion, migrationVersion) {
         ui.notifications.error(`An error occured during the system migration. Try restarting Foundry and try again. If this message appear again, please check the console (F12) for details and report the problem.`, {permanent: true});
     }
     else if (updateWorld) {
-        _getVersionText(installedVersion, migrationVersion);  
+        _getVersionText(installedVersion, migrationVersion);
     }
 }
 
@@ -128,23 +128,23 @@ export  const updates = async () => {
     let rollSettings = true;
 
     try {
-        attributeSettings = game.settings.get("worldofdarkness", "attributeSettings");
-        rollSettings = game.settings.get('worldofdarkness', 'advantageRolls');
-    } 
+        attributeSettings = game.settings.get("wod-advanced", "attributeSettings");
+        rollSettings = game.settings.get('wod-advanced', 'advantageRolls');
+    }
     catch (e) {
         console.error("Error in migration.js");
-    }    
+    }
 
     try {
-        if (game.settings.get("worldofdarkness", "theRollofOne") === true) {
-            game.settings.set("worldofdarkness", "theRollofOne", 1);
+        if (game.settings.get("wod-advanced", "theRollofOne") === true) {
+            game.settings.set("wod-advanced", "theRollofOne", 1);
         }
-        if (game.settings.get("worldofdarkness", "theRollofOne") === false) {
-            game.settings.set("worldofdarkness", "theRollofOne", 0);    
+        if (game.settings.get("wod-advanced", "theRollofOne") === false) {
+            game.settings.set("wod-advanced", "theRollofOne", 0);
         }
     }
     catch (e) {
-        game.settings.set("worldofdarkness", "theRollofOne", 1);
+        game.settings.set("wod-advanced", "theRollofOne", 1);
     }
 
     for (const actor of game.actors) {
@@ -152,7 +152,7 @@ export  const updates = async () => {
             continue;
         }
 
-        // handle Game settings  
+        // handle Game settings
         let totalinit = -1;
 
         const actorData = foundry.utils.duplicate(actor);
@@ -255,7 +255,7 @@ export  const updates = async () => {
                 if (effect.icon.includes(CONFIG.worldofdarkness.sheettype.werewolf)) {
                     const effectid = effect.id;
                     await actor.deleteEmbeddedDocuments("ActiveEffect", [effectid]);
-                }                
+                }
             }
         }
     }
@@ -268,15 +268,15 @@ export  const updates = async () => {
 /**
  * patch an actor to the latest version
  * @param {Actor} actor   The actor to Update
- * @param migrationVersion   The version that is being pushed at the world * 
+ * @param migrationVersion   The version that is being pushed at the world *
  */
  export const updateActor = async function(actor, migrationVersion) {
 
     if (actor.type == "PC") {
-        await updatePCActor(actor);
+        await updatePCActor(actor, migrationVersion);
         return;
     }
-    
+
     let update = false;
     let found = false;
 
@@ -297,57 +297,57 @@ export  const updates = async () => {
     }
 
     if (_compareVersion(actor.system.settings.version, "1.5.0")) {
-        
+
         const updateData = foundry.utils.duplicate(actor);
 
         updateData.system.settings.version = "1.5.0";
 
         if(updateData.system.settings.created != undefined) {
-            updateData.system.settings.iscreated = updateData.system.settings.created;   
-        }        
+            updateData.system.settings.iscreated = updateData.system.settings.created;
+        }
 
         if(updateData.system.settings.soak.bashing.roll != undefined) {
-            updateData.system.settings.soak.bashing.isrollable = updateData.system.settings.soak.bashing.roll;            
+            updateData.system.settings.soak.bashing.isrollable = updateData.system.settings.soak.bashing.roll;
         }
 
         if(updateData.system.settings.soak.lethal.roll != undefined) {
-            updateData.system.settings.soak.lethal.isrollable = updateData.system.settings.soak.lethal.roll;            
-        }        
+            updateData.system.settings.soak.lethal.isrollable = updateData.system.settings.soak.lethal.roll;
+        }
 
         if(updateData.system.settings.soak.aggravated.roll != undefined) {
-            updateData.system.settings.soak.aggravated.isrollable = updateData.system.settings.soak.aggravated.roll;            
-        }        
+            updateData.system.settings.soak.aggravated.isrollable = updateData.system.settings.soak.aggravated.roll;
+        }
 
         if(updateData.system.conditions.ignorepain != undefined) {
-            updateData.system.conditions.isignoringpain = updateData.system.conditions.ignorepain;        
+            updateData.system.conditions.isignoringpain = updateData.system.conditions.ignorepain;
         }
         if(updateData.system.conditions.stunned != undefined) {
             updateData.system.conditions.isstunned = updateData.system.conditions.stunned;
         }
-        
+
 
         if (updateData.type != CONFIG.worldofdarkness.sheettype.spirit) {
             for (const attribute in updateData.system.attributes) {
                 if(updateData.system.attributes[attribute].visible != undefined) {
-                    updateData.system.attributes[attribute].isvisible = updateData.system.attributes[attribute].visible;   
+                    updateData.system.attributes[attribute].isvisible = updateData.system.attributes[attribute].visible;
                 }
             }
 
             for (const ability in updateData.system.abilities.talent) {
                 if(updateData.system.abilities.talent[ability].visible != undefined) {
-                    updateData.system.abilities.talent[ability].isvisible = updateData.system.abilities.talent[ability].visible;  
-                }                  
+                    updateData.system.abilities.talent[ability].isvisible = updateData.system.abilities.talent[ability].visible;
+                }
             }
 
             for (const ability in updateData.system.abilities.skill) {
                 if(updateData.system.abilities.skill[ability].visible != undefined) {
-                    updateData.system.abilities.skill[ability].isvisible = updateData.system.abilities.skill[ability].visible; 
+                    updateData.system.abilities.skill[ability].isvisible = updateData.system.abilities.skill[ability].visible;
                 }
             }
 
             for (const ability in updateData.system.abilities.knowledge) {
                 if(updateData.system.abilities.knowledge[ability].visible != undefined) {
-                    updateData.system.abilities.knowledge[ability].isvisible = updateData.system.abilities.knowledge[ability].visible; 
+                    updateData.system.abilities.knowledge[ability].isvisible = updateData.system.abilities.knowledge[ability].visible;
                 }
             }
         }
@@ -372,27 +372,27 @@ export  const updates = async () => {
             if(updateData.system.shapes.lupus.active != undefined) {
                 updateData.system.shapes.lupus.isactive = updateData.system.shapes.lupus.active;
             }
-        } 
+        }
 
         await actor.update(updateData);
     }
 
     if (_compareVersion(actor.system.settings.version, "1.6.0")) {
         const updateData = foundry.utils.duplicate(actor);
-        
+
         updateData.system.settings.version = "1.6.0";
 
         if (updateData.type == CONFIG.worldofdarkness.sheettype.creature) {
-            update = true;            
+            update = true;
 
             updateData.system.settings.hasrage = true;
             updateData.system.settings.hasgnosis = true;
             updateData.system.settings.haswillpower = true;
             updateData.system.settings.hasessence = false;
-            updateData.system.settings.hasbloodpool = false;                    
-        }   
+            updateData.system.settings.hasbloodpool = false;
+        }
         if (updateData.type == CONFIG.worldofdarkness.sheettype.werewolf) {
-            update = true;  
+            update = true;
 
             if (updateData.system.tribe == "Black Furies") {
                 updateData.system.tribe = "wod.bio.werewolf.blackfuries";
@@ -448,8 +448,8 @@ export  const updates = async () => {
             if (updateData.system.tribe == "White Howlers") {
                 updateData.system.tribe = "wod.bio.werewolf.whitehowler";
             }
-        }       
-        
+        }
+
         if (update) {
             await actor.update(updateData);
             update = false;
@@ -460,7 +460,7 @@ export  const updates = async () => {
         let updateData = foundry.utils.duplicate(actor);
 
         if (updateData.type != CONFIG.worldofdarkness.sheettype.spirit) {
-            updateData.system.settings.version = "2.1.0";            
+            updateData.system.settings.version = "2.1.0";
 
             if (updateData.type == CONFIG.worldofdarkness.sheettype.mage) {
                 update = true;
@@ -482,7 +482,7 @@ export  const updates = async () => {
                 updateData.system.abilities.knowledge.technology.value = 0;
                 updateData.system.abilities.knowledge.technology.speciality = "";
                 updateData.system.abilities.knowledge.technology.altlabel = "";
-                updateData.system.abilities.knowledge.technology.isvisible = false;                                
+                updateData.system.abilities.knowledge.technology.isvisible = false;
             }
             else if (updateData.type == CONFIG.worldofdarkness.sheettype.werewolf) {
                 update = true;
@@ -498,7 +498,7 @@ export  const updates = async () => {
             else if (updateData.type == CONFIG.worldofdarkness.sheettype.creature) {
                 update = true;
 
-                updateData.system.settings.powers.haspowers = true;                            
+                updateData.system.settings.powers.haspowers = true;
             }
 
             for (const ability in updateData.system.abilities.talent) {
@@ -522,7 +522,7 @@ export  const updates = async () => {
                         };
 
                         console.log(`WoD Migration | Adds ${actor.system.abilities.talent[ability].label} to ${actor.name}`);
-                        await actor.createEmbeddedDocuments("Item", [itemData]);           
+                        await actor.createEmbeddedDocuments("Item", [itemData]);
                     }
 
                     //updateData.system.abilities.talent['-=' + ability] = null;
@@ -550,7 +550,7 @@ export  const updates = async () => {
                         };
 
                         console.log(`WoD Migration | Adds ${actor.system.abilities.skill[ability].label} to ${actor.name}`);
-                        await actor.createEmbeddedDocuments("Item", [itemData]);                        
+                        await actor.createEmbeddedDocuments("Item", [itemData]);
                     }
 
                     //updateData.system.abilities.skill['-=' + ability] = null;
@@ -578,7 +578,7 @@ export  const updates = async () => {
                         };
 
                         console.log(`WoD Migration | Adds ${actor.system.abilities.knowledge[ability].label} to ${actor.name}`);
-                        await actor.createEmbeddedDocuments("Item", [itemData]);                        
+                        await actor.createEmbeddedDocuments("Item", [itemData]);
                     }
 
                     //updateData.system.abilities.knowledge['-=' + ability] = null;
@@ -592,9 +592,9 @@ export  const updates = async () => {
             await actor.update(updateData);
             update = false;
         }
-    }  
+    }
 
-    if (_compareVersion(actor.system.settings.version, "2.2.0")) {        
+    if (_compareVersion(actor.system.settings.version, "2.2.0")) {
         let updateData = foundry.utils.duplicate(actor);
 
         updateData.system.settings.version = "2.2.0";
@@ -623,16 +623,16 @@ export  const updates = async () => {
 
             updateData.system.settings.hasrage = true;
             updateData.system.settings.hasgnosis = true;
-            
+
             updateData.system.settings.powers.hasgifts = true;
 
             update = true;
-        }        
+        }
 
         if (updateData.type == CONFIG.worldofdarkness.sheettype.vampire) {
             if (updateData.system.rage?.bonus != undefined) {
-                updateData.system.advantages.rage.bonus = updateData.system.rage.bonus; 
-            }      
+                updateData.system.advantages.rage.bonus = updateData.system.rage.bonus;
+            }
             if (updateData.system.virtues != undefined) {
                 updateData.system.advantages.virtues = updateData.system.virtues;
             }
@@ -752,17 +752,17 @@ export  const updates = async () => {
             update = false;
         }
 
-        if (update) {            
+        if (update) {
             await actor.update(updateData);
             update = false;
-        }        
+        }
     }
 
-    if (_compareVersion(actor.system.settings.version, "2.3.0")) {        
+    if (_compareVersion(actor.system.settings.version, "2.3.0")) {
         let updateData = foundry.utils.duplicate(actor);
 
         updateData.system.settings.version = "2.3.0";
-        
+
         if (updateData.type == CONFIG.worldofdarkness.sheettype.spirit) {
             if (updateData.system.advantages.essence.max == null) {
                 updateData.system.advantages.essence.max = 20
@@ -777,10 +777,10 @@ export  const updates = async () => {
         }
     }
 
-    if (_compareVersion(actor.system.settings.version, "3.1.0")) {        
+    if (_compareVersion(actor.system.settings.version, "3.1.0")) {
         let updateData = foundry.utils.duplicate(actor);
         update = false;
-        
+
         if (actor.type != CONFIG.worldofdarkness.sheettype.spirit) {
             update = true;
 
@@ -792,17 +792,17 @@ export  const updates = async () => {
                         found = true;
                         break;
                     }
-                }     
-    
+                }
+
                 // if found then set the properties correct
                 if (!found) {
                     updateData.system.advantages.path.custom = actor.system.advantages.path.label;
-                    updateData.system.advantages.path.label = "custom";                
+                    updateData.system.advantages.path.label = "custom";
                 }
-    
+
                 // reset found
-                found = false; 
-            }            
+                found = false;
+            }
 
             if (actor.type == CONFIG.worldofdarkness.sheettype.vampire) {
                 if (updateData.system.clan != "custom") {
@@ -813,14 +813,14 @@ export  const updates = async () => {
                             found = true;
                             break;
                         }
-                    }     
-        
+                    }
+
                     // if found then set the properties correct
                     if (!found) {
                         updateData.system.custom.clan = game.i18n.localize(actor.system.clan);
-                        updateData.system.clan = "custom";                
+                        updateData.system.clan = "custom";
                     }
-        
+
                     // reset found
                     found = false;
                 }
@@ -833,14 +833,14 @@ export  const updates = async () => {
                             found = true;
                             break;
                         }
-                    }     
-        
+                    }
+
                     // if found then set the properties correct
                     if (!found) {
                         updateData.system.custom.sect = game.i18n.localize(actor.system.sect);
-                        updateData.system.sect = "custom";                
+                        updateData.system.sect = "custom";
                     }
-        
+
                     // reset found
                     found = false;
                 }
@@ -855,14 +855,14 @@ export  const updates = async () => {
                             found = true;
                             break;
                         }
-                    }     
-        
+                    }
+
                     // if found then set the properties correct
                     if (!found) {
                         updateData.system.custom.tribe = game.i18n.localize(actor.system.tribe);
-                        updateData.system.tribe = "custom";                
+                        updateData.system.tribe = "custom";
                     }
-        
+
                     // reset found
                     found = false;
                 }
@@ -877,14 +877,14 @@ export  const updates = async () => {
                             found = true;
                             break;
                         }
-                    }     
-        
+                    }
+
                     // if found then set the properties correct
                     if (!found) {
                         updateData.system.custom.affiliation = game.i18n.localize(actor.system.affiliation);
-                        updateData.system.affiliation = "custom";                
+                        updateData.system.affiliation = "custom";
                     }
-        
+
                     // reset found
                     found = false;
                 }
@@ -900,19 +900,19 @@ export  const updates = async () => {
                                     updateData.system.affiliation = game.worldofdarkness.bio.affiliation[affiliation];
                                     updateData.system.custom.affiliation = "";
                                 }
-                                
+
                                 found = true;
                                 break;
                             }
-                        }    
-                    } 
-        
+                        }
+                    }
+
                     // if found then set the properties correct
                     if (!found) {
                         updateData.system.custom.sect = game.i18n.localize(actor.system.sect);
-                        updateData.system.sect = "custom";                
+                        updateData.system.sect = "custom";
                     }
-        
+
                     // reset found
                     found = false;
                 }
@@ -927,14 +927,14 @@ export  const updates = async () => {
                             found = true;
                             break;
                         }
-                    }     
-        
+                    }
+
                     // if found then set the properties correct
                     if (!found) {
                         updateData.system.custom.kith = game.i18n.localize(actor.system.kith);
-                        updateData.system.kith = "custom";                
+                        updateData.system.kith = "custom";
                     }
-        
+
                     // reset found
                     found = false;
                 }
@@ -965,7 +965,7 @@ export  const updates = async () => {
             for (const ability in actor.system.abilities.talent) {
                 if (actor.system.abilities.talent[ability].isvisible) {
                     updateData.system.abilities[ability] = actor.system.abilities.talent[ability];
-                }                
+                }
             }
             for (const ability in actor.system.abilities.skill) {
                 if (actor.system.abilities.skill[ability].isvisible) {
@@ -993,8 +993,8 @@ export  const updates = async () => {
                         if ((ability == "technology") || (ability == "research")) {
                             updateData.system.abilities[ability].isvisible = false;
                         }
-                    }    
-                }                
+                    }
+                }
             }
             for (const ability in actor.system.abilities.knowledge) {
                 if (actor.system.abilities.knowledge[ability].isvisible) {
@@ -1014,9 +1014,9 @@ export  const updates = async () => {
                     }
                     else {
                         updateData.system.abilities[ability] = actor.system.abilities.knowledge[ability];
-                    }                              
-                }                                                
-            }                                   
+                    }
+                }
+            }
         }
 
         if (update) {
@@ -1027,7 +1027,7 @@ export  const updates = async () => {
         }
     }
 
-    if (_compareVersion(actor.system.settings.version, "3.2.0")) {        
+    if (_compareVersion(actor.system.settings.version, "3.2.0")) {
         let updateData = foundry.utils.duplicate(actor);
         update = false;
 
@@ -1047,7 +1047,7 @@ export  const updates = async () => {
             if (updateData.system.changingbreed == "Mokolé") {
                 updateData.system.changingbreed = "Mokole";
             }
-            
+
             update = true;
         }
 
@@ -1079,10 +1079,10 @@ export  const updates = async () => {
             await actor.update(updateData);
             update = false;
         }
-    }  
-    
+    }
+
     if (_compareVersion(actor.system.settings.version, "3.3.0")) {
-        update = true;        
+        update = true;
 
         for (const item of actor.items) {
             await updateItem(item)            ;
@@ -1098,11 +1098,11 @@ export  const updates = async () => {
     }
 
     if (_compareVersion(actor.system.settings.version, "4.1.0")) {
-        update = false;    
-        let updateData = foundry.utils.duplicate(actor);   
-        
-        if (actor.type == CONFIG.worldofdarkness.sheettype.werewolf) {            
-            update = true;  
+        update = false;
+        let updateData = foundry.utils.duplicate(actor);
+
+        if (actor.type == CONFIG.worldofdarkness.sheettype.werewolf) {
+            update = true;
 
             if (actor.system.breed == "Homid") {
                 updateData.system.breed = "wod.bio.breedname.homid";
@@ -1134,7 +1134,7 @@ export  const updates = async () => {
             }
             else {
                 updateData.system.auspice = "";
-            }            
+            }
         }
 
         if (actor.type == CONFIG.worldofdarkness.sheettype.hunter) {
@@ -1174,7 +1174,7 @@ export  const updates = async () => {
 
         if (actor.type == CONFIG.worldofdarkness.sheettype.changingbreed) {
             if (actor.system.changingbreed == "Ajaba") {
-                update = true;  
+                update = true;
 
                 if (actor.system.breed == "Homid") {
                     updateData.system.breed = "wod.bio.breedname.homid";
@@ -1188,7 +1188,7 @@ export  const updates = async () => {
                 else {
                     updateData.system.breed = "";
                 }
-    
+
                 if (actor.system.auspice == "Dawn") {
                     updateData.system.auspice = "wod.bio.aspectname.dawn";
                 }
@@ -1201,9 +1201,9 @@ export  const updates = async () => {
                 else {
                     updateData.system.auspice = "";
                 }
-            }  
+            }
             if (actor.system.changingbreed == "Ananasi") {
-                update = true;  
+                update = true;
 
                 if (actor.system.breed == "Homid") {
                     updateData.system.breed = "wod.bio.breedname.homid";
@@ -1214,7 +1214,7 @@ export  const updates = async () => {
                 else {
                     updateData.system.breed = "";
                 }
-    
+
                 if (actor.system.auspice == "Tenere") {
                     updateData.system.auspice = "wod.bio.aspectname.tenere";
                 }
@@ -1240,9 +1240,9 @@ export  const updates = async () => {
                 else {
                     updateData.system.tribe = "";
                 }
-            } 
+            }
             if (actor.system.changingbreed == "Apis") {
-                update = true;  
+                update = true;
 
                 if (actor.system.breed == "Homid") {
                     updateData.system.breed = "wod.bio.breedname.homid";
@@ -1253,7 +1253,7 @@ export  const updates = async () => {
                 else {
                     updateData.system.breed = "";
                 }
-    
+
                 if (actor.system.auspice == "Twilight") {
                     updateData.system.auspice = "wod.bio.auspicename.twilight";
                 }
@@ -1266,9 +1266,9 @@ export  const updates = async () => {
                 else {
                     updateData.system.auspice = "";
                 }
-            }   
+            }
             if (actor.system.changingbreed == "Bastet") {
-                update = true;  
+                update = true;
 
                 if (actor.system.breed == "Homid") {
                     updateData.system.breed = "wod.bio.breedname.homid";
@@ -1282,7 +1282,7 @@ export  const updates = async () => {
                 else {
                     updateData.system.breed = "";
                 }
-    
+
                 if (actor.system.auspice == "Daylight") {
                     updateData.system.auspice = "wod.bio.pryioname.daylight";
                 }
@@ -1326,9 +1326,9 @@ export  const updates = async () => {
                 else {
                     updateData.system.tribe = "";
                 }
-            }      
+            }
             if (actor.system.changingbreed == "Corax") {
-                update = true;  
+                update = true;
 
                 if (actor.system.breed == "Homid") {
                     updateData.system.breed = "wod.bio.breedname.homid";
@@ -1339,7 +1339,7 @@ export  const updates = async () => {
                 else {
                     updateData.system.breed = "";
                 }
-    
+
                 if (actor.system.auspice == "Chasers") {
                     updateData.system.auspice = "wod.bio.tribename.chasers";
                 }
@@ -1367,9 +1367,9 @@ export  const updates = async () => {
                 else {
                     updateData.system.auspice = "";
                 }
-            } 
+            }
             if (actor.system.changingbreed == "Grondr") {
-                update = true;  
+                update = true;
 
                 if (actor.system.breed == "Homid") {
                     updateData.system.breed = "wod.bio.breedname.homid";
@@ -1383,7 +1383,7 @@ export  const updates = async () => {
                 else {
                     updateData.system.breed = "";
                 }
-            }  
+            }
             if (actor.system.changingbreed == "Gurahl") {
                 update = true;
 
@@ -1431,7 +1431,7 @@ export  const updates = async () => {
                 else {
                     updateData.system.tribe = "";
                 }
-            } 
+            }
             if (actor.system.changingbreed == "Kitsune") {
                 update = true;
 
@@ -1662,8 +1662,8 @@ export  const updates = async () => {
     }
 
     if (_compareVersion(actor.system.settings.version, "4.2.0")) {
-        update = false;    
-        let updateData = foundry.utils.duplicate(actor);   
+        update = false;
+        let updateData = foundry.utils.duplicate(actor);
 
         if (actor.type == CONFIG.worldofdarkness.sheettype.mortal) {
             let variant = updateData.system.settings.variant;
@@ -1694,17 +1694,17 @@ export  const updates = async () => {
 			}
         }
 
-        if (actor.type == CONFIG.worldofdarkness.sheettype.werewolf) {            
+        if (actor.type == CONFIG.worldofdarkness.sheettype.werewolf) {
             update = true;
             let itemData;
 
             /* GLABRO */
             itemData = await BonusHelper.CreateAttributeBuff("glabro", game.i18n.localize("wod.shapes.glabro") + " - " + game.i18n.localize("wod.attributes.bonus.strength"), "strength", 2, false, "4.2.0");
             await actor.createEmbeddedDocuments("Item", [itemData]);
-        
+
             itemData = await BonusHelper.CreateAttributeBuff("glabro", game.i18n.localize("wod.shapes.glabro") + " - " + game.i18n.localize("wod.attributes.bonus.stamina"), "stamina", 2, false, "4.2.0");
             await actor.createEmbeddedDocuments("Item", [itemData]);
-        
+
             itemData = await BonusHelper.CreateAttributeBuff("glabro", game.i18n.localize("wod.shapes.glabro") + " - " + game.i18n.localize("wod.attributes.bonus.manipulation"), "manipulation", -2, false, "4.2.0");
             await actor.createEmbeddedDocuments("Item", [itemData]);
 
@@ -1755,7 +1755,7 @@ export  const updates = async () => {
 
             itemData = await BonusHelper.CreateAttributeBuff("lupus", game.i18n.localize("wod.shapes.lupus") + " " + game.i18n.localize("wod.attributes.bonus.manipulation"), "manipulation", -3, false, "4.2.0");
             await actor.createEmbeddedDocuments("Item", [itemData]);
-            
+
             itemData = await BonusHelper.CreateAttributeDiff("lupus", game.i18n.localize("wod.shapes.lupus") + " - " + game.i18n.localize("wod.attributes.diff.perception"), "perception", -2, false, "4.2.0");
             await actor.createEmbeddedDocuments("Item", [itemData]);
 
@@ -1818,12 +1818,12 @@ export  const updates = async () => {
             update = false;
         }
     }
-    
+
     if (_compareVersion(actor.system.settings.version, "6.0.6")) {
-        update = false;    
+        update = false;
         let updateData = foundry.utils.duplicate(actor);
 
-        if (actor.type == CONFIG.worldofdarkness.sheettype.werewolf) {            
+        if (actor.type == CONFIG.worldofdarkness.sheettype.werewolf) {
             let items = actor.items.filter(i => i.type === "Bonus" && i.system.settingtype === 'all' && (i.system.parentid === "glabro" || i.system.parentid === "crinos" || i.system.parentid === "hispo" || i.system.parentid === "lupus") );
             if (items.length > 0) {
                 let itemData;
@@ -1888,7 +1888,7 @@ export  const updates = async () => {
 
                 itemData = await BonusHelper.CreateAttributeBuff("lupus", game.i18n.localize("wod.shapes.lupus") + " " + game.i18n.localize("wod.attributes.bonus.manipulation"), "manipulation", -3, false, version);
                 await actor.createEmbeddedDocuments("Item", [itemData]);
-                
+
                 itemData = await BonusHelper.CreateAttributeDiff("lupus", game.i18n.localize("wod.shapes.lupus") + " - " + game.i18n.localize("wod.attributes.diff.perception"), "perception", -2, false, version);
                 await actor.createEmbeddedDocuments("Item", [itemData]);
 
@@ -1897,8 +1897,8 @@ export  const updates = async () => {
 
                 console.log("WoD Migration | Patch corrupted werewolf actor " + actor.name + ": recreated shapes.");
             }
-        }           
-        
+        }
+
         if (update) {
             updateData.system.settings.version = "6.0.6";
 
@@ -1911,7 +1911,7 @@ export  const updates = async () => {
 /**
  * patch an item to the latest version
  * @param {Item} item   The Item to Update
- * 
+ *
  */
  export const updateItem = async function(item) {
     let altered = false;
@@ -1945,7 +1945,7 @@ export  const updates = async () => {
             if (itemData.system.diff != undefined) {
                 itemData.system.difficulty = parseInt(itemData.system.diff);
             }
-            
+
             itemData.system.istwohanded = itemData.system.twohanded;
         }
 
@@ -1967,8 +1967,8 @@ export  const updates = async () => {
         // Alla actor items POWER skall flytta active -> isactive
         if (item.type == "Power") {
             itemData.system.isactive = itemData.system.active;
-            itemData.system.isrollable = itemData.system.rollable;                 
-        }                      
+            itemData.system.isrollable = itemData.system.rollable;
+        }
 
         if (item.type == "Rote") {
             itemData.system.instrument.ispersonalized = itemData.system.instrument.personalized;
@@ -1978,7 +1978,7 @@ export  const updates = async () => {
         if (item.type == "Feature") {
             itemData.system.isrollable = itemData.system.roll;
         }
-        
+
         if (item.type == "Experience") {
             itemData.system.isspent = itemData.system.spent;
         }
@@ -2003,14 +2003,14 @@ export  const updates = async () => {
             if ((itemData.system.attack.ability != "athletics") && (itemData.system.attack.ability != "brawl") && (itemData.system.attack.ability != "martialarts") && (itemData.system.attack.ability != "melee")) {
                 itemData.system.attack.ability = "custom";
                 altered = true;
-            }            
+            }
         }
 
         if (item.type == "Ranged Weapon") {
             if ((itemData.system.attack.ability != "athletics") && (itemData.system.attack.ability != "firearms")) {
                 itemData.system.attack.ability = "custom";
                 altered = true;
-            }            
+            }
         }
 
         if (altered) {
@@ -2021,7 +2021,7 @@ export  const updates = async () => {
 
         if (altered) {
             await item.update(itemData);
-            
+
             altered = false;
         }
     }
@@ -2042,13 +2042,13 @@ export  const updates = async () => {
 
         if (altered) {
             await item.update(itemData);
-            
+
             altered = false;
         }
     }
 
     if (_compareVersion(itemversion, "2.3.0")) {
-        const itemData = foundry.utils.duplicate(item);        
+        const itemData = foundry.utils.duplicate(item);
 
         if (item.type == "Power") {
             if ((item.system.type == "wod.types.art") || (item.system.type == "wod.types.artpower")) {
@@ -2067,8 +2067,8 @@ export  const updates = async () => {
             }
             else if ((item.system.type == "wod.types.gift") || (item.system.type == "wod.types.rite")) {
                 itemData.system.game = CONFIG.worldofdarkness.sheettype.werewolf;
-                altered = true;            
-            }            
+                altered = true;
+            }
             else {
                 itemData.system.game = "";
                 altered = true;
@@ -2078,13 +2078,13 @@ export  const updates = async () => {
         if (altered) {
             itemData.system.version = "2.3.0";
             await item.update(itemData);
-            
+
             altered = false;
         }
     }
 
     if (_compareVersion(itemversion, "3.1.0")) {
-        const itemData = foundry.utils.duplicate(item);        
+        const itemData = foundry.utils.duplicate(item);
 
         if (item.type == "Power") {
             if (item.system.type == "wod.types.artpower") {
@@ -2092,7 +2092,7 @@ export  const updates = async () => {
                     arttype: ""
                 };
                 altered = true;
-            }           
+            }
             if ((item.system.type == "wod.types.ritual") && (item.system.game.toLowerCase() == CONFIG.worldofdarkness.sheettype.vampire.toLowerCase())) {
                 itemData.system.category = "wod.power.thaumaturgy";
 
@@ -2103,7 +2103,7 @@ export  const updates = async () => {
         if (altered) {
             itemData.system.version = "3.1.0";
             await item.update(itemData);
-            
+
             altered = false;
         }
     }
@@ -2118,13 +2118,13 @@ export  const updates = async () => {
 
                 itemData.system.arttype = arttype;
                 altered = true;
-            } 
+            }
         }
 
         if (altered) {
             itemData.system.version = "3.2.0";
             await item.update(itemData);
-            
+
             altered = false;
         }
     }
@@ -2154,7 +2154,7 @@ export  const updates = async () => {
                 itemData.system.bonuslist.push(bonusData);
                 itemData.system.version = "3.3.0";
 
-                await bonus.update(itemData);   
+                await bonus.update(itemData);
                 console.log(`WoD Migration | Adding bonus to ${item.actor.name} bonusname ${item.name}`);
 
                 await item.actor.deleteEmbeddedDocuments("Item", [item._id]);
@@ -2165,17 +2165,17 @@ export  const updates = async () => {
             if (item.system.type == "wod.types.artpower")  {
                 if (item.system.arttype == "wod.power.wyld") {
                     console.log(`WoD Migration | Artpower bonusname ${item.name} was type: ${item.system.arttype}`);
-                    itemData.system.arttype == "wod.types.wyrd";                    
+                    itemData.system.arttype == "wod.types.wyrd";
                 }
 
                 altered = true;
-            } 
+            }
         }
 
         if (altered) {
             itemData.system.version = "3.3.0";
             await item.update(itemData);
-            
+
             altered = false;
         }
     }
@@ -2209,7 +2209,7 @@ export  const updates = async () => {
         if (altered) {
             itemData.system.version = "4.2.0";
             await item.update(itemData);
-            
+
             altered = false;
         }
     }
@@ -2231,7 +2231,7 @@ export  const updates = async () => {
         if (altered) {
             itemData.system.version = "5.0.0";
             await item.update(itemData);
-            
+
             altered = false;
         }
     }
@@ -2242,19 +2242,19 @@ export  const updates = async () => {
         if (item.type === "Splat") {
             altered = true;
 
-            itemData.img = "systems/worldofdarkness/assets/img/items/skills.svg";
+            itemData.img = "systems/wod-advanced/assets/img/items/skills.svg";
         }
 
         if (item.type === "Ability") {
             altered = true;
-            
-            itemData.img = "systems/worldofdarkness/assets/img/items/feature.svg";
+
+            itemData.img = "systems/wod-advanced/assets/img/items/feature.svg";
         }
 
         if (item.type === "Advantage") {
             altered = true;
-            
-            itemData.img = "systems/worldofdarkness/assets/img/items/feature.svg";
+
+            itemData.img = "systems/wod-advanced/assets/img/items/feature.svg";
         }
 
         if (item.type === "Power") {
@@ -2266,13 +2266,13 @@ export  const updates = async () => {
 
             if (item.system.type == "wod.types.disciplinepath") {
                 itemData.system.type = "wod.types.discipline";
-                altered = true;                
+                altered = true;
             }
             if (item.system.type == "wod.types.disciplinepathpower") {
                 itemData.system.type = "wod.types.disciplinepower";
                 altered = true;
-            }            
-        } 
+            }
+        }
 
         if (item.type === "Bonus" && item.system.type === "soak_buff") {
             itemData.system.settingtype = 'all';
@@ -2286,9 +2286,9 @@ export  const updates = async () => {
             else {
                 itemData.system.version = "6.0.0";
             }
-            
+
             await item.update(itemData);
-            
+
             altered = false;
         }
     }
@@ -2302,8 +2302,8 @@ export  const updates = async () => {
 
                 console.log("WoD Migration | Removed corrupted shape bonus item " + item.name + " on actor " + item.actor.name);
                 altered = false;
-            }                
-        }                 
+            }
+        }
 
         if (altered) {
             if (itemData.system?.settings?.version !== undefined) {
@@ -2312,9 +2312,9 @@ export  const updates = async () => {
             else {
                 itemData.system.version = "6.0.6";
             }
-            
+
             await item.update(itemData);
-            
+
             altered = false;
         }
     }
@@ -2327,7 +2327,7 @@ export  const updates = async () => {
                 itemData.system.label = item.name;
                 altered = true;
             }
-        }                
+        }
 
         if (altered) {
             if (itemData.system?.settings?.version !== undefined) {
@@ -2336,9 +2336,9 @@ export  const updates = async () => {
             else {
                 itemData.system.version = "6.0.8";
             }
-            
+
             await item.update(itemData);
-            
+
             altered = false;
         }
     }
@@ -2349,7 +2349,7 @@ export  const updates = async () => {
         if ((item.type === "Ability") && (item.system.id === "archery")) {
             itemData.system.settings.israngedeweapon = true;
             altered = true;
-        }                
+        }
 
         if (altered) {
             if (itemData.system?.settings?.version !== undefined) {
@@ -2358,11 +2358,11 @@ export  const updates = async () => {
             else {
                 itemData.system.version = "7.0.0";
             }
-            
+
             await item.update(itemData);
 
             console.log("WoD Migration | Updated archery ability to be marked as ranged weapon.");
-            
+
             altered = false;
         }
     }
@@ -2384,11 +2384,11 @@ export  const updates = async () => {
             else {
                 itemData.system.version = "7.2.2";
             }
-            
+
             await item.update(itemData);
 
             console.log("WoD Migration | Updated paradox advantage to be visible.");
-            
+
             altered = false;
         }
     }
@@ -2410,11 +2410,11 @@ export  const updates = async () => {
             else {
                 itemData.system.version = "7.2.7";
             }
-            
+
             await item.update(itemData);
 
             console.log("WoD Migration | Updated items not set to iscreated.");
-            
+
             altered = false;
         }
     }
@@ -2424,7 +2424,7 @@ export  const updates = async () => {
  * patch an compendium to the latest version
  * @param {Pack} pack   The pack to Update
  * @param migrationVersion   The version that is being pushed at the world
- * 
+ *
  */
  export const updateCompendium = async function(pack, migrationVersion) {
     const entity = pack.documentName;
@@ -2464,24 +2464,24 @@ export  const updates = async () => {
 
     if (success) {
         console.log(`WoD Migration | Migrated all ${entity} entities from Compendium ${pack.collection}`);
-    }    
+    }
     else {
         console.error(`WoD Migration | Failed to migrate all ${entity} entities from Compendium ${pack.collection}`);
     }
  };
 
- /* 
- 
-    To patch existing PC actors to the latest version, we need to check if they have the gnosis advantage and set the hasgnosis setting accordingly. 
-    This is necessary because in version 7.2.4, the hasgnosis setting was introduced to track whether a PC has the gnosis advantage or not. 
- 
+ /*
+
+    To patch existing PC actors to the latest version, we need to check if they have the gnosis advantage and set the hasgnosis setting accordingly.
+    This is necessary because in version 7.2.4, the hasgnosis setting was introduced to track whether a PC has the gnosis advantage or not.
+
  */
- async function updatePCActor(actor) {
+ async function updatePCActor(actor, migrationVersion) {
     let update = false;
 
     if (_compareVersion(actor.system.settings.version, "7.2.4")) {
 
-        update = false;    
+        update = false;
         let updateData = foundry.utils.duplicate(actor);
 
         if (actor.type === "PC") {
@@ -2490,7 +2490,7 @@ export  const updates = async () => {
             if (items.length > 0) {
                 updateData.system.settings.hasgnosis = true;
                 update = true;
-            }            
+            }
         }
 
         if (update) {
@@ -2500,13 +2500,42 @@ export  const updates = async () => {
             update = false;
         }
     }
+
+    const legacyWillpower = actor.items.find(item =>
+        item.type === "Advantage" && item.system?.id === "willpower"
+    );
+
+    if (_compareVersion(actor.system.settings.version, "7.3.0") || legacyWillpower) {
+
+        const updateData = {
+            "system.settings.version": migrationVersion
+        };
+
+        if (legacyWillpower) {
+            const maximum = Math.max(0,
+                (parseInt(actor.system.attributes?.composure?.value) || 0)
+                + (parseInt(actor.system.attributes?.resolve?.value) || 0)
+            );
+            const available = Math.min(maximum, Math.max(0, parseInt(legacyWillpower.system.temporary) || 0));
+
+            updateData["system.willpower.damage.light"] = maximum - available;
+            updateData["system.willpower.damage.heavy"] = 0;
+        }
+
+        await actor.update(updateData);
+
+        if (legacyWillpower) {
+            await actor.deleteEmbeddedDocuments("Item", [legacyWillpower.id]);
+            console.log(`WoD Migration | Converted embedded Willpower on ${actor.name} to the PC Willpower wound track.`);
+        }
+    }
  }
 
   /**
  * Fetches the update information text as an updated is being made.
  * @param installedVersion   The version that is being pushed at the world
  * @param migrationVersion   The version that is being pushed at the world
- * 
+ *
  */
  function _getVersionText(installedVersion, migrationVersion) {
     let patch110 = false;
@@ -2535,92 +2564,92 @@ export  const updates = async () => {
 
     try {
         // add the new setting in settings.js
-        patch110 = game.settings.get('worldofdarkness', 'patch110');
-        patch120 = game.settings.get('worldofdarkness', 'patch120');
-        patch130 = game.settings.get('worldofdarkness', 'patch130');
-        patch140 = game.settings.get('worldofdarkness', 'patch140');
-        patch150 = game.settings.get('worldofdarkness', 'patch150');
-        patch160 = game.settings.get('worldofdarkness', 'patch160');
-        patch210 = game.settings.get('worldofdarkness', 'patch210');
-        patch220 = game.settings.get('worldofdarkness', 'patch220');
-        patch230 = game.settings.get('worldofdarkness', 'patch230');
-        patch300 = game.settings.get('worldofdarkness', 'patch300');
-        patch310 = game.settings.get('worldofdarkness', 'patch310');
-        patch320 = game.settings.get('worldofdarkness', 'patch320');
-        patch330 = game.settings.get('worldofdarkness', 'patch330');
-        patch400 = game.settings.get('worldofdarkness', 'patch400');
-        patch410 = game.settings.get('worldofdarkness', 'patch410');
-        patch420 = game.settings.get('worldofdarkness', 'patch420');
-        patch500 = game.settings.get('worldofdarkness', 'patch500');
-        patch600 = game.settings.get('worldofdarkness', 'patch600');
-        patch700 = game.settings.get('worldofdarkness', 'patch700');
-        patch710 = game.settings.get('worldofdarkness', 'patch710');
-        patch720 = game.settings.get('worldofdarkness', 'patch720');
-    } 
+        patch110 = game.settings.get('wod-advanced', 'patch110');
+        patch120 = game.settings.get('wod-advanced', 'patch120');
+        patch130 = game.settings.get('wod-advanced', 'patch130');
+        patch140 = game.settings.get('wod-advanced', 'patch140');
+        patch150 = game.settings.get('wod-advanced', 'patch150');
+        patch160 = game.settings.get('wod-advanced', 'patch160');
+        patch210 = game.settings.get('wod-advanced', 'patch210');
+        patch220 = game.settings.get('wod-advanced', 'patch220');
+        patch230 = game.settings.get('wod-advanced', 'patch230');
+        patch300 = game.settings.get('wod-advanced', 'patch300');
+        patch310 = game.settings.get('wod-advanced', 'patch310');
+        patch320 = game.settings.get('wod-advanced', 'patch320');
+        patch330 = game.settings.get('wod-advanced', 'patch330');
+        patch400 = game.settings.get('wod-advanced', 'patch400');
+        patch410 = game.settings.get('wod-advanced', 'patch410');
+        patch420 = game.settings.get('wod-advanced', 'patch420');
+        patch500 = game.settings.get('wod-advanced', 'patch500');
+        patch600 = game.settings.get('wod-advanced', 'patch600');
+        patch700 = game.settings.get('wod-advanced', 'patch700');
+        patch710 = game.settings.get('wod-advanced', 'patch710');
+        patch720 = game.settings.get('wod-advanced', 'patch720');
+    }
     catch (e) {
     }
 
     if (!patch110) {
-        game.settings.set('worldofdarkness', 'patch110', true);
+        game.settings.set('wod-advanced', 'patch110', true);
     }
 
     if (!patch120) {
-        game.settings.set('worldofdarkness', 'patch120', true);
+        game.settings.set('wod-advanced', 'patch120', true);
     }
 
     if (!patch130) {
-        game.settings.set('worldofdarkness', 'patch130', true);
+        game.settings.set('wod-advanced', 'patch130', true);
     }
 
     if (!patch140) {
-        game.settings.set('worldofdarkness', 'patch140', true);
+        game.settings.set('wod-advanced', 'patch140', true);
     }
 
     if (!patch150) {
-        game.settings.set('worldofdarkness', 'patch150', true);
-    } 
+        game.settings.set('wod-advanced', 'patch150', true);
+    }
 
     if (!patch160) {
-        game.settings.set('worldofdarkness', 'patch160', true);
+        game.settings.set('wod-advanced', 'patch160', true);
     }
 
     if (!patch210) {
-        game.settings.set('worldofdarkness', 'patch210', true);    
+        game.settings.set('wod-advanced', 'patch210', true);
     }
 
     if (!patch220) {
-        game.settings.set('worldofdarkness', 'patch220', true);
+        game.settings.set('wod-advanced', 'patch220', true);
     }
 
     if (!patch230) {
-        game.settings.set('worldofdarkness', 'patch230', true);
+        game.settings.set('wod-advanced', 'patch230', true);
     }
 
     if (!patch300) {
-        game.settings.set('worldofdarkness', 'patch300', true);
+        game.settings.set('wod-advanced', 'patch300', true);
     }
 
     if (!patch310) {
-        game.settings.set('worldofdarkness', 'patch310', true);
+        game.settings.set('wod-advanced', 'patch310', true);
     }
 
     if (!patch320) {
-        game.settings.set('worldofdarkness', 'patch320', true);
+        game.settings.set('wod-advanced', 'patch320', true);
     }
 
     if (!patch330) {
-        game.settings.set('worldofdarkness', 'patch330', true);
+        game.settings.set('wod-advanced', 'patch330', true);
     }
 
     if (!patch400) {
-        game.settings.set('worldofdarkness', 'patch400', true);
+        game.settings.set('wod-advanced', 'patch400', true);
 
         newfunctions += "<li>Foundry version 12</li>";
-        newfunctions += '<li>Added Ukrainian support</li>';        
+        newfunctions += '<li>Added Ukrainian support</li>';
     }
 
     if (!patch410) {
-        game.settings.set('worldofdarkness', 'patch410', true);
+        game.settings.set('wod-advanced', 'patch410', true);
 
         newfunctions += "<li>If creating item to actor edit opens automatically</li>";
         newfunctions += "<li>Textareas can be resized</li>";
@@ -2634,7 +2663,7 @@ export  const updates = async () => {
     }
 
     if (!patch420) {
-        game.settings.set('worldofdarkness', 'patch420', true);
+        game.settings.set('wod-advanced', 'patch420', true);
 
         newfunctions += '<li>[MtR] Added support for Mummy the Resurrection Revised. <a href="https://github.com/JohanFalt/Foundry_WoD20/issues/878">[#878]</a>, <a href="https://github.com/JohanFalt/Foundry_WoD20/issues/140">[#140]</a></li>';
         newfunctions += '<li>[Exalted] Added support for Exalted vs WoD. <a href="https://github.com/JohanFalt/Foundry_WoD20/issues/904">[#904]</a></li>';
@@ -2661,12 +2690,12 @@ export  const updates = async () => {
 
         newfunctions += '<li>Fixed how Willpower spending effect number of successes in a roll so it follows the rules of 20th ed. <a href="https://github.com/JohanFalt/Foundry_WoD20/issues/980">[#980]</a></li>';
         newfunctions += '<li>On the sheet setting you can now set what type of dice you want to roll. The hidden vampire will now not be spoiled by the dices rolled. <a href="https://github.com/JohanFalt/Foundry_WoD20/issues/914">[#914]</a></li>';
-        
-        newfunctions += '<li>Fixed a bunch of bugs and other minor issues</li>';        
+
+        newfunctions += '<li>Fixed a bunch of bugs and other minor issues</li>';
     }
 
     if (!patch500) {
-        game.settings.set('worldofdarkness', 'patch500', true);
+        game.settings.set('wod-advanced', 'patch500', true);
 
         newfunctions += '<li>Foundry version 13</li>';
         newfunctions += '<li>Added support for <a href="https://github.com/JohanFalt/Foundry_WoD20/wiki/Feature:-Drag-and-drop-between-Actors" target="">Drag and Drop</a> between Actors</li>';
@@ -2674,11 +2703,11 @@ export  const updates = async () => {
         newfunctions += '<li>How tooltip works has been altered.</li>';
         newfunctions += '<li>How Items are listed on Actors has been altered.</li>';
         newfunctions += '<li>[MtA] Can now see speciallities as you cast spells.</li>';
-        newfunctions += '<li>Fixed a bunch of bugs and other minor issues</li>';  
+        newfunctions += '<li>Fixed a bunch of bugs and other minor issues</li>';
     }
 
     if (!patch600) {
-        game.settings.set('worldofdarkness', 'patch600', true);
+        game.settings.set('wod-advanced', 'patch600', true);
 
         newfunctions += '<li>Added new type of <a href="https://github.com/JohanFalt/Foundry_WoD20/wiki/PC-Actor">Actor - PC</a></li>';
         newfunctions += '<li>Added <a href="https://github.com/JohanFalt/Foundry_WoD20/wiki/Feature:-API">API</a> för PC actor</li>';
@@ -2697,7 +2726,7 @@ export  const updates = async () => {
     }
 
     if (!patch700) {
-        game.settings.set('worldofdarkness', 'patch700', true);
+        game.settings.set('wod-advanced', 'patch700', true);
 
         newfunctions += '<li>Foundry version 14</li>';
         newfunctions += '<li>Fixed problems with Dark Ages ranged weapons</li>';
@@ -2706,16 +2735,16 @@ export  const updates = async () => {
     }
 
     if (!patch710) {
-        game.settings.set('worldofdarkness', 'patch710', true);
+        game.settings.set('wod-advanced', 'patch710', true);
 
         newfunctions += '<li>Handle bio fields in the template item directly.</li>';
         newfunctions += '<li>[CtD]] Added template items in compendium for Changelings the Dreaming.</li>';
-        newfunctions += '<li>[WtA] Added template items in compendium for Changing breeds.</li>';                
-        newfunctions += '<li>[WtA] Added template items in compendium for Savage Age Changing breeds.</li>';                
+        newfunctions += '<li>[WtA] Added template items in compendium for Changing breeds.</li>';
+        newfunctions += '<li>[WtA] Added template items in compendium for Savage Age Changing breeds.</li>';
     }
 
     if (!patch720) {
-        game.settings.set('worldofdarkness', 'patch720', true);
+        game.settings.set('wod-advanced', 'patch720', true);
 
         newfunctions += '<li>[PC Actor DtF] Added template items in compendium for Demon the Fallen.</li>';
         newfunctions += '<li>[PC Actor DtF] Added relic as gear items.</li>';
@@ -2739,7 +2768,12 @@ export  const updates = async () => {
     }
 
     if (newfunctions == "") {
-        newfunctions += 'Issues fixed in version:<br />';    
+        newfunctions += 'Issues fixed in version:<br />';
+
+        if (_compareVersion(installedVersion, '7.3.0')) {
+            newfunctions += '<li>[PC Actor] Willpower is now an actor-owned light/heavy wound track based on Composure + Resolve.</li>';
+            newfunctions += '<li>[PC Actor] Added Current and Full Willpower rolls, Willpower exhaustion, and rules-spec spending behavior.</li>';
+        }
 
         if (_compareVersion(installedVersion, '7.2.9')) {
             newfunctions += '<li>[PC Actor] If the game was using the V5 settings for using the attributes composure and resolve rolling willpower did not work correctly.</li>';
@@ -2761,7 +2795,7 @@ export  const updates = async () => {
             newfunctions += '<li>[PC Actor VtM] Fixed bug that caused virtues not to be shown.</li>';
             newfunctions += '<li>[PC Actor MtA] Fixed bug that caused quintessence not to be shown.</li>';
         }
-        
+
         if (_compareVersion(installedVersion, '7.2.4')) {
             newfunctions += '<li>[PC Actor DtF] Fixed an error with the Earthbounds Urges causing them not to display correct headline. Recreate any PC Actor with the Earthbound template and the problem will be resolved.</li>';
             newfunctions += '<li>[PC Actor WTA] Fixed the set difficult with fetishes.</li>';
@@ -2778,7 +2812,7 @@ export  const updates = async () => {
         }
     }
 
-    game.settings.set('worldofdarkness', 'worldVersion', migrationVersion);
+    game.settings.set('wod-advanced', 'worldVersion', migrationVersion);
 
     const headline = "Version "+migrationVersion+" installed";
 
@@ -2792,7 +2826,7 @@ export  const updates = async () => {
         message += '<ul>';
         message += newfunctions;
         message += '</ul>';
-    } 
+    }
 
     message += '<h3>Support my work</h3>';
     message += '<a href="https://ko-fi.com/johanfk"><img src="https://ko-fi.com/img/githubbutton_sm.svg" /></a>';
@@ -2818,39 +2852,39 @@ export  const updates = async () => {
         if (newVersion == "") {
             return false;
         }
-    
+
         if (oldVersion == "") {
             return true;
         }
-    
+
         if (oldVersion.toLowerCase().includes("alpha")) {
         oldVersion = oldVersion.toLowerCase().replace("alpha", "");
         oldVersion = oldVersion.toLowerCase().replace("-", "");
         oldVersion = oldVersion.toLowerCase().replace(" ", "");
         }
-    
+
         if (newVersion.toLowerCase().includes("alpha")) {
         newVersion = newVersion.toLowerCase().replace("alpha", "");
         newVersion = newVersion.toLowerCase().replace("-", "");
         newVersion = newVersion.toLowerCase().replace(" ", "");
         }
-    
+
         if (oldVersion == "1") {
             return true;
-        } 
-    
+        }
+
         if (oldVersion == newVersion) {
             return false;
         }
-  
-    
+
+
         const newfields = newVersion.split(".");
         const oldfields = oldVersion.split(".");
-    
+
         for (let i = 0; i <= 2; i++) {
             let varde1 = 0;
             let varde2 = 0;
-            
+
             if (newfields[i] != undefined) {
                 varde1 = newfields[i];
             }
@@ -2867,13 +2901,13 @@ export  const updates = async () => {
     }
     catch {
     }
-  
+
     return false
   }
 
 /**
  * Checks if a certain ability is not part of the main ones.
- * @param ability   
+ * @param ability
  */
 function issecondability(ability) {
     if (CONFIG.worldofdarkness.talents[ability] != undefined) {
@@ -2912,7 +2946,7 @@ function issecondabilityranged(ability) {
     }
 
     return false;
-    
+
 }
 
 function translateSecondaryAbility(label) {

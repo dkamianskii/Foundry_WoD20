@@ -32,7 +32,7 @@ import { registerHooks } from "./module/hooks.js";
 const SheetTypes = [
 	"PC",
 	"Mortal",
-	"Werewolf",			
+	"Werewolf",
 	"Mage",
 	"Vampire",
 	"Changeling",
@@ -54,7 +54,7 @@ const PowerCreationItemTypes = [
 const CharacterCreationItemTypes = [
 	"Bonus",
 	"Experience",
-	"Feature",	
+	"Feature",
 	"Trait"
 ];
 const EquipmentItemTypes = [
@@ -74,76 +74,76 @@ Hooks.once("init", async function() {
 	systemSettings();
 
 	console.log("WoD | Settings registered");
-	
+
 	CONFIG.worldofdarkness = wod;
 	CONFIG.worldofdarkness.sheetv2 = {};
 	CONFIG.worldofdarkness.sheetv2 = Object.assign(CONFIG.worldofdarkness.sheetv2, templates.SetupBioTab());
 	CONFIG.worldofdarkness.sheetv2 = Object.assign(CONFIG.worldofdarkness.sheetv2, templates.SetupPowerTab());
-	CONFIG.worldofdarkness.attributeSettings = game.settings.get("worldofdarkness", "attributeSettings");
-	CONFIG.worldofdarkness.fifthEditionWillpowerSetting = game.settings.get("worldofdarkness", "fifthEditionWillpowerSetting");
-	CONFIG.worldofdarkness.willpowerBonusDice = game.settings.get("worldofdarkness", "willpowerBonusDice"); 
-	CONFIG.worldofdarkness.rollSettings = game.settings.get('worldofdarkness', 'advantageRolls');
-	CONFIG.worldofdarkness.successesToDamageRolls = game.settings.get('worldofdarkness', 'successesToDamageRolls');
-	CONFIG.worldofdarkness.specialityLevel = game.settings.get('worldofdarkness', 'specialityLevel');
-	CONFIG.worldofdarkness.demonSystemSettings = game.settings.get('worldofdarkness', 'demonSystemSettings');
-	CONFIG.worldofdarkness.demonEvocationTorment = game.settings.get('worldofdarkness', 'demonEvocationTorment');
-	CONFIG.worldofdarkness.hunteredgeSettings = game.settings.get('worldofdarkness', 'hunteredgeSettings');
-	CONFIG.worldofdarkness.wererwolfrageSettings = game.settings.get('worldofdarkness', 'wererwolfrageSettings');
-	CONFIG.worldofdarkness.virtuesLimit = game.settings.get('worldofdarkness', 'virtuesLimit');
-	
+	CONFIG.worldofdarkness.attributeSettings = game.settings.get("wod-advanced", "attributeSettings");
+	CONFIG.worldofdarkness.fifthEditionWillpowerSetting = game.settings.get("wod-advanced", "fifthEditionWillpowerSetting");
+	CONFIG.worldofdarkness.willpowerBonusDice = game.settings.get("wod-advanced", "willpowerBonusDice");
+	CONFIG.worldofdarkness.rollSettings = game.settings.get('wod-advanced', 'advantageRolls');
+	CONFIG.worldofdarkness.successesToDamageRolls = game.settings.get('wod-advanced', 'successesToDamageRolls');
+	CONFIG.worldofdarkness.specialityLevel = game.settings.get('wod-advanced', 'specialityLevel');
+	CONFIG.worldofdarkness.demonSystemSettings = game.settings.get('wod-advanced', 'demonSystemSettings');
+	CONFIG.worldofdarkness.demonEvocationTorment = game.settings.get('wod-advanced', 'demonEvocationTorment');
+	CONFIG.worldofdarkness.hunteredgeSettings = game.settings.get('wod-advanced', 'hunteredgeSettings');
+	CONFIG.worldofdarkness.wererwolfrageSettings = game.settings.get('wod-advanced', 'wererwolfrageSettings');
+	CONFIG.worldofdarkness.virtuesLimit = game.settings.get('wod-advanced', 'virtuesLimit');
+
 
 	// Roll settings
 	try {
-		CONFIG.worldofdarkness.handleOnes = game.settings.get('worldofdarkness', 'theRollofOne');
-		CONFIG.worldofdarkness.usehandleOnes = parseInt(game.settings.get('worldofdarkness', 'theRollofOne')) > 0;
-	} 
+		CONFIG.worldofdarkness.handleOnes = game.settings.get('wod-advanced', 'theRollofOne');
+		CONFIG.worldofdarkness.usehandleOnes = parseInt(game.settings.get('wod-advanced', 'theRollofOne')) > 0;
+	}
 	catch (e) {
 		CONFIG.worldofdarkness.handleOnes = 1;
 		CONFIG.worldofdarkness.usehandleOnes = true;
 	}
 
 	try {
-		CONFIG.worldofdarkness.useOnesDamage = game.settings.get('worldofdarkness', 'useOnesDamage');
-	} 
+		CONFIG.worldofdarkness.useOnesDamage = game.settings.get('wod-advanced', 'useOnesDamage');
+	}
 	catch (e) {
 		CONFIG.worldofdarkness.useOnesDamage = false;
 	}
 
 	try {
-		CONFIG.worldofdarkness.usePenaltyDamage = game.settings.get('worldofdarkness', 'usePenaltyDamage');
-	} 
+		CONFIG.worldofdarkness.usePenaltyDamage = game.settings.get('wod-advanced', 'usePenaltyDamage');
+	}
 	catch (e) {
 		CONFIG.worldofdarkness.usePenaltyDamage = false;
 	}
 
 	try {
-		CONFIG.worldofdarkness.useOnesSoak = game.settings.get('worldofdarkness', 'useOnesSoak');
-	} 
+		CONFIG.worldofdarkness.useOnesSoak = game.settings.get('wod-advanced', 'useOnesSoak');
+	}
 	catch (e) {
 		CONFIG.worldofdarkness.useOnesSoak = false;
 	}
 
 	try {
-		CONFIG.worldofdarkness.lowestDifficulty = parseInt(game.settings.get('worldofdarkness', 'lowestDifficulty'));
-	} 
+		CONFIG.worldofdarkness.lowestDifficulty = parseInt(game.settings.get('wod-advanced', 'lowestDifficulty'));
+	}
 	catch (e) {
 		CONFIG.worldofdarkness.lowestDifficulty = 2;
 	}
 
 	try {
-		CONFIG.worldofdarkness.specialityAddSuccess = parseInt(game.settings.get('worldofdarkness', 'specialityAddSuccess'));
-		CONFIG.worldofdarkness.usespecialityAddSuccess = parseInt(game.settings.get('worldofdarkness', 'specialityAddSuccess')) > 0;
-	} 
+		CONFIG.worldofdarkness.specialityAddSuccess = parseInt(game.settings.get('wod-advanced', 'specialityAddSuccess'));
+		CONFIG.worldofdarkness.usespecialityAddSuccess = parseInt(game.settings.get('wod-advanced', 'specialityAddSuccess')) > 0;
+	}
 	catch (e) {
 		CONFIG.worldofdarkness.specialityAddSuccess = 2;
 		CONFIG.worldofdarkness.usespecialityAddSuccess = true;
 	}
 
 	try {
-		CONFIG.worldofdarkness.specialityReduceDiff = parseInt(game.settings.get('worldofdarkness', 'specialityReduceDiff'));
-		CONFIG.worldofdarkness.usespecialityReduceDiff = parseInt(game.settings.get('worldofdarkness', 'specialityReduceDiff')) > 0;
-		CONFIG.worldofdarkness.specialityAllowBotch = game.settings.get('worldofdarkness', 'specialityAllowBotch');
-	} 
+		CONFIG.worldofdarkness.specialityReduceDiff = parseInt(game.settings.get('wod-advanced', 'specialityReduceDiff'));
+		CONFIG.worldofdarkness.usespecialityReduceDiff = parseInt(game.settings.get('wod-advanced', 'specialityReduceDiff')) > 0;
+		CONFIG.worldofdarkness.specialityAllowBotch = game.settings.get('wod-advanced', 'specialityAllowBotch');
+	}
 	catch (e) {
 		CONFIG.worldofdarkness.specialityReduceDiff = 0;
 		CONFIG.worldofdarkness.usespecialityReduceDiff = false;
@@ -151,18 +151,18 @@ Hooks.once("init", async function() {
 	}
 
 	try {
-		CONFIG.worldofdarkness.tenAddSuccess = parseInt(game.settings.get('worldofdarkness', 'tenAddSuccess'));
-		CONFIG.worldofdarkness.usetenAddSuccess = parseInt(game.settings.get('worldofdarkness', 'tenAddSuccess')) > 0;
-	} 
+		CONFIG.worldofdarkness.tenAddSuccess = parseInt(game.settings.get('wod-advanced', 'tenAddSuccess'));
+		CONFIG.worldofdarkness.usetenAddSuccess = parseInt(game.settings.get('wod-advanced', 'tenAddSuccess')) > 0;
+	}
 	catch (e) {
 		CONFIG.worldofdarkness.tenAddSuccess = 0;
 		CONFIG.worldofdarkness.usetenAddSuccess = false;
-	}	
+	}
 
 	try {
-		CONFIG.worldofdarkness.explodingDice = game.settings.get('worldofdarkness', 'explodingDice');
-		CONFIG.worldofdarkness.useexplodingDice = game.settings.get('worldofdarkness', 'explodingDice') != "never";
-	} 
+		CONFIG.worldofdarkness.explodingDice = game.settings.get('wod-advanced', 'explodingDice');
+		CONFIG.worldofdarkness.useexplodingDice = game.settings.get('wod-advanced', 'explodingDice') != "never";
+	}
 	catch (e) {
 		CONFIG.worldofdarkness.explodingDice = "never";
 		CONFIG.worldofdarkness.useexplodingDice = false;
@@ -170,11 +170,11 @@ Hooks.once("init", async function() {
 
 	// Era settings
 	try {
-		CONFIG.worldofdarkness.defaultMortalEra = game.settings.get('worldofdarkness', 'eraMortal');
-		CONFIG.worldofdarkness.defaultMageEra = game.settings.get('worldofdarkness', 'eraMage');
-		CONFIG.worldofdarkness.defaultVampireEra = game.settings.get('worldofdarkness', 'eraVampire');
-		CONFIG.worldofdarkness.defaultWerewolfEra = game.settings.get('worldofdarkness', 'eraWerewolf');
-	} 
+		CONFIG.worldofdarkness.defaultMortalEra = game.settings.get('wod-advanced', 'eraMortal');
+		CONFIG.worldofdarkness.defaultMageEra = game.settings.get('wod-advanced', 'eraMage');
+		CONFIG.worldofdarkness.defaultVampireEra = game.settings.get('wod-advanced', 'eraVampire');
+		CONFIG.worldofdarkness.defaultWerewolfEra = game.settings.get('wod-advanced', 'eraWerewolf');
+	}
 	catch (e) {
 		CONFIG.worldofdarkness.defaultMortalEra = "modern";
 		CONFIG.worldofdarkness.defaultMageEra = "modern";
@@ -184,14 +184,14 @@ Hooks.once("init", async function() {
 
 	// Combat settings
 	try {
-		CONFIG.worldofdarkness.defaultAutoAmmo = game.settings.get('worldofdarkness', 'autoAmmo');
+		CONFIG.worldofdarkness.defaultAutoAmmo = game.settings.get('wod-advanced', 'autoAmmo');
 	}
 	catch (e) {
 		CONFIG.worldofdarkness.defaultAutoAmmo = false;
 	}
 
-	CONFIG.worldofdarkness.observersSeeFullActor = game.settings.get('worldofdarkness', 'observersFullActorViewPermission');
-	CONFIG.worldofdarkness.limitedSeeFullActor = game.settings.get('worldofdarkness', 'limitedFullActorViewPermission');
+	CONFIG.worldofdarkness.observersSeeFullActor = game.settings.get('wod-advanced', 'observersFullActorViewPermission');
+	CONFIG.worldofdarkness.limitedSeeFullActor = game.settings.get('wod-advanced', 'limitedFullActorViewPermission');
 
 	// Register datamodels
 	CONFIG.Actor.dataModels.PC = actorModels.PCDataModel;
@@ -203,8 +203,8 @@ Hooks.once("init", async function() {
 	CONFIG.Item.dataModels.Realm = itemModels.RealmDataModel;
 
 	console.log("WoD | Datamodels Registered");
-	
-	
+
+
 
 	// Register application classes
 	CONFIG.Actor.documentClass = WoDActor;
@@ -230,7 +230,7 @@ Hooks.once("init", async function() {
 		label: game.i18n.localize("wod.sheet.werewolf"),
 		types: ["Werewolf"],
 		makeDefault: true
-	});	
+	});
 
 	foundry.documents.collections.Actors.registerSheet("WoD", actorSheets.MageActorSheet, {
 		label: game.i18n.localize("wod.sheet.mage"),
@@ -243,7 +243,7 @@ Hooks.once("init", async function() {
 		types: ["Vampire"],
 		makeDefault: true
 	});
-	
+
 	foundry.documents.collections.Actors.registerSheet("WoD", actorSheets.ChangelingActorSheet, {
 		label: game.i18n.localize("wod.sheet.changeling"),
 		types: ["Changeling"],
@@ -290,17 +290,17 @@ Hooks.once("init", async function() {
 		label: game.i18n.localize("wod.sheet.creature"),
 		types: ["Creature"],
 		makeDefault: true
-	});	
-	
+	});
+
 	console.log("WoD | Actor Sheets Registered");
-	
+
 	// Register item application classes
 	foundry.documents.collections.Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
 
 	foundry.documents.collections.Items.registerSheet("WoD", itemSheets.SplatItemSheet, {
 		types: ["Splat"],
 		makeDefault: true
-	});	
+	});
 
 	foundry.documents.collections.Items.registerSheet("WoD", itemSheets.AbilityItemSheet, {
 		types: ["Ability"],
@@ -321,66 +321,66 @@ Hooks.once("init", async function() {
 		types: ["Realm"],
 		makeDefault: true
 	});
-	
+
 	foundry.documents.collections.Items.registerSheet("WoD", itemSheets.WoDItemSheet, {
 		types: ["Armor"],
-		makeDefault: true		
+		makeDefault: true
 	});
 
 	foundry.documents.collections.Items.registerSheet("WoD", itemSheets.WoDItemSheet, {
 		types: ["Bonus"],
-		makeDefault: true		
+		makeDefault: true
 	});
 
 	foundry.documents.collections.Items.registerSheet("WoD", itemSheets.WoDItemSheet, {
 		types: ["Experience"],
-		makeDefault: true		
+		makeDefault: true
 	});
 
 	foundry.documents.collections.Items.registerSheet("WoD", itemSheets.WoDItemSheet, {
 		types: ["Feature"],
-		makeDefault: true		
+		makeDefault: true
 	});
 
 	foundry.documents.collections.Items.registerSheet("WoD", itemSheets.WoDItemSheet, {
 		types: ["Fetish"],
-		makeDefault: true		
+		makeDefault: true
 	});
 
 	foundry.documents.collections.Items.registerSheet("WoD", itemSheets.WoDItemSheet, {
 		types: ["Item"],
-		makeDefault: true		
+		makeDefault: true
 	});
 
 	foundry.documents.collections.Items.registerSheet("WoD", itemSheets.WoDItemSheet, {
 		types: ["Melee Weapon"],
-		makeDefault: true		
+		makeDefault: true
 	});
 
 	foundry.documents.collections.Items.registerSheet("WoD", itemSheets.WoDItemSheet, {
 		types: ["Ranged Weapon"],
-		makeDefault: true		
+		makeDefault: true
 	});
 
 	foundry.documents.collections.Items.registerSheet("WoD", itemSheets.WoDItemSheet, {
 		types: ["Power"],
-		makeDefault: true		
+		makeDefault: true
 	});
 
 	foundry.documents.collections.Items.registerSheet("WoD", itemSheets.WoDItemSheet, {
 		types: ["Rote"],
-		makeDefault: true		
-	});	
+		makeDefault: true
+	});
 
 	foundry.documents.collections.Items.registerSheet("WoD", itemSheets.WoDItemSheet, {
 		types: ["Trait"],
-		makeDefault: true		
+		makeDefault: true
 	});
 
 	console.log("WoD | Item Sheets Registered");
-	
+
 	templates.preloadHandlebarsTemplates();
-	registerHandlebarsHelpers();	
+	registerHandlebarsHelpers();
 
 	console.log("WoD | Added Handelebars");
 
@@ -401,9 +401,9 @@ Hooks.once("init", async function() {
 	game.worldofdarkness = {};
 	game.worldofdarkness.bio = templates.SetupBio();
 	game.worldofdarkness.abilities = templates.SetupAbilities();
-	
 
-	console.log("WoD | Added Settings");  
+
+	console.log("WoD | Added Settings");
 
 	game.worldofdarkness.icons = {};
 
@@ -413,7 +413,7 @@ Hooks.once("init", async function() {
 		let iconlist = IconHelper.GetIconlist(race)
 
 		Object.assign(game.worldofdarkness.icons[race], iconlist);
-	}	
+	}
 
 	game.worldofdarkness.icons["black"] = {};
 	Object.assign(game.worldofdarkness.icons["black"], IconHelper.GetIconlist("black"));
@@ -430,7 +430,7 @@ Hooks.once("init", async function() {
 
 		// Convert to lowercase and remove spaces
 		sheettype = sheettype.toLowerCase().replace(" ", "");
-		
+
 		// Convert "pc" to "mortal" (same logic as getSplat)
 		if (sheettype === "pc") {
 			sheettype = "mortal";
@@ -441,7 +441,7 @@ Hooks.once("init", async function() {
 		return `${context}Svg`;
 	});
 
-		
+
 	// Register dice partials.
 	for (let [race, iconlist] of Object.entries(game.worldofdarkness.icons)) {
 		for (let icon of Object.entries(iconlist)) {
@@ -449,7 +449,7 @@ Hooks.once("init", async function() {
 		}
 	}
 
-	console.log("WoD | Icons added"); 
+	console.log("WoD | Icons added");
 });
 
 /* ------------------------------------ */
@@ -467,35 +467,35 @@ Hooks.once("ready", async function () {
 	// Load installed powers (must run in "ready" when game.packs is available)
 	game.worldofdarkness.powers = await WoDSetup.getInstalledPowers(game.items.contents, true);
 
-	const installedVersion = game.settings.get('worldofdarkness', 'worldVersion');
-  	const systemVersion = game.system.version;	
+	const installedVersion = game.settings.get('wod-advanced', 'worldVersion');
+	const systemVersion = game.system.version;
 	const test = false;
 
 	// Handle token icons for shapeforms. Since these are dynamic and can be added by users, we need to register them as status effects so that they can be used as token icons.
 	if (!CONFIG.statusEffects || !Array.isArray(CONFIG.statusEffects)) {
 		CONFIG.statusEffects = [];
 	}
-	
+
 	CONFIG.statusEffects.push({
 		id: "wod_shapeform_icon",
 		name: "Shapeform Icon",
-		img: "systems/worldofdarkness/assets/img/shapes/form_homid.svg" // Fallback ikon
+		img: "systems/wod-advanced/assets/img/shapes/form_homid.svg" // Fallback ikon
 	});
-	
+
 	if (game.actors) {
 		const uniqueIcons = new Set();
 		const iconToName = new Map();
-		
+
 		for (const actor of game.actors) {
 			if (actor.type !== "PC") continue;
-			
-			const shapeforms = actor.items.filter(item => 
-				item.type === "Trait" && 
+
+			const shapeforms = actor.items.filter(item =>
+				item.type === "Trait" &&
 				item.system?.type === "wod.types.shapeform" &&
 				item.system?.icon &&
 				item.system.icon.trim() !== ""
 			);
-			
+
 			// Gather all unique icons
 			for (const shapeform of shapeforms) {
 				const iconUrl = shapeform.system.icon.trim();
@@ -508,12 +508,12 @@ Hooks.once("ready", async function () {
 				}
 			}
 		}
-		
+
 		// Register all unique icons as status effects
 		for (const iconUrl of uniqueIcons) {
 			const urlParts = iconUrl.split('/');
 			const fileName = urlParts[urlParts.length - 1].replace('.svg', '');
-			const statusId = `wod_shapeform_${fileName}`;			
+			const statusId = `wod_shapeform_${fileName}`;
 			const exists = CONFIG.statusEffects.find(s => s.id === statusId);
 
 			if (!exists) {
@@ -524,7 +524,7 @@ Hooks.once("ready", async function () {
 				});
 			}
 		}
-		
+
 		if (uniqueIcons.size > 0) {
 			console.log(`WoD | Registered ${uniqueIcons.size} unique shapeform icons`);
 		}
@@ -535,7 +535,7 @@ Hooks.once("ready", async function () {
 	tourSetup();
 
 	if (game.user.isGM) {
-		if (!game.settings.get('worldofdarkness', 'readmessage01')) {
+		if (!game.settings.get('wod-advanced', 'readmessage01')) {
 			MigrationWizard.show([
 				// Page 1: Welcome to v6
 				`<h2>Welcome to WoD20 v6!</h2>
@@ -586,7 +586,7 @@ Hooks.once("ready", async function () {
 				<p>For detailed documentation and guides, please visit the <a href="https://github.com/JohanFalt/Foundry_WoD20/wiki" target="_blank">Wiki main page</a>. As you explore the new features, I'd love to hear your feedback! If you encounter any issues or have suggestions for improvements, please let me know.</p>
 				<p>Thank you for being part of the World of Darkness community, and I hope you enjoy the new features in v6!</p>`
 			], 'readmessage01');
-		}		
+		}
 
 		if ((installedVersion !== systemVersion || installedVersion === null || test)) {
 			await migration.UpdateWorld(installedVersion, systemVersion);
@@ -594,10 +594,10 @@ Hooks.once("ready", async function () {
 		else {
 			// so attributes are shown correctly according to the settings
 			await migration.updates();
-		}		
-	}	
-	
-	CONFIG.language = game.i18n.lang;	
+		}
+	}
+
+	CONFIG.language = game.i18n.lang;
 	CONFIG.worldofdarkness.darkmode = game.settings.get('core', 'uiConfig').colorScheme.applications === "dark";
 
 	if (game.worldofdarkness.abilities == undefined) {
@@ -606,13 +606,13 @@ Hooks.once("ready", async function () {
 
 	if (isIpadViewport()) {
 		isTablet = true;
-	}	
+	}
 });
 
 //Dice Roller
 $(document).ready(() => {
 	const diceIconSelector = '#roll-privacy .fa-globe';
-  
+
 	$(document).on('click', diceIconSelector, ev => {
 	  	ev.preventDefault();
 	    const roll = new GeneralRoll("dice", "dice");

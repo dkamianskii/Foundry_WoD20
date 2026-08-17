@@ -15,7 +15,7 @@ export class WoDItem extends Item {
 
     async _preCreate(data, options, user) {
 		await super._preCreate(data, options, user);
-		
+
 		try {
 			const updates = {};
 
@@ -28,16 +28,16 @@ export class WoDItem extends Item {
 				updates["system.settings.iscreated"] = true;
 				updates["system.settings.version"] = game.system.version;
 			}
-			else if (data.type === "Armor" || 
-						data.type === "Melee Weapon" || 
-						data.type === "Ranged Weapon" || 
-						data.type === "Power" || 
-						data.type === "Item" || 
-						data.type === "Rote" || 
-						data.type === "Fetish" || 
-						data.type === "Feature" || 
-						data.type === "Bonus" || 
-						data.type === "Trait" || 
+			else if (data.type === "Armor" ||
+						data.type === "Melee Weapon" ||
+						data.type === "Ranged Weapon" ||
+						data.type === "Power" ||
+						data.type === "Item" ||
+						data.type === "Rote" ||
+						data.type === "Fetish" ||
+						data.type === "Feature" ||
+						data.type === "Bonus" ||
+						data.type === "Trait" ||
 						data.type === "Experience" ){
 				updates["system.iscreated"] = true;
 				updates["system.version"] = game.system.version;
@@ -67,8 +67,8 @@ export class WoDItem extends Item {
 				if (!data.system.type || data.system.type === "") {
 					updates["system.type"] = "wod.abilities.ability";
 				}
-			}	
-			
+			}
+
 			if ((data.type === "Advantage") && (options?.parent !== null) && (options?.parent !== undefined)) {
 				updates["system.settings.order"] = options.parent.items.filter(i => i.type === "Advantage").length;
 			}
@@ -100,15 +100,15 @@ export class WoDItem extends Item {
 
 			if (updateData.type === "Advantage") {
 				updateData = await this._handleAdvantagesCalculations(updateData);
-			}                
+			}
 
 			if (updateData.type === "Sphere") {
 				updateData = await this._handlePowerCalculations(updateData);
-			}  
+			}
 
 			if (updateData.type === "Power") {
 				updateData = await this._handlePowerCalculations(updateData);
-			} 			
+			}
 		}
 		catch (err) {
 			ui.notifications.error(`Cannot update Item ${updateData.name}. Please check console for details.`);
@@ -132,7 +132,7 @@ export class WoDItem extends Item {
 		// 			actorData.system.settings.isupdated = false;
 		// 			await this.actor.update(actorData);
 		// 		}
-		// 	}			
+		// 	}
 		// }
 		// catch (err) {
 		// 	ui.notifications.error(`Cannot update Item ${updateData.name}. Please check console for details.`);
@@ -173,7 +173,7 @@ export class WoDItem extends Item {
         try {
             const item = this;
 			let actor = null;
-			
+
 			if ((item.actor !== undefined) && (item.actor !== null)) {
 				actor = game.actors.get(item.actor._id);
 
@@ -210,7 +210,7 @@ export class WoDItem extends Item {
         try {
 			const item = this;
 			let actor = null;
-			
+
 			if ((item.actor !== undefined) && (item.actor !== null)) {
 				actor = game.actors.get(item.actor._id);
 
@@ -222,11 +222,11 @@ export class WoDItem extends Item {
             let traitMax = 5;
 			// let bloodpoolMax = 10;
 			// let bloodSpending = 1;
-			let advantageRollSetting = true;  
+			let advantageRollSetting = true;
 
 			try {
                 advantageRollSetting = CONFIG.worldofdarkness.rollSettings;
-            } 
+            }
             catch (e) {
                 advantageRollSetting = true;
             }
@@ -240,15 +240,15 @@ export class WoDItem extends Item {
 			 	if ((CONFIG.worldofdarkness.attributeSettings === "5th") && (CONFIG.worldofdarkness.fifthEditionWillpowerSetting === "5th") && (actor !== null)) {
 					if (actor.system.settings.variant !== "spirit") {
 						itemData.system.permanent = parseInt(actor.system.attributes.composure.value) + parseInt(actor.system.attributes.resolve.value);
-					}			 		
+					}
 			 	}
 			}
 
-			if (itemData.system?.group == "virtue") {       
+			if (itemData.system?.group == "virtue") {
 				itemData.system.max = traitMax;
 			}
 
-			if (itemData.system?.id == "path") {          
+			if (itemData.system?.id == "path") {
 				let bearing = 0;
 
 				if (itemData.system.permanent <= 1) {
@@ -268,13 +268,13 @@ export class WoDItem extends Item {
 				}
 
 				itemData.system.bearing = bearing;
-			} 
+			}
 
 			if ((itemData.system?.settings?.usepermanent) && (itemData.system?.settings?.usetemporary)) {
 			 	if (itemData.system.permanent > itemData.system.max) {
 			 	    itemData.system.permanent = itemData.system.max;
 			 	}
-				
+
 			 	if ((itemData.system.permanent < itemData.system.temporary) && (!itemData.system.settings.highertemporary)) {
 			 	    itemData.system.temporary = itemData.system.permanent;
 			 	}
@@ -292,7 +292,7 @@ export class WoDItem extends Item {
 			 			itemData.system.roll = itemData.system.permanent;
 			 		}
 			 		else if ((itemData.system.settings.usepermanent) && (itemData.system.settings.usetemporary)) {
-			 			itemData.system.roll = itemData.system.permanent > itemData.system.temporary ? itemData.system.temporary : itemData.system.permanent; 
+						itemData.system.roll = itemData.system.permanent > itemData.system.temporary ? itemData.system.temporary : itemData.system.permanent;
 			 		}
 			 	}
 			 	else if (itemData.system.settings.usepermanent) {
@@ -301,21 +301,21 @@ export class WoDItem extends Item {
 			 	else if (itemData.system.settings.usetemporary) {
 			 		itemData.system.roll = itemData.system.temporary;
 			 	}
-			} 
+			}
         }
         catch (err) {
             err.message = `Failed _handleAdvantagesCalculations Item ${itemData.name}: ${err.message}`;
             console.error(err);
-        }				
+        }
 
         return itemData;
     }
 
 	async _handlePowerCalculations(itemData) {
         try {
-            const item = this;			
+            const item = this;
 			let actor = null;
-			
+
 			if ((item.actor !== undefined) && (item.actor !== null)) {
 				actor = game.actors.get(item.actor._id);
 
@@ -351,139 +351,139 @@ export class WoDItem extends Item {
 
 function _getImage(item) {
 	if (item.type == "Armor") {
-		return "systems/worldofdarkness/assets/img/items/armor.svg";
+		return "systems/wod-advanced/assets/img/items/armor.svg";
 	}
 
 	if (item.type == "Fetish") {
-		return "systems/worldofdarkness/assets/img/items/fetish.svg";
+		return "systems/wod-advanced/assets/img/items/fetish.svg";
 	}
 
 	if (item.type == "Item") {
-		
+
 	}
 
 	if ((item.type == "Melee Weapon") && (item.system.isnatural)) {
-		return "systems/worldofdarkness/assets/img/items/naturalweapons.svg";
+		return "systems/wod-advanced/assets/img/items/naturalweapons.svg";
 	}
 
 	if ((item.type == "Melee Weapon") && (!item.system.isnatural)) {
-		return "systems/worldofdarkness/assets/img/items/meleeweapons.svg";
+		return "systems/wod-advanced/assets/img/items/meleeweapons.svg";
 	}
 
 	if (item.type == "Ranged Weapon") {
-		return "systems/worldofdarkness/assets/img/items/rangedweapons.svg";
+		return "systems/wod-advanced/assets/img/items/rangedweapons.svg";
 	}
 
 	if (item.type == "Feature") {
-		return "systems/worldofdarkness/assets/img/items/feature.svg";
+		return "systems/wod-advanced/assets/img/items/feature.svg";
 	}
 
 	if (item.type == "Experience") {
-		return "systems/worldofdarkness/assets/img/items/feature.svg";
+		return "systems/wod-advanced/assets/img/items/feature.svg";
 	}
 
 	if (item.type == "Splat") {
-		return "systems/worldofdarkness/assets/img/items/skills.svg";
+		return "systems/wod-advanced/assets/img/items/skills.svg";
 	}
 
 	if (item.type == "Ability") {
-		return "systems/worldofdarkness/assets/img/items/feature.svg";
+		return "systems/wod-advanced/assets/img/items/feature.svg";
 	}
 
 	if (item.type == "Advantage") {
-		return "systems/worldofdarkness/assets/img/items/feature.svg";
+		return "systems/wod-advanced/assets/img/items/feature.svg";
 	}
 
 	if (item.type == "Sphere") {
-		return "systems/worldofdarkness/assets/img/items/mainpower_mage.svg";
+		return "systems/wod-advanced/assets/img/items/mainpower_mage.svg";
 	}
 
 	if (item.type == "Realm") {
-		return "systems/worldofdarkness/assets/img/items/mainpower_changeling.svg";
+		return "systems/wod-advanced/assets/img/items/mainpower_changeling.svg";
 	}
 
 	if (item.type == "Power") {
 		if ((item.system.type == "wod.types.discipline") /*|| (item.system.type == "wod.types.disciplinepath")*/) {
-			return "systems/worldofdarkness/assets/img/items/mainpower_vampire.svg";
+			return "systems/wod-advanced/assets/img/items/mainpower_vampire.svg";
 		}
 
 		if ((item.system.type == "wod.types.disciplinepower") /*|| (item.system.type == "wod.types.disciplinepathpower")*/ || (item.system.type == "wod.types.combination")) {
-			return "systems/worldofdarkness/assets/img/items/power_vampire.svg";
+			return "systems/wod-advanced/assets/img/items/power_vampire.svg";
 		}
 
 		if ((item.system.type == "wod.types.ritual") && (item.system.game == CONFIG.worldofdarkness.sheettype.vampire.toLowerCase())) {
-			return "systems/worldofdarkness/assets/img/items/ritual_vampire.svg";
+			return "systems/wod-advanced/assets/img/items/ritual_vampire.svg";
 		}
 
 		if (item.system.type == "wod.types.art") {
-			return "systems/worldofdarkness/assets/img/items/mainpower_changeling.svg";
+			return "systems/wod-advanced/assets/img/items/mainpower_changeling.svg";
 		}
 
 		if (item.system.type == "wod.types.artpower") {
-			return "systems/worldofdarkness/assets/img/items/power_changeling.svg";
+			return "systems/wod-advanced/assets/img/items/power_changeling.svg";
 		}
 
 		if (item.system.type == "wod.types.edge") {
-			return "systems/worldofdarkness/assets/img/items/mainpower_hunter.svg";
+			return "systems/wod-advanced/assets/img/items/mainpower_hunter.svg";
 		}
 
 		if (item.system.type == "wod.types.edgepower") {
-			return "systems/worldofdarkness/assets/img/items/power_hunter.svg";
+			return "systems/wod-advanced/assets/img/items/power_hunter.svg";
 		}
 
 		if (item.system.type == "wod.types.lore") {
-			return "systems/worldofdarkness/assets/img/items/mainpower_demon.svg";
+			return "systems/wod-advanced/assets/img/items/mainpower_demon.svg";
 		}
 
 		if (item.system.type == "wod.types.lorepower") {
-			return "systems/worldofdarkness/assets/img/items/power_demon.svg";
+			return "systems/wod-advanced/assets/img/items/power_demon.svg";
 		}
 
 		if ((item.system.type == "wod.types.arcanoi")||(item.system.type == "wod.types.stain")||(item.system.type == "wod.types.horror")) {
-			return "systems/worldofdarkness/assets/img/items/mainpower_wraith.svg";
+			return "systems/wod-advanced/assets/img/items/mainpower_wraith.svg";
 		}
 
 		if (item.system.type == "wod.types.arcanoipower") {
-			return "systems/worldofdarkness/assets/img/items/power_wraith.svg";
+			return "systems/wod-advanced/assets/img/items/power_wraith.svg";
 		}
 
 		if (item.system.type == "wod.types.hekau") {
-			return "systems/worldofdarkness/assets/img/items/mainpower_mummy.svg";
+			return "systems/wod-advanced/assets/img/items/mainpower_mummy.svg";
 		}
 
 		if (item.system.type == "wod.types.hekaupower") {
-			return "systems/worldofdarkness/assets/img/items/power_mummy.svg";
+			return "systems/wod-advanced/assets/img/items/power_mummy.svg";
 		}
 
 		if ((item.system.type == "wod.types.exaltedcharm") || (item.system.type == "wod.types.exaltedsorcery")) {
-			return "systems/worldofdarkness/assets/img/items/power_exalted.svg";
+			return "systems/wod-advanced/assets/img/items/power_exalted.svg";
 		}
 
 		if (item.system.type == "wod.types.numina") {
-			return "systems/worldofdarkness/assets/img/items/mainpower_mage.svg";
+			return "systems/wod-advanced/assets/img/items/mainpower_mage.svg";
 		}
 
 		if (item.system.type == "wod.types.numinapower") {
-			return "systems/worldofdarkness/assets/img/items/power_mage.svg";
+			return "systems/wod-advanced/assets/img/items/power_mage.svg";
 		}
 
 		if ((item.system.type == "wod.types.ritual") && (item.system.game == "demon")) {
-			return "systems/worldofdarkness/assets/img/items/ritual_demon.svg";
+			return "systems/wod-advanced/assets/img/items/ritual_demon.svg";
 		}
 
 		if (item.system.type == "wod.types.gift") {
-			return "systems/worldofdarkness/assets/img/items/power_werewolf.svg";
+			return "systems/wod-advanced/assets/img/items/power_werewolf.svg";
 		}
 
 		if (item.system.type == "wod.types.rite") {
-			return "systems/worldofdarkness/assets/img/items/ritual_werewolf.svg";
+			return "systems/wod-advanced/assets/img/items/ritual_werewolf.svg";
 		}
 
-		return "systems/worldofdarkness/assets/img/items/power.svg";
+		return "systems/wod-advanced/assets/img/items/power.svg";
 	}
 
 	if (item.type == "Rote") {
-		return "systems/worldofdarkness/assets/img/items/rote_mage.svg";
+		return "systems/wod-advanced/assets/img/items/rote_mage.svg";
 	}
 
 	return "";

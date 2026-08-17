@@ -16,7 +16,7 @@ export class Bonus {
 }
 
 export class DialogBonus extends FormApplication {
-    
+
     static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-dialog item-dialog"],
@@ -30,14 +30,14 @@ export class DialogBonus extends FormApplication {
         super(bonus, {submitOnChange: true, closeOnSubmit: false});
         this.actor = actor;
         this.isDialog = true;
-        
+
         this.options.title = game.i18n.localize("wod.labels.edit.bonus");
     }
 
     /** @override */
 	get template() {
-        return "systems/worldofdarkness/templates/dialogs/dialog-bonus.hbs";
-	}    
+        return "systems/wod-advanced/templates/dialogs/dialog-bonus.hbs";
+	}
 
     async getData() {
         const data = super.getData();
@@ -160,7 +160,7 @@ export class DialogBonus extends FormApplication {
                 value = 0;
             }
         }
-        
+
         this.object.bonus[source] = value;
 
         if (source == "type") {
@@ -208,7 +208,7 @@ export class DialogBonus extends FormApplication {
                 value = 0;
             }
         }
-        
+
         this.object.bonus[source] = value;
         this.object.cansave = true;
         this.render();
@@ -221,7 +221,7 @@ export class DialogBonus extends FormApplication {
         }
 
         event.preventDefault();
-        
+
         if (this.object.item == undefined) {
              ui.notifications.warn(game.i18n.localize("wod.labels.bonus.savefail"));
              return;
@@ -250,7 +250,7 @@ export class DialogBonus extends FormApplication {
                     this.object.bonus.value = parseInt(value);
                 }
             }
-        }		
+        }
 
         const itemData = foundry.utils.duplicate(this.object.item);
 
@@ -280,11 +280,11 @@ export class DialogBonus extends FormApplication {
         if (actorData != null) {
             actorData.system.settings.isupdated = false;
             await this.object.actor.update(actorData);
-        }        
+        }
 
         ui.notifications.info(game.i18n.localize("wod.labels.bonus.savesuccess"));
 
         this.object.cansave = false;
         this.render();
-    } 
+    }
 }

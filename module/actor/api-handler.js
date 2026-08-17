@@ -3,13 +3,14 @@ import { DiceRollContainer } from "../scripts/roll-dice.js";
 import ActionHelper from "../scripts/action-helpers.js";
 import BonusHelper from "../scripts/bonus-helpers.js";
 import CombatHelper from "../scripts/combat-helpers.js";
+import { createWillpowerAdvantageFacade, getWillpowerState } from "../scripts/willpower.js";
 
 /**
  * PC Actor API Handler
- * 
+ *
  * Provides programmatic access to PC actor functions that are normally
  * accessed through the graphical interface.
- * 
+ *
  * IMPORTANT: This API is only available for PC actors (actor.type === "PC")
  */
 export default class PCActorAPI {
@@ -49,12 +50,12 @@ export default class PCActorAPI {
         if (difficulty === undefined || difficulty === null) {
             return null; // No difficulty override
         }
-        
+
         const difficultyNum = parseInt(difficulty);
         if (isNaN(difficultyNum) || difficultyNum <= 0 || !Number.isInteger(difficultyNum)) {
             throw new Error(`difficulty must be a positive integer, got: ${difficulty}`);
         }
-        
+
         return difficultyNum;
     }
 
@@ -146,6 +147,7 @@ export default class PCActorAPI {
      * @param {Object} options - Roll options
      * @param {number} options.difficulty - Difficulty level (default: 6)
      * @param {boolean} options.useWillpower - Use willpower (default: false)
+     * @param {boolean} options.fullWillpower - For Willpower only, ignore light wounds (default: false)
      * @param {number} options.bonus - Bonus dice (default: 0)
      * @returns {Promise<number>} Number of successes
      */
@@ -157,12 +159,12 @@ export default class PCActorAPI {
         }
 
         // Get ability item
-        const ability = this.actor.items.get(abilityId) !== undefined ? this.actor.items.get(abilityId) : this.actor.items.filter(item => item.type === "Ability" && item.system.settings.isvisible && item.system.id === abilityId)[0];        
+        const ability = this.actor.items.get(abilityId) !== undefined ? this.actor.items.get(abilityId) : this.actor.items.filter(item => item.type === "Ability" && item.system.settings.isvisible && item.system.id === abilityId)[0];
 
         if (!this._validateParameter(ability)) {
             throw new Error(`Ability with ID '${abilityId}' not found on actor`);
-        }        
-        
+        }
+
         if (ability.type !== "Ability") {
             throw new Error(`Item with ID '${abilityId}' is not an Ability`);
         }
@@ -262,9 +264,19 @@ export default class PCActorAPI {
         if (!this._validateParameter(advantageId)) {
             throw new Error("advantageId is required");
         }
+        if (typeof advantageId !== "string") {
+            throw new Error("advantageId must be a string");
+        }
 
-        // Get ability item
-        const advantage = this.actor.items.get(advantageId) !== undefined ? this.actor.items.get(advantageId) : this.actor.items.filter(item => item.type === "Advantage" && item.system.settings.isvisible && item.system.id === advantageId)[0];        
+        const normalizedAdvantageId = advantageId.toLowerCase();
+        const isWillpower = normalizedAdvantageId === "willpower";
+
+        // Willpower is actor-owned; other advantages remain embedded items.
+        const advantage = isWillpower
+            ? createWillpowerAdvantageFacade(this.actor)
+            : (this.actor.items.get(advantageId) !== undefined
+                ? this.actor.items.get(advantageId)
+                : this.actor.items.filter(item => item.type === "Advantage" && item.system.settings.isvisible && item.system.id === advantageId)[0]);
 
         if (!advantage) {
             throw new Error(`Advantage with ID '${advantageId}' not found on actor`);
@@ -295,14 +307,19 @@ export default class PCActorAPI {
         // Get advantage roll value
         // For PC actors, advantages are stored in both items and system.advantages
         // The roll value should be calculated by the item's prepareData
-        const advantageRollValue = parseInt(advantage.system.roll) || 0;
+        const willpower = isWillpower ? getWillpowerState(this.actor) : null;
+        const advantageRollValue = isWillpower
+            ? (options.fullWillpower ? willpower.full : willpower.current)
+            : (parseInt(advantage.system.roll) || 0);
 
         // if (advantageRollValue <= 0) {
         //     throw new Error(`Advantage '${advantage.name}' has no roll value (roll: ${advantageRollValue})`);
         // }
 
         // Get advantage name for display
-        const advantageName = game.i18n.localize(advantage.system.label) || advantage.name;
+        const advantageName = isWillpower
+            ? game.i18n.localize(options.fullWillpower ? "wod.advantages.fullwillpower" : "wod.advantages.currentwillpower")
+            : (game.i18n.localize(advantage.system.label) || advantage.name);
 
         // Calculate number of dice
         const numDices = advantageRollValue + bonus;
@@ -405,7 +422,7 @@ export default class PCActorAPI {
 
         // Determine action type
         let action = options.action || "attack";
-        
+
         // Validate action
         if (action !== "attack" && action !== "damage") {
             throw new Error(`Invalid action '${action}'. Must be "attack" or "damage"`);
@@ -545,8 +562,8 @@ export default class PCActorAPI {
         }
 
         // Try to find by system.id first (most common use case)
-        const abilityById = this.actor.items.find(item => 
-            item.type === "Ability" && 
+        const abilityById = this.actor.items.find(item =>
+            item.type === "Ability" &&
             item.system?.id === abilityId
         );
 
@@ -567,7 +584,7 @@ export default class PCActorAPI {
     /**
      * Get advantage by system.id or item _id
      * @param {string} advantageId - The advantage system.id (e.g. "willpower", "selfcontrol", "rage", "arete") or item _id
-     * @returns {Item|false} Advantage item if found, false otherwise
+     * @returns {Item|Object|false} Advantage item, the actor-owned Willpower facade, or false
      */
     getAdvantage(advantageId) {
         this._validatePCActor();
@@ -582,9 +599,13 @@ export default class PCActorAPI {
 
         const normalizedId = advantageId.toLowerCase();
 
+        if (normalizedId === "willpower") {
+            return createWillpowerAdvantageFacade(this.actor);
+        }
+
         // Try to find by system.id first (most common use case)
-        const advantageById = this.actor.items.find(item => 
-            item.type === "Advantage" && 
+        const advantageById = this.actor.items.find(item =>
+            item.type === "Advantage" &&
             (item.system?.id === advantageId || item.system?.id === normalizedId)
         );
 

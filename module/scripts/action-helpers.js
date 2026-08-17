@@ -8,6 +8,7 @@ import CombatHelper from "./combat-helpers.js";
 import BonusHelper from "./bonus-helpers.js";
 import ItemHelper from "./item-helpers.js";
 import DropHelper from "./drop-helpers.js";
+import { getWillpowerState, getWillpowerUpdate } from "./willpower.js";
 
 import AttributeHelper from "./attribute-helpers.js";
 import SphereHelper from "./sphere-helpers.js";
@@ -54,9 +55,9 @@ export default class ActionHelper {
 
     //static async RollDialog(event, actor) {
 	static async RollDialog(dataset, actor) {
-		let item = false; 
-		let templateHTML = "";	
-		
+		let item = false;
+		let templateHTML = "";
+
 
 		// the new roll system
 		if ((dataset.rollitem == "true") && ((dataset.itemid != undefined) || (dataset.itemid != "undefined"))) {
@@ -143,16 +144,19 @@ export default class ActionHelper {
 			// used a Fetish
 			if ((dataset.object == "Fetish") || (dataset.object == "Talen")) {
 
-				let template = [];				
+				let template = [];
 
-				const fetishRoll = new DiceRollContainer(actor);	
-				fetishRoll.action = game.i18n.localize("wod.dice.activate");	
+				const fetishRoll = new DiceRollContainer(actor);
+				fetishRoll.action = game.i18n.localize("wod.dice.activate");
 				fetishRoll.origin = "general";
 				fetishRoll.difficulty = 7;
 
 				if (!actor.system?.settings?.hasgnosis) {
-					template.push(`${game.i18n.localize("wod.advantages.willpower")} (${actor.system.advantages.willpower.roll})`);
-					fetishRoll.numDices = parseInt(actor.system.advantages.willpower.roll);					
+					const willpower = actor.type === "PC"
+						? getWillpowerState(actor).current
+						: parseInt(actor.system.advantages.willpower.roll);
+					template.push(`${game.i18n.localize("wod.advantages.willpower")} (${willpower})`);
+					fetishRoll.numDices = willpower;
 				}
 				else if ((actor.type != "PC") &&(actor.type != CONFIG.worldofdarkness.sheettype.werewolf) && (actor.type != CONFIG.worldofdarkness.sheettype.changingbreed) && (actor.type != CONFIG.worldofdarkness.splat.changingbreed)) {
 					template.push(`${game.i18n.localize("wod.advantages.willpower")} (${actor.system.advantages.willpower.roll})`);
@@ -160,28 +164,28 @@ export default class ActionHelper {
 				}
 				else {
 					if (actor.type === "PC") {
-						template.push(`${game.i18n.localize("wod.advantages.gnosis")} (${actor.system.advantages.gnosis.system.roll})`);					
-						fetishRoll.numDices = parseInt(actor.system.advantages.gnosis.system.roll);						
+						template.push(`${game.i18n.localize("wod.advantages.gnosis")} (${actor.system.advantages.gnosis.system.roll})`);
+						fetishRoll.numDices = parseInt(actor.system.advantages.gnosis.system.roll);
 					}
 					else {
-						template.push(`${game.i18n.localize("wod.advantages.gnosis")} (${actor.system.advantages.gnosis.roll})`);					
-						fetishRoll.numDices = parseInt(actor.system.advantages.gnosis.roll);						
+						template.push(`${game.i18n.localize("wod.advantages.gnosis")} (${actor.system.advantages.gnosis.roll})`);
+						fetishRoll.numDices = parseInt(actor.system.advantages.gnosis.roll);
 					}
 
-					fetishRoll.difficulty = parseInt(item.system.difficulty); 					
+					fetishRoll.difficulty = parseInt(item.system.difficulty);
 				}
 
 				fetishRoll.dicetext = template;
-				fetishRoll.bonus = 0;				
-				fetishRoll.woundpenalty = 0;				
+				fetishRoll.bonus = 0;
+				fetishRoll.woundpenalty = 0;
 				fetishRoll.systemText = item.system.details;
 				fetishRoll.usewillpower = false;
 
         		DiceRoller(fetishRoll);
 
 				return;
-			}	
-			
+			}
+
 			// used a Gift
 			if (dataset.object == "wod.types.gift") {
 				const gift = new PowerDialog.Gift(item);
@@ -199,7 +203,7 @@ export default class ActionHelper {
 
 				return;
 			}
-			
+
 			// used a Rote
 			if (dataset.object == "wod.types.rote") {
 				const rote = new Rote(item);
@@ -341,7 +345,7 @@ export default class ActionHelper {
 				powerUse.render(true);
 
 				return;
-			}			
+			}
 
 			if (dataset.object == "SortArtPower") {
 				const cantrip = new SortDialog.SortArtPower(item);
@@ -456,7 +460,7 @@ export default class ActionHelper {
 				let rote = new Rote(undefined);
 				let areteCasting = new DialogAreteCasting(actor, rote);
 				areteCasting.render(true);
-	
+
 				return;
 			}
 
@@ -486,7 +490,7 @@ export default class ActionHelper {
 
 			if (dataset.rollremainactive == "true") {
 				let template = [];
-				let numdices = 0;				
+				let numdices = 0;
 
 				if (actor.type === "PC") {
 					numdices = parseInt(actor.system.advantages.rage.system.permanent);
@@ -504,13 +508,13 @@ export default class ActionHelper {
 				activeRoll.origin = "general";
 				activeRoll.numDices = numdices;
 				activeRoll.woundpenalty = 0;
-				activeRoll.difficulty = 8;    
-				activeRoll.usewillpower = false;      				
-				
+				activeRoll.difficulty = 8;
+				activeRoll.usewillpower = false;
+
 				DiceRoller(activeRoll);
 
 				return;
-			}			
+			}
 
 			console.log(dataset);
 			ui.notifications.error("Macro roll missing function");
@@ -522,7 +526,7 @@ export default class ActionHelper {
 		ui.notifications.error("Roll missing function");
 
 		return;
-    }	
+    }
 
 	static openVariantDialog(actor) {
 		const variant = new VariantDialog.Variant(actor);
@@ -534,7 +538,7 @@ export default class ActionHelper {
 		event.preventDefault();
 
 		let template = [];
-		const paradoxRoll = new DiceRollContainer(actor);		
+		const paradoxRoll = new DiceRollContainer(actor);
 
 		if (actor.type === "PC") {
 			template.push(`${game.i18n.localize("wod.advantages.paradox")} (${actor.system.advantages.paradox.system.roll})`);
@@ -550,9 +554,9 @@ export default class ActionHelper {
 		paradoxRoll.bonus = 0;
         paradoxRoll.origin = "general";
 		paradoxRoll.woundpenalty = 0;
-        paradoxRoll.difficulty = 6;      
+        paradoxRoll.difficulty = 6;
 		paradoxRoll.usewillpower = false; 		// can't use willpower on Paradox
-		
+
         DiceRoller(paradoxRoll);
 	}
 
@@ -597,16 +601,16 @@ export default class ActionHelper {
 /**
  * Sets the usersettings used in the System
  * @param user   The logged in user of Foundry
- * 
+ *
  */
 	static _getUserPermissions(user) {
 		// set default values
 		const permissions = new UserPermissions(user);
 
 		// check existing setting values
-		const itemAdministratorLevel = game.settings.get('worldofdarkness', 'itemAdministratorLevel');
-		const changeActorImage = game.settings.get('worldofdarkness', 'changeActorImagePermission');
-		const changeItemImage = game.settings.get('worldofdarkness', 'changeItemImagePermission');
+		const itemAdministratorLevel = game.settings.get('wod-advanced', 'itemAdministratorLevel');
+		const changeActorImage = game.settings.get('wod-advanced', 'changeActorImagePermission');
+		const changeItemImage = game.settings.get('wod-advanced', 'changeItemImagePermission');
 
 		// update default values from user permission
 		if ((changeActorImage) || user.isGM) {
@@ -642,7 +646,7 @@ export default class ActionHelper {
 		const settings = new GraphicSettings(user);
 
 		// check existing setting values
-		const useLinkPlatform = game.settings.get('worldofdarkness', 'useLinkPlatform');
+		const useLinkPlatform = game.settings.get('wod-advanced', 'useLinkPlatform');
 
 		// update default values from user permission
 		if (useLinkPlatform) {
@@ -655,7 +659,7 @@ export default class ActionHelper {
 	/**
 	 * Transform a normal attribute to a spriti one
 	 * @param attribute
-	 * 
+	 *
 	 */
 	static _transformToSpiritAttributes(attribute) {
 		const list = CONFIG.worldofdarkness.advantages;
@@ -683,8 +687,8 @@ export const OnActorLock  = async function (event, target) {
 	event.preventDefault()
 
 	const actor = this.actor;
-	actor.update({ 
-		'system.locked': !actor.system.locked 
+	actor.update({
+		'system.locked': !actor.system.locked
 	});
 }
 
@@ -692,11 +696,11 @@ export const OnActorLock  = async function (event, target) {
 export const OnActorSwitch = async function (event, target) {
 	event.preventDefault();
 
-	// Top-level variables	
+	// Top-level variables
 	const property = target.getAttribute("data-type");
 	const path = `${property}`;
 
-	let actorData = foundry.utils.duplicate(this.actor);	
+	let actorData = foundry.utils.duplicate(this.actor);
 	const current = foundry.utils.getProperty(actorData, path);
 
 	// Säkerställ att egenskapen finns och är boolean innan toggling
@@ -721,7 +725,7 @@ export const OnSquareCounterChange = async function (event, target) {
 
 	const oldState = dataset.state || "";
 	const states = parseCounterStates("/:bashing,x:lethal,*:aggravated");
-	
+
 	const allStates = ["", ...Object.keys(states)];
 	const currentState = allStates.indexOf(oldState);
 
@@ -735,15 +739,15 @@ export const OnSquareCounterChange = async function (event, target) {
 		if (oldState == "") {
 			actorData.system.health.damage.bashing = parseInt(actorData.system.health.damage.bashing) + 1;
 		}
-		else if (oldState == "/") { 
+		else if (oldState == "/") {
 			actorData.system.health.damage.bashing = parseInt(actorData.system.health.damage.bashing) - 1;
-			actorData.system.health.damage.lethal = parseInt(actorData.system.health.damage.lethal) + 1;			
+			actorData.system.health.damage.lethal = parseInt(actorData.system.health.damage.lethal) + 1;
 		}
-		else if (oldState == "x") { 
+		else if (oldState == "x") {
 			actorData.system.health.damage.lethal = parseInt(actorData.system.health.damage.lethal) - 1;
 			actorData.system.health.damage.aggravated = parseInt(actorData.system.health.damage.aggravated) + 1;
 		}
-		else if (oldState == "*") { 
+		else if (oldState == "*") {
 			actorData.system.health.damage.aggravated = parseInt(actorData.system.health.damage.aggravated) - 1;
 		}
 
@@ -763,15 +767,15 @@ export const OnSquareCounterChange = async function (event, target) {
 		if (oldState == "") {
 			actorData.system.health.damage.chimerical.bashing = parseInt(actorData.system.health.damage.chimerical.bashing) + 1;
 		}
-		else if (oldState == "/") { 
+		else if (oldState == "/") {
 			actorData.system.health.damage.chimerical.bashing = parseInt(actorData.system.health.damage.chimerical.bashing) - 1;
-			actorData.system.health.damage.chimerical.lethal = parseInt(actorData.system.health.damage.chimerical.lethal) + 1;			
+			actorData.system.health.damage.chimerical.lethal = parseInt(actorData.system.health.damage.chimerical.lethal) + 1;
 		}
-		else if (oldState == "x") { 
+		else if (oldState == "x") {
 			actorData.system.health.damage.chimerical.lethal = parseInt(actorData.system.health.damage.chimerical.lethal) - 1;
 			actorData.system.health.damage.chimerical.aggravated = parseInt(actorData.system.health.damage.chimerical.aggravated) + 1;
 		}
-		else if (oldState == "*") { 
+		else if (oldState == "*") {
 			actorData.system.health.damage.chimerical.aggravated = parseInt(actorData.system.health.damage.chimerical.aggravated) - 1;
 		}
 
@@ -808,13 +812,13 @@ export const OnSquareCounterChange = async function (event, target) {
 // 	if (oldState == "") {
 // 		return
 // 	}
-// 	else if (oldState == "/") { 
+// 	else if (oldState == "/") {
 // 		actorData.system.health.damage.bashing = parseInt(actorData.system.health.damage.bashing) - 1;
 // 	}
-// 	else if (oldState == "x") { 
+// 	else if (oldState == "x") {
 // 		actorData.system.health.damage.lethal = parseInt(actorData.system.health.damage.lethal) - 1;
 // 	}
-// 	else if (oldState == "*") { 
+// 	else if (oldState == "*") {
 // 		actorData.system.health.damage.aggravated = parseInt(actorData.system.health.damage.aggravated) - 1;
 // 	}
 
@@ -837,7 +841,7 @@ export const OnSquareCounterClear = async function (event) {
 	if (oldState == "") {
 		return
 	}
-	else if (oldState == "/") { 
+	else if (oldState == "/") {
 		if (dataset.type === CONFIG.worldofdarkness.sheettype.mortal) {
 			actorData.system.health.damage.bashing = parseInt(actorData.system.health.damage.bashing) - 1;
 		}
@@ -845,7 +849,7 @@ export const OnSquareCounterClear = async function (event) {
 			actorData.system.health.damage.chimerical.bashing = parseInt(actorData.system.health.damage.chimerical.bashing) - 1;
 		}
 	}
-	else if (oldState == "x") { 
+	else if (oldState == "x") {
 		if (dataset.type === CONFIG.worldofdarkness.sheettype.mortal) {
 			actorData.system.health.damage.lethal = parseInt(actorData.system.health.damage.lethal) - 1;
 		}
@@ -853,7 +857,7 @@ export const OnSquareCounterClear = async function (event) {
 			actorData.system.health.damage.chimerical.lethal = parseInt(actorData.system.health.damage.chimerical.lethal) - 1;
 		}
 	}
-	else if (oldState == "*") { 
+	else if (oldState == "*") {
 		if (dataset.type === CONFIG.worldofdarkness.sheettype.mortal) {
 			actorData.system.health.damage.aggravated = parseInt(actorData.system.health.damage.aggravated) - 1;
 		}
@@ -868,6 +872,30 @@ export const OnSquareCounterClear = async function (event) {
 	this.render();
 }
 
+/* Willpower wounds */
+export const OnWillpowerCounterChange = async function (event, target) {
+	event.preventDefault();
+	if (!target || this.actor.type !== "PC") return;
+
+	const update = getWillpowerUpdate(this.actor, target.dataset.state || "");
+	if (!update) return;
+
+	await this.actor.update(update);
+	this.render();
+}
+
+export const OnWillpowerCounterClear = async function (event) {
+	event.preventDefault();
+	if (this.actor.type !== "PC") return;
+
+	const target = event.target.closest?.(".willpower-track .resource-value-step") || event.currentTarget;
+	const update = getWillpowerUpdate(this.actor, target?.dataset?.state || "", true);
+	if (!update) return;
+
+	await this.actor.update(update);
+	this.render();
+}
+
 export const OnDotCounterChange = async function (event, target) {
 	event.preventDefault();
 
@@ -878,7 +906,7 @@ export const OnDotCounterChange = async function (event, target) {
 	if (!parent.length) return;
 
 	const parent_dataset = parent[0].dataset;
-	const steps = parent.find('span.resource-value-step');	
+	const steps = parent.find('span.resource-value-step');
 	const index = Number(dataset.index);
 	const path = (parent_dataset.name || "").split(".");
 	const itemid = dataset.itemid ?? parent_dataset.itemid;
@@ -913,9 +941,9 @@ export const OnDotCounterChange = async function (event, target) {
 		const itemData = foundry.utils.duplicate(item);
 
 		// Handle if temporary value of an Advantage can't be higher then permanent.
-		if ((item.type === "Advantage") && 
-				(item.system?.settings?.highertemporary === false) && 
-				(item.system?.settings?.usepermanent === true) && 
+		if ((item.type === "Advantage") &&
+				(item.system?.settings?.highertemporary === false) &&
+				(item.system?.settings?.usepermanent === true) &&
 				(item.system?.settings?.usetemporary === true)) {
 			if ((parent_dataset.name === "system.permanent") && (newValue < item.system.temporary)) {
 				itemData.system.temporary = parseInt(newValue);
@@ -924,11 +952,11 @@ export const OnDotCounterChange = async function (event, target) {
 				newValue = parseInt(item.system.permanent);
 			}
 		}
-		
-		setNested(itemData, path, newValue);		
+
+		setNested(itemData, path, newValue);
 
 		await item.update(itemData);
-	} 
+	}
 	else {
 		if (index < 0 || index >= steps.length) return;
 		let actorData = foundry.utils.duplicate(this.actor);
@@ -1020,8 +1048,8 @@ export const OnItemCreate = async function (event, target) {
 	system = sheettype;
 
 	// Render the template
-	const itemselectionTemplate = 'systems/worldofdarkness/templates/dialogs/dialog-new-item.hbs';
-	
+	const itemselectionTemplate = 'systems/wod-advanced/templates/dialogs/dialog-new-item.hbs';
+
 	let itemselectionData = {
 		tab: origin,
 		sheettype: sheettype,
@@ -1045,7 +1073,7 @@ export const OnItemCreate = async function (event, target) {
 			powerSelectionDialog.render(true);
 			return; // Avsluta här för PC Actor
 		}
-		
+
 		// Legacy actors - fortsätt med Dialog API (befintlig kod)
 		buttons = await CreateHelper.CreateButtonsPowerv2(this.actor);
 	}
@@ -1058,7 +1086,7 @@ export const OnItemCreate = async function (event, target) {
 	if (origin == "effect") {
 		let itemData = {
 			name: game.i18n.localize("wod.labels.new.bonus"),
-			type: "Bonus",					
+			type: "Bonus",
 			system: {
 				label: game.i18n.localize("wod.labels.new.bonus"),
 				settings: {
@@ -1083,7 +1111,7 @@ export const OnItemCreate = async function (event, target) {
 		classes: ['wod20', system.toLowerCase(), 'wod-dialog', 'wod-create']
 	}
 	);
-	
+
 	dialog.render(true);
 }
 
@@ -1152,7 +1180,7 @@ export const OnItemActive = async function (event, target) {
 export const OnItemSwitch = async function (event, target) {
 	event.preventDefault();
 
-	// Top-level variables	
+	// Top-level variables
 	const property = target.getAttribute("data-type");
 	const path = `system.${property}`;
 
@@ -1174,13 +1202,13 @@ export const OnItemSwitch = async function (event, target) {
 		return;
 	}
 
-	const item = this.actor.getEmbeddedDocument('Item', itemid);	
+	const item = this.actor.getEmbeddedDocument('Item', itemid);
 
 	if(!item) {
 		return;
 	}
 
-	const itemData = foundry.utils.duplicate(item);	
+	const itemData = foundry.utils.duplicate(item);
 	const current = foundry.utils.getProperty(itemData, path);
 
 	// Säkerställ att egenskapen finns och är boolean innan toggling
@@ -1224,7 +1252,7 @@ export const OnItemDelete = async function (event, target) {
 	}
 
 	// Top-level variables
-	const itemid = target.getAttribute('data-itemid');	
+	const itemid = target.getAttribute('data-itemid');
 	const item = await this.actor.getEmbeddedDocument("Item", itemid);
 
 	if (!item)
@@ -1252,13 +1280,13 @@ export const OnItemDelete = async function (event, target) {
 	await ItemHelper.cleanItemList(this.actor, item);
 	// If removing an item you need to check if there are bonuses to it and remove them as well.
 	await ItemHelper.removeConnectedItems(this.actor, item);
-	await this.actor.deleteEmbeddedDocuments("Item", [itemid]);  
+	await this.actor.deleteEmbeddedDocuments("Item", [itemid]);
 
 	let actorData = foundry.utils.duplicate(this.actor);
 	actorData = await calculateTotals(actorData);
 	actorData.system.settings.isupdated = false;
 	await this.actor.update(actorData);
-	this.render(); 
+	this.render();
 }
 
 export const OnRemoveSplat = async function (event, target) {
@@ -1276,7 +1304,7 @@ export const OnRemoveSplat = async function (event, target) {
 			title: game.i18n.localize("wod.labels.remove.splatwarning") || "Remove Splat Item?",
 			yes: () => resolve(true),
 			no: () => resolve(false),
-			content: game.i18n.localize("wod.labels.remove.splatwarningtext") || 
+			content: game.i18n.localize("wod.labels.remove.splatwarningtext") ||
 				`Removing this splat item will delete all splat-related abilities, advantages, features, and powers. This action cannot be undone. Are you sure you want to continue?`
 		});
 	});
@@ -1287,7 +1315,7 @@ export const OnRemoveSplat = async function (event, target) {
 
 	// Hitta splat item om det finns (för att ta bort det)
 	const splatItem = this.actor.items.find(i => i.type === "Splat");
-	
+
 	// Remove splat and all related data (fungerar även utan splat item)
 	await DropHelper.RemoveSplatFromActor(this.actor, splatItem || null);
 	this.render();
@@ -1301,7 +1329,7 @@ export function getQuintessencePoolMax(quintessence, paradox) {
 export const OnQuintessenceHandling = async function (event, target) {
 	event.preventDefault();
 
-	const itemid = target.getAttribute('data-itemid');	
+	const itemid = target.getAttribute('data-itemid');
 	const field = target.getAttribute('data-field');
 	const value = parseInt(target.getAttribute('data-value'));
 	const item = await this.actor.getEmbeddedDocument("Item", itemid);
@@ -1334,7 +1362,7 @@ export const OnQuintessenceHandling = async function (event, target) {
 			if (parseInt(itemData.system.temporary) > poolMax) {
 				return;
 			}
-		}	
+		}
 	}
 	if (item.system.id === "paradox") {
 		let quintessence = await this.actor.items.filter(item => item.type === "Advantage" && item.system.id === 'quintessence');
@@ -1354,7 +1382,7 @@ export const OnQuintessenceHandling = async function (event, target) {
 				}
 				else {
 					return;
-				}				
+				}
 			}
 		}
 		else {
@@ -1363,7 +1391,7 @@ export const OnQuintessenceHandling = async function (event, target) {
 			if ((parseInt(itemData.system.temporary) + parseInt(itemData.system.permanent)) > poolMax) {
 				return;
 			}
-		}		
+		}
 	}
 
 	await item.update(itemData);
@@ -1378,11 +1406,11 @@ export const OnQuintessenceHandling = async function (event, target) {
 // Shared quintessence wheel click handler (V2 Item-based)
 export const OnQuintessenceWheelClick = async function (event, target) {
 	event.preventDefault();
-	
+
 	const oldState = target.dataset.state || "";
 	const quintessenceId = target.dataset.quintessenceid;
 	const paradoxId = target.dataset.paradoxid;
-	
+
 	const quintessence = this.actor.items.get(quintessenceId);
 	if (!quintessence) return;
 
@@ -1396,29 +1424,29 @@ export const OnQuintessenceWheelClick = async function (event, target) {
 		paradox ? parseInt(paradox.system.permanent) : 0,
 		poolMax
 	);
-	
+
 	if (result && result.quintessenceTemporary !== undefined) {
 		const quintessenceData = foundry.utils.duplicate(quintessence);
 		quintessenceData.system.temporary = result.quintessenceTemporary;
 		await quintessence.update(quintessenceData);
 	}
-	
+
 	this.render();
 };
 
 // Shared paradox wheel click handler (V2 Item-based)
 export const OnParadoxWheelClick = async function (event, target) {
 	event.preventDefault();
-	
+
 	const oldState = target.dataset.state || "";
 	const quintessenceId = target.dataset.quintessenceid;
 	const paradoxId = target.dataset.paradoxid;
-	
+
 	const quintessence = this.actor.items.get(quintessenceId);
 	const paradox = this.actor.items.get(paradoxId);
-	
+
 	if (!quintessence || !paradox) return;
-	
+
 	const poolMax = getQuintessencePoolMax(quintessence, paradox);
 
 	const result = calculateParadoxChange(
@@ -1428,7 +1456,7 @@ export const OnParadoxWheelClick = async function (event, target) {
 		parseInt(paradox.system.permanent),
 		poolMax
 	);
-	
+
 	if (result) {
 		if (result.quintessenceTemporary !== undefined) {
 			const quintessenceData = foundry.utils.duplicate(quintessence);
@@ -1441,7 +1469,7 @@ export const OnParadoxWheelClick = async function (event, target) {
 			await paradox.update(paradoxData);
 		}
 	}
-	
+
 	this.render();
 };
 
@@ -1449,7 +1477,7 @@ export const OnParadoxWheelClick = async function (event, target) {
 // Returns { quintessenceTemporary } or null if no change
 export function calculateQuintessenceChange(oldState, quintessenceTemporary, paradoxTemporary, paradoxPermanent, max = 20) {
 	const total = quintessenceTemporary + paradoxTemporary + paradoxPermanent;
-	
+
 	if (oldState === "") {
 		if (total < max) {
 			return { quintessenceTemporary: quintessenceTemporary + 1 };
@@ -1460,7 +1488,7 @@ export function calculateQuintessenceChange(oldState, quintessenceTemporary, par
 			return { quintessenceTemporary: quintessenceTemporary - 1 };
 		}
 	}
-	
+
 	return null;
 }
 
@@ -1469,12 +1497,12 @@ export function calculateQuintessenceChange(oldState, quintessenceTemporary, par
 export function calculateParadoxChange(oldState, quintessenceTemporary, paradoxTemporary, paradoxPermanent, max = 20) {
 	let effectiveState = oldState;
 	const total = quintessenceTemporary + paradoxTemporary + paradoxPermanent;
-	
+
 	// Check if we need to consume quintessence first
 	if (effectiveState === "" && (total + 1) > max) {
 		effectiveState = "Ψ";
 	}
-	
+
 	if (effectiveState === "") {
 		if (paradoxTemporary + paradoxPermanent < max) {
 			return { paradoxTemporary: paradoxTemporary + 1 };
@@ -1490,7 +1518,7 @@ export function calculateParadoxChange(oldState, quintessenceTemporary, paradoxT
 	}
 	else if (effectiveState === "Ψ" && (total + 1) > max) {
 		if (paradoxTemporary + paradoxPermanent < max) {
-			return { 
+			return {
 				quintessenceTemporary: quintessenceTemporary - 1,
 				paradoxTemporary: paradoxTemporary + 1
 			};
@@ -1499,7 +1527,7 @@ export function calculateParadoxChange(oldState, quintessenceTemporary, paradoxT
 	else if (effectiveState === "Ψ") {
 		return { quintessenceTemporary: quintessenceTemporary - 1 };
 	}
-	
+
 	return null;
 }
 
@@ -1532,7 +1560,7 @@ export const OnHandleImbalance = async function (event, target) {
 		itemData.system.imbalance = clickvalue;
 	}
 
-	await willpower.update(itemData);	
+	await willpower.update(itemData);
 	this.render();
 };
 
@@ -1601,7 +1629,7 @@ function _getShapeformStatusKeys(statuses) {
 
 /** @param {ActiveEffect} effect */
 function _isShapeformIconEffect(effect) {
-	if (effect.flags?.worldofdarkness?.shapeformIcon === true) return true;
+	if (effect.flags?.["wod-advanced"]?.shapeformIcon === true) return true;
 	return _getShapeformStatusKeys(effect.statuses).length > 0;
 }
 
@@ -1666,12 +1694,12 @@ async function _updateShapeformTokenIcon(actor, shapeformItem) {
 					showIcon: CONST.ACTIVE_EFFECT_SHOW_ICON.ALWAYS,
 					disabled: false,
 					origin: actor.uuid,
-					flags: {
-						worldofdarkness: {
-							shapeformIcon: true,
-							shapeformId: shapeformItem._id
-						}
-					}
+                flags: {
+                    "wod-advanced": {
+                        shapeformIcon: true,
+                        shapeformId: shapeformItem._id
+                    }
+                }
 				}]);
 			} catch (error) {
 				console.error("Failed to create shapeform icon ActiveEffect:", error);
@@ -1690,13 +1718,13 @@ async function _updateShapeformTokenIcon(actor, shapeformItem) {
 			await Promise.all(matching.slice(1).map(effect => effect.delete()));
 		}
 	}
-	
+
 	// Update tokens on scene
 	if (canvas?.ready && canvas.tokens) {
 		const tokens = canvas.tokens.placeables.filter(token => token.document.actorId === actor.id);
 		tokens.forEach(token => token.draw());
 	}
-	
+
 	// ============================================
 	// Token Image update (only when shape has tokenimage set)
 	// ============================================
@@ -1882,7 +1910,7 @@ export const OnPowerClear = async function (event, target) {
 	if (powertype == "power") {
 		const itemData = foundry.utils.duplicate(item);
 		itemData.system.parentid = "";
-		await item.update(itemData);	
+		await item.update(itemData);
 	}
 	else if (powertype == "main") {
 		await ItemHelper.cleanItemList(this.actor, item);
@@ -1925,12 +1953,12 @@ export const OnPowerSort = async function (event, target) {
 	}
 	else if (itemtype === "SortHekauPower") {
 		power = new SortDialog.SortHekauPower(item);
-	}	
+	}
 	else {
 		console.warn("WoD | Unknown power type for sorting in OnPowerSort.");
 		return;
 	}
-	
+
 	powerUse = new SortDialog.DialogSortPower(this.actor, power);
 	powerUse.render(true);
 }
@@ -1965,7 +1993,7 @@ export const SendChat = async function (event, target) {
 	};
 
 	// Render the chat card template
-	const template = `systems/worldofdarkness/templates/dialogs/roll-template.hbs`;
+	const template = `systems/wod-advanced/templates/dialogs/roll-template.hbs`;
 	const html = await foundry.applications.handlebars.renderTemplate(template, templateData);
 
 	const chatData = {
@@ -1990,7 +2018,7 @@ export const OnGenerationChange = async function (event, target) {
 
 	const actor = this.actor;
 	const actorData = foundry.utils.duplicate(actor);
-	
+
 	// Get current generation value and mod from splatfields
 	const generationField = actorData.system.bio.splatfields[fieldKey];
 	if (!generationField) {
@@ -2023,7 +2051,7 @@ export const OnGenerationChange = async function (event, target) {
 	// Update the generation modifier
 	actorData.system.bio.splatfields[fieldKey].mod = generationModifier;
 	actorData.system.settings.isupdated = false;
-	
+
 	await actor.update(actorData);
 	await actor._setItems();
 	this.render();
@@ -2035,7 +2063,7 @@ export const RollDice = async function (event, target) {
 	if (!target) return;
 
 	const dataset = target.dataset;
-	ActionHelper.RollDialog(dataset, this.actor);	
+	ActionHelper.RollDialog(dataset, this.actor);
 };
 
 export const OnEditImage = async function (event, target) {

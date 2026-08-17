@@ -11,31 +11,31 @@
 
 			<div class="sphere-itemlist">
 				<div class="headlineNormal sphere-itemlist {{#if (eq realm.system.label ../actor.system.bio.splatfields.affinityrealm.value)}}highlightedPowerRow{{/if}}" style="width: 100%;">
-					<div class="spheres-headlineWidth headlineNormalSpheres splatFont" 
+					<div class="spheres-headlineWidth headlineNormalSpheres splatFont"
 						{{#if (eq realm.system.label ../actor.system.bio.splatfields.affinityrealm.value)}}
 							title="{{localize 'wod.bio.changeling.affinity'}}"
 						{{/if}}>
 						{{localize realm.system.label}}
 					</div>
 
-					<div class="resource-value" 
+					<div class="resource-value"
 						data-itemid="{{realm._id}}"
 						data-key="{{realm.system.id}}"
-						data-value="{{realm.system.value}}" 
+						data-value="{{realm.system.value}}"
 						data-name="system.value">
 
-						{{#numLoop realm.system.max}}					
-							<span class="resource-value-step" data-action="editDot" data-type="{{../../config.sheettype.mage}}" data-index="{{this}}" data-itemid="{{realm._id}}" data-ability="core"></span>					
-						{{/numLoop}}						
-						
+						{{#numLoop realm.system.max}}
+							<span class="resource-value-step" data-action="editDot" data-type="{{../../config.sheettype.mage}}" data-index="{{this}}" data-itemid="{{realm._id}}" data-ability="core"></span>
+						{{/numLoop}}
+
 					</div>
 					{{#if (eq ../locked false)}}
-						<div class="iconBox">							
-							{{> "systems/worldofdarkness/templates/actor/parts/list_icons.hbs" showedit=true item=realm locked=../locked edittitle="wod.labels.edit.realm" collapseclass="power"}}
+						<div class="iconBox">
+							{{> "systems/wod-advanced/templates/actor/parts/list_icons.hbs" showedit=true item=realm locked=../locked edittitle="wod.labels.edit.realm" collapseclass="power"}}
 						</div>
 					{{/if}}
-				</div>	
-					
+				</div>
+
 			</div>
 			<div class="description" data-itemid="{{realm._id}}">
 
@@ -44,8 +44,8 @@
 			</div>
 
 			{{#if (eq (mod index 3) 2)}}</div>{{/if}}
-		
-		{{/each}}	
-	</div> 
+
+		{{/each}}
+	</div>
 
 </div>

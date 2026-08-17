@@ -43,13 +43,13 @@ export class Ability {
             this.value = parseInt(item.value);
             this.id = item._id;
             this.close = false;
-        }        
+        }
     }
 }
 
 export class Sphere {
     constructor(item) {
-        this.typeform = "sphere";         
+        this.typeform = "sphere";
         this.name = item.label;
         this.speciality = item.speciality;
         this.istechnocracy = item.istechnocracy;
@@ -59,7 +59,7 @@ export class Sphere {
 }
 
 export class DialogBio extends FormApplication {
-    
+
     static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-dialog"],
@@ -73,14 +73,14 @@ export class DialogBio extends FormApplication {
         super(item, {submitOnChange: false, closeOnSubmit: false});
         this.actor = actor;
         this.isDialog = true;
-        
+
         this.options.title = `${this.actor.name}`;
     }
 
     /** @override */
 	get template() {
-        return "systems/worldofdarkness/templates/dialogs/dialog-attribute.hbs";
-	}    
+        return "systems/wod-advanced/templates/dialogs/dialog-attribute.hbs";
+	}
 
     getData() {
         const data = super.getData();
@@ -108,7 +108,7 @@ export class DialogBio extends FormApplication {
     }
 
     async _updateObject(event, formData) {
-        event.preventDefault();       
+        event.preventDefault();
     }
 
     close() {
@@ -116,21 +116,21 @@ export class DialogBio extends FormApplication {
         super.close()
     }
 
-    async _save(event) {  
+    async _save(event) {
         this.object.custom = document.getElementById("custom").value;
         const actorData = foundry.utils.duplicate(this.actor);
 
         //tribe
         if (this.object.id.length == 1) {
-            const property = this.object.id[0]; 
+            const property = this.object.id[0];
             actorData.system.custom[property] = this.object.custom;
         }
         //advantages.path.label
         else {
-            const area = this.object.id[0];	
+            const area = this.object.id[0];
             const property = this.object.id[1];
             const value = this.object.id[2];
-            
+
             actorData.system[area][property].custom = this.object.custom;
         }
         actorData.system.settings.isupdated = false;
@@ -140,7 +140,7 @@ export class DialogBio extends FormApplication {
 }
 
 export class DialogAttribute extends FormApplication {
-    
+
     static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-dialog"],
@@ -154,14 +154,14 @@ export class DialogAttribute extends FormApplication {
         super(item, {submitOnChange: false, closeOnSubmit: false});
         this.actor = actor;
         this.isDialog = true;
-        
+
         this.options.title = `${this.actor.name}`;
     }
 
     /** @override */
 	get template() {
-        return "systems/worldofdarkness/templates/dialogs/dialog-attribute.hbs";
-	}    
+        return "systems/wod-advanced/templates/dialogs/dialog-attribute.hbs";
+	}
 
     getData() {
         const data = super.getData();
@@ -189,7 +189,7 @@ export class DialogAttribute extends FormApplication {
     }
 
     async _updateObject(event, formData) {
-        event.preventDefault();       
+        event.preventDefault();
     }
 
     close() {
@@ -197,7 +197,7 @@ export class DialogAttribute extends FormApplication {
         super.close()
     }
 
-    async _save(event) {  
+    async _save(event) {
         this.object.speciality = document.getElementById("speciality").value;
 
         const actorData = foundry.utils.duplicate(this.actor);
@@ -209,7 +209,7 @@ export class DialogAttribute extends FormApplication {
 }
 
 export class DialogAbility extends FormApplication {
-    
+
     static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-dialog"],
@@ -223,14 +223,14 @@ export class DialogAbility extends FormApplication {
         super(item, {submitOnChange: false, closeOnSubmit: false});
         this.actor = actor;
         this.isDialog = true;
-        
+
         this.options.title = `${this.actor.name}`;
     }
 
     /** @override */
 	get template() {
-        return "systems/worldofdarkness/templates/dialogs/dialog-attribute.hbs";
-	}    
+        return "systems/wod-advanced/templates/dialogs/dialog-attribute.hbs";
+	}
 
     getData() {
         const data = super.getData();
@@ -258,7 +258,7 @@ export class DialogAbility extends FormApplication {
     }
 
     async _updateObject(event, formData) {
-        event.preventDefault();       
+        event.preventDefault();
     }
 
     close() {
@@ -266,7 +266,7 @@ export class DialogAbility extends FormApplication {
         super.close()
     }
 
-    async _save(event) {  
+    async _save(event) {
         if (this.object.issecondary) {
             this.object.label = document.getElementById("label").value;
             this.object.speciality = document.getElementById("speciality").value;
@@ -276,7 +276,7 @@ export class DialogAbility extends FormApplication {
 
             if (document.getElementById("speciality")?.value != undefined) {
                 this.object.speciality = document.getElementById("speciality").value;
-            }            
+            }
         }
 
         if (this.object.issecondary) {
@@ -290,7 +290,7 @@ export class DialogAbility extends FormApplication {
             const actorData = foundry.utils.duplicate(this.actor);
             actorData.system.abilities[this.object.id].altlabel = this.object.altlabel;
             actorData.system.abilities[this.object.id].speciality = this.object.speciality;
-            await this.actor.update(actorData);            
+            await this.actor.update(actorData);
         }
 
         this.close();
@@ -298,7 +298,7 @@ export class DialogAbility extends FormApplication {
 }
 
 export class DialogSphere extends FormApplication {
-    
+
     static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-dialog"],
@@ -312,14 +312,14 @@ export class DialogSphere extends FormApplication {
         super(item, {submitOnChange: false, closeOnSubmit: false});
         this.actor = actor;
         this.isDialog = true;
-        
+
         this.options.title = `${this.actor.name}`;
     }
 
     /** @override */
 	get template() {
-        return "systems/worldofdarkness/templates/dialogs/dialog-attribute.hbs";
-	}    
+        return "systems/wod-advanced/templates/dialogs/dialog-attribute.hbs";
+	}
 
     getData() {
         const data = super.getData();
@@ -339,7 +339,7 @@ export class DialogSphere extends FormApplication {
     }
 
     async _updateObject(event, formData) {
-        event.preventDefault();       
+        event.preventDefault();
     }
 
     activateListeners(html) {
@@ -355,14 +355,14 @@ export class DialogSphere extends FormApplication {
         super.close()
     }
 
-    async _save(event) {  
+    async _save(event) {
         if (parseInt(this.object.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
             this.object.speciality = document.getElementById("speciality").value;
         }
         else {
             this.object.speciality = "";
         }
-        
+
         this.object.istechnocracy = document.getElementById("technocracy").checked;
 
         const actorData = foundry.utils.duplicate(this.actor);

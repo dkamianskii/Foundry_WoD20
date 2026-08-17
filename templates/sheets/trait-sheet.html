@@ -25,24 +25,24 @@
 							<div class="bioInformationArea floating-label-group">
 								<input class="sheet-infoValues editable" name="name" type="text" value="{{item.name}}" data-dtype="String" autocomplete="off" autofocus required />
 								<span class="floating-label">{{localize 'wod.bio.name'}}</span>
-							</div>	
-							
+							</div>
+
 							{{#if (eq data.system.type "wod.types.shapeform")}}
 								<div class="bioInformationArea floating-label-group">
 									<input class="sheet-infoValues editable" name="system.label" type="text" value="{{item.system.label}}" data-dtype="String" autocomplete="off" autofocus required />
 									<span class="floating-label">{{localize "wod.labels.ability.sheetname"}}</span>
-								</div>					
+								</div>
 							{{/if}}
-						</div>	
+						</div>
 					</div>
 
 					{{#if (eqAny data.system.type "wod.types.othertraits" "wod.types.apocalypticform" "wod.types.shapeform" "wod.types.aspect" "wod.types.fetter" "wod.types.passion" "wod.types.resonance")}}
 						<div class="pullRight" style="width: auto;">
-							{{> "systems/worldofdarkness/templates/actor/parts/profile-img.html"}}		
+							{{> "systems/wod-advanced/templates/actor/parts/profile-img.html"}}
 						</div>
 					{{/if}}
-				</div>				
-			</div>			
+				</div>
+			</div>
 		</header>
 
 		<section class="item-body">
@@ -61,7 +61,7 @@
 								{{selectOptions listData.TypeList selected=data.system.type localize=false}}
 							</select>
 							<span class="floating-label">{{localize "wod.labels.type"}}</span>
-						</div>					
+						</div>
 					{{/if}}
 
 					{{#if (eq data.system.type "wod.types.othertraits")}}
@@ -80,7 +80,7 @@
 							{{selectOptions listData.Level9Value selected=data.system.max localize=false}}
 						</select>
 						<span class="floating-label">{{localize "wod.labels.settings.power.maxrating"}}</span>
-					</div>					
+					</div>
 				{{/if}}
 
 				{{#if (eqAnyNot data.system.type "")}}
@@ -88,7 +88,7 @@
 						<input class="sheet-infoValues editable" name="system.reference" type="text" value="{{data.system.reference}}" data-dtype="String" autocomplete="off" autofocus required />
 						<span class="floating-label">{{localize "wod.labels.trait.reference"}}</span>
 					</div>
-				{{/if}}				
+				{{/if}}
 
 				<!-- if weapon/power -->
 				{{#if (eqAny data.system.type "wod.types.talentsecondability" "wod.types.skillsecondability" "wod.types.knowledgesecondability")}}
@@ -106,8 +106,8 @@
 						<label class="headlineItem headlineBio splatFont" for="data.israngedeweapon">{{localize "wod.labels.trait.power"}}</label>
 						<input name="system.ispower" type="checkbox" {{isChecked data.system.ispower}} />
 					</div>
-				{{/if}}						
-				
+				{{/if}}
+
 			</div>
 
 			{{#if (eq data.system.type "wod.types.shapeform")}}
@@ -139,7 +139,7 @@
 					</div>
 				</div>
 
-				{{#if (or (not hasActor) (and hasActor (eq actor.type "PC")))}}				
+				{{#if (or (not hasActor) (and hasActor (eq actor.type "PC")))}}
 					<div class="dialog-area">
 						<div class="flex-columns">
 
@@ -151,8 +151,8 @@
 										<i class="pointer fa-solid fa-toggle-off"></i>
 									{{/if}}
 								</div>
-								<label for="system.usesoaksettings" class="headlineNormal settings-verticalcenter">{{localize "wod.labels.trait.usesoaksettings"}}</label>	
-							</div>							
+								<label for="system.usesoaksettings" class="headlineNormal settings-verticalcenter">{{localize "wod.labels.trait.usesoaksettings"}}</label>
+							</div>
 
 							{{#if data.system.usesoaksettings}}
 
@@ -164,7 +164,7 @@
 											<i class="pointer fa-solid fa-toggle-off"></i>
 										{{/if}}
 									</div>
-									<label for="system.soak.bashing.isrollable" class="headlineNormal settings-verticalcenter">{{localize "wod.health.bashing"}}</label>	
+									<label for="system.soak.bashing.isrollable" class="headlineNormal settings-verticalcenter">{{localize "wod.health.bashing"}}</label>
 								</div>
 								<div class="flex-rows">
 									<div class="switch settings-leftwidth settings-verticalcenter splatFont bold centerText pointer" data-switchtype="lethal" data-source="soak">
@@ -174,7 +174,7 @@
 											<i class="pointer fa-solid fa-toggle-off"></i>
 										{{/if}}
 									</div>
-									<label for="system.soak.lethal.isrollable" class="headlineNormal settings-verticalcenter">{{localize "wod.health.lethal"}}</label>	
+									<label for="system.soak.lethal.isrollable" class="headlineNormal settings-verticalcenter">{{localize "wod.health.lethal"}}</label>
 								</div>
 								<div class="flex-rows">
 									<div class="switch settings-leftwidth settings-verticalcenter splatFont bold centerText pointer" data-switchtype="aggravated" data-source="soak">
@@ -184,7 +184,7 @@
 											<i class="pointer fa-solid fa-toggle-off"></i>
 										{{/if}}
 									</div>
-									<label for="system.soak.aggravated.isrollable" class="headlineNormal settings-verticalcenter">{{localize "wod.health.aggravated"}}</label>	
+									<label for="system.soak.aggravated.isrollable" class="headlineNormal settings-verticalcenter">{{localize "wod.health.aggravated"}}</label>
 								</div>
 
 							{{/if}}
@@ -196,13 +196,13 @@
 				{{/if}}
 			{{/if}}
 
-			{{#if (eq data.system.type "wod.types.apocalypticform")}}			
-				{{> "systems/worldofdarkness/templates/sheets/parts/item_bonus.html"}}
+			{{#if (eq data.system.type "wod.types.apocalypticform")}}
+				{{> "systems/wod-advanced/templates/sheets/parts/item_bonus.html"}}
 			{{/if}}
 
 			{{#if (eqAny data.system.type "wod.types.othertraits" "wod.types.shapeform" "wod.types.aspect")}}
 
-				{{> "systems/worldofdarkness/templates/sheets/parts/item_bonus.html"}}
+				{{> "systems/wod-advanced/templates/sheets/parts/item_bonus.html"}}
 
 				<div class="dialog-area">
 
@@ -212,33 +212,33 @@
 					</div>
 
 					{{#if data.system.isrollable}}
-						{{> "systems/worldofdarkness/templates/sheets/parts/power_rollable.html"}}
+						{{> "systems/wod-advanced/templates/sheets/parts/power_rollable.html"}}
 					{{/if}}
 
 				</div>
 
-				{{> "systems/worldofdarkness/templates/sheets/parts/power_description.html"}}				
+				{{> "systems/wod-advanced/templates/sheets/parts/power_description.html"}}
 
-			{{/if}}			
+			{{/if}}
 
-			{{#if (eqAny data.system.type "wod.types.apocalypticform" "wod.types.realms" "wod.types.resonance" "wod.types.passion" "wod.types.fetter")}}			
+			{{#if (eqAny data.system.type "wod.types.apocalypticform" "wod.types.realms" "wod.types.resonance" "wod.types.passion" "wod.types.fetter")}}
 
 				<!-- description -->
-				<div class="dialog-area">			
+				<div class="dialog-area">
 					<div class="clearareaBox">
 						<div class="headlineItem headlineBio splatFont">{{localize "wod.labels.description"}}</div>
-					</div>		
+					</div>
 					<div class="infobox">
 						{{#if locked}}
-							<div class="headlineNormal textarea">{{{data.system.description}}}</div>					
+							<div class="headlineNormal textarea">{{{data.system.description}}}</div>
 						{{else}}
 							{{editor data.system.description target="system.description" engine="prosemirror" button=false owner=owner editable=true}}
 						{{/if}}
 					</div>
 				</div>
-				
-			{{/if}}			
-			
+
+			{{/if}}
+
 		</section>
 
 	</div>

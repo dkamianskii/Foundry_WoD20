@@ -26,10 +26,10 @@ export default class AbilityItemSheet extends HandlebarsApplicationMixin(WoDItem
 
     static PARTS = {
         header: {
-            template: 'systems/worldofdarkness/templates/items/parts/header-sheet.hbs'
+            template: 'systems/wod-advanced/templates/items/parts/header-sheet.hbs'
         },
         stats: {
-            template: 'systems/worldofdarkness/templates/items/ability-sheet.hbs'
+            template: 'systems/wod-advanced/templates/items/ability-sheet.hbs'
         }
     }
 
@@ -53,7 +53,7 @@ export default class AbilityItemSheet extends HandlebarsApplicationMixin(WoDItem
         //const actor = this.item.actor;
 
         data.listData = SelectHelper.SetupItem(item);
-        //data.canEdit = this.item.isOwner || game.user.isGM;	
+        //data.canEdit = this.item.isOwner || game.user.isGM;
         data.splat = "";
         data.hasActor = false;
 

@@ -1,0 +1,25 @@
+<div class="sheet-headline sheet-banner-small splatFont vrollable"
+    data-action="rollDice"
+    data-type="{{config.sheettype.mortal}}"
+    data-key="willpower"
+    data-noability="true">
+    <span class="sheet-banner-text">{{localize "wod.advantages.willpower"}}</span>
+</div>
+
+<div class="sheet-boxcontainer willpower-track">
+    <div class="resource-counter tempSquareRow" title="{{localize 'wod.advantages.willpowertrackhint'}}">
+        {{#each willpower.track as |state index|}}
+            <span class="resource-value-step"
+                data-action="editWillpower"
+                data-index="{{index}}"
+                data-state="{{state}}"></span>
+        {{/each}}
+    </div>
+</div>
+
+<div class="information-area centerText">
+    {{localize "wod.advantages.currentwillpower"}}: {{willpower.current}} / {{willpower.maximum}}
+    {{#if willpower.exhausted}}
+        &mdash; {{localize "wod.advantages.exhausted"}}
+    {{/if}}
+</div>

@@ -11,27 +11,27 @@
 
 			<div class="sphere-itemlist">
 				<div class="headlineNormal sphere-itemlist {{#if (eq sphere.system.id ../actor.system.bio.splatfields.affinity.value)}}highlightedPowerRow{{/if}}" style="width: 100%;">
-					<div class="spheres-headlineWidth headlineNormalSpheres splatFont vrollable" 
+					<div class="spheres-headlineWidth headlineNormalSpheres splatFont vrollable"
 						{{#if (eq sphere.system.id ../actor.system.bio.splatfields.affinity.value)}}
 							title="{{localize 'wod.bio.mage.affinitysphere'}}"
 						{{/if}}>
 						{{localize sphere.system.label}}
 					</div>
 
-					<div class="resource-value" 
+					<div class="resource-value"
 						data-itemid="{{sphere._id}}"
 						data-key="{{sphere.system.id}}"
-						data-value="{{sphere.system.value}}" 
+						data-value="{{sphere.system.value}}"
 						data-name="system.value">
 
-						{{#numLoop sphere.system.max}}					
-							<span class="{{#if (gt sphere.system.max 5)}}supernaturalAttribute{{/if}} resource-value-step" data-action="editDot" data-type="{{../../config.sheettype.mage}}" data-index="{{this}}" data-itemid="{{sphere._id}}" data-ability="core"></span>					
-						{{/numLoop}}						
-						
+						{{#numLoop sphere.system.max}}
+							<span class="{{#if (gt sphere.system.max 5)}}supernaturalAttribute{{/if}} resource-value-step" data-action="editDot" data-type="{{../../config.sheettype.mage}}" data-index="{{this}}" data-itemid="{{sphere._id}}" data-ability="core"></span>
+						{{/numLoop}}
+
 					</div>
 					{{#if (eq ../locked false)}}
-						<div class="iconBox">							
-							{{> "systems/worldofdarkness/templates/actor/parts/list_icons.hbs" showedit=true item=sphere locked=../locked edittitle="wod.labels.edit.sphere" collapseclass="power"}}
+						<div class="iconBox">
+							{{> "systems/wod-advanced/templates/actor/parts/list_icons.hbs" showedit=true item=sphere locked=../locked edittitle="wod.labels.edit.sphere" collapseclass="power"}}
 						</div>
 					{{else}}
 						{{#if (gte sphere.system.value 4)}}
@@ -44,8 +44,8 @@
 							</div>
 						{{/if}}
 					{{/if}}
-				</div>	
-					
+				</div>
+
 			</div>
 			<div class="description" data-itemid="{{sphere._id}}">
 
@@ -54,8 +54,8 @@
 			</div>
 
 			{{#if (eq (mod index 3) 2)}}</div>{{/if}}
-		
-		{{/each}}	
-	</div> 
+
+		{{/each}}
+	</div>
 
 </div>

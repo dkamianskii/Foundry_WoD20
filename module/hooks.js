@@ -66,8 +66,8 @@ export function registerHooks(constants, isTablet) {
 				const text = game.i18n.localize("wod.info.droprecieved");
 				text = text.replace("{1}", item.name);
 				text = text.replace("{2}", item.flags?.copyFile?.receivedName);
-				
-				ui.notifications.info(text); 
+
+				ui.notifications.info(text);
 			}
 		}
 	});
@@ -78,7 +78,7 @@ export function registerHooks(constants, isTablet) {
 	 * Applies language classes, splat-specific classes (mortal, vampire, werewolf, mage),
 	 * font settings, and dark mode theme class.
 	 */
-	Hooks.on("renderActorSheetV2", (sheet) => { 
+	Hooks.on("renderActorSheetV2", (sheet) => {
 		CONFIG.worldofdarkness.darkmode = game.settings.get('core', 'uiConfig').colorScheme.applications === "dark";
 
 		clearHTML(sheet);
@@ -132,7 +132,7 @@ export function registerHooks(constants, isTablet) {
 			for (const variant in CONFIG.worldofdarkness.variant.mortal) {
 				sheet.classList.remove(variant);
 			}
-		} 
+		}
 
 		if (splat == "changeling") {
 			sheet.classList.add("changeling");
@@ -149,7 +149,7 @@ export function registerHooks(constants, isTablet) {
 				sheet.classList.remove(variant);
 			}
 		}
-		
+
 		if (splat == "hunter") {
 			sheet.classList.add("hunter");
 
@@ -173,7 +173,7 @@ export function registerHooks(constants, isTablet) {
 
 		if (CONFIG.worldofdarkness.darkmode) {
 			sheet.classList.add("wod-theme-dark");
-		}	
+		}
 	});
 
 	/**
@@ -183,7 +183,7 @@ export function registerHooks(constants, isTablet) {
 	 * font settings, and dark mode theme class.
 	 * Also handles tablet viewport detection.
 	 */
-	Hooks.on("renderActorSheet", (sheet) => { 
+	Hooks.on("renderActorSheet", (sheet) => {
 		CONFIG.worldofdarkness.darkmode = game.settings.get('core', 'uiConfig').colorScheme.applications === "dark";
 
 		clearHTML(sheet);
@@ -192,7 +192,7 @@ export function registerHooks(constants, isTablet) {
 		if (!classList) return;
 
 		if (isTablet) {
-			//ui.notifications.info("tabet"); 
+			//ui.notifications.info("tabet");
 		}
 
 		// adding the means to control the CSS by what language is used.
@@ -304,7 +304,7 @@ export function registerHooks(constants, isTablet) {
 			classList.add("exalted");
 		}
 
-		if (game.settings.get('worldofdarkness', 'useSplatFonts') === false) {
+		if (game.settings.get('wod-advanced', 'useSplatFonts') === false) {
 			classList.add("noSplatFont");
 		}
 		else if (!sheet.object.system.settings.usesplatfont) {
@@ -313,7 +313,7 @@ export function registerHooks(constants, isTablet) {
 
 		if (CONFIG.worldofdarkness.darkmode) {
 			classList.add("wod-theme-dark");
-		}	
+		}
 	});
 
 	/**
@@ -322,7 +322,7 @@ export function registerHooks(constants, isTablet) {
 	 * Applies language classes, font settings based on actor or global settings,
 	 * and dark mode theme class.
 	 */
-	Hooks.on("renderItemSheet", (sheet) => { 
+	Hooks.on("renderItemSheet", (sheet) => {
 		CONFIG.worldofdarkness.darkmode = game.settings.get('core', 'uiConfig').colorScheme.applications === "dark";
 
 		clearHTML(sheet);
@@ -347,7 +347,7 @@ export function registerHooks(constants, isTablet) {
 			sheet.element[0].classList.add("langEN");
 		}
 
-		if (game.settings.get('worldofdarkness', 'useSplatFonts') === false) {
+		if (game.settings.get('wod-advanced', 'useSplatFonts') === false) {
 			sheet.element[0].classList.add("noSplatFont");
 		}
 		else if (sheet.object?.actor !== undefined) {
@@ -393,7 +393,7 @@ export function registerHooks(constants, isTablet) {
 				el.classList.add("langEN");
 			}
 
-			if (game.settings.get('worldofdarkness', 'useSplatFonts') === false) {
+			if (game.settings.get('wod-advanced', 'useSplatFonts') === false) {
 				el.classList.add("noSplatFont");
 			}
 			else if (sheet.item?.actor?.system?.settings?.usesplatfont === false) {
@@ -412,15 +412,15 @@ export function registerHooks(constants, isTablet) {
 	 * Handles both regular dialogs (isDialog flag) and settings dialogs (wod20rule-dialog class).
 	 * Applies language classes, font settings, and dark mode theme class.
 	 */
-	Hooks.on("renderFormApplication", (sheet) => { 
+	Hooks.on("renderFormApplication", (sheet) => {
 		// Check if this is a WoD dialog (either isDialog or has wod20rule-dialog class for settings)
-		const isWoDDialog = sheet.isDialog || 
+		const isWoDDialog = sheet.isDialog ||
 		                    sheet.element?.[0]?.classList?.contains("wod20rule-dialog");
-		
+
 		if (isWoDDialog) {
 			CONFIG.worldofdarkness.darkmode = game.settings.get('core', 'uiConfig').colorScheme.applications === "dark";
 
-			clearHTML(sheet);	
+			clearHTML(sheet);
 
 			// adding the means to control the CSS by what language is used.
 			if (CONFIG.language == "de") {
@@ -442,7 +442,7 @@ export function registerHooks(constants, isTablet) {
 				sheet.element[0].classList.add("langEN");
 			}
 
-			if (game.settings.get('worldofdarkness', 'useSplatFonts') === false) {
+			if (game.settings.get('wod-advanced', 'useSplatFonts') === false) {
 				sheet.element[0].classList.add("noSplatFont");
 			}
 			else if (sheet.actor?.system?.settings?.usesplatfont === false) {
@@ -463,16 +463,16 @@ export function registerHooks(constants, isTablet) {
 	 */
 	Hooks.on("renderApplicationV2", (app, html, data) => {
 		CONFIG.worldofdarkness.darkmode = game.settings.get('core', 'uiConfig').colorScheme.applications === "dark";
-		
+
 		// Check if this is a WoD ApplicationV2 dialog/sheet
 		// Check by class names that WoD uses
-		if (app.element?.classList?.contains("wod-dialog") || 
+		if (app.element?.classList?.contains("wod-dialog") ||
 		    app.element?.classList?.contains("migration-wizard-dialog") ||
 		    app.element?.classList?.contains("power-selection-dialog") ||
 		    app.element?.classList?.contains("wod-item") ||
 		    app.element?.classList?.contains("wod-sheet") ||
 		    app.element?.classList?.contains("wod20")) {
-			
+
 			if (CONFIG.worldofdarkness.darkmode) {
 				app.element.classList.add("wod-theme-dark");
 			}
@@ -502,7 +502,7 @@ export function registerHooks(constants, isTablet) {
 				select.querySelector("option").selected = true;
 			}
 		}
-		
+
 		// Add dark mode class for WoD dialogs
 		if (container.classList.contains("wod-dialog") || container.classList.contains("wod-create")) {
 			if (CONFIG.worldofdarkness.darkmode) {
@@ -521,28 +521,28 @@ export function registerHooks(constants, isTablet) {
 		class GndWoD20thSpeedProvider extends SpeedProvider {
 			get colors() {
 				return [
-					{id: "walk", default: 0x00FF00, name: "worldofdarkness.speeds.walk"},
-					{id: "jog", default: 0xFFFF00, name: "worldofdarkness.speeds.jog"},
-					{id: "run", default: 0xFF8000, name: "worldofdarkness.speeds.run"}
+					{id: "walk", default: 0x00FF00, name: "wod-advanced.speeds.walk"},
+					{id: "jog", default: 0xFFFF00, name: "wod-advanced.speeds.jog"},
+					{id: "run", default: 0xFF8000, name: "wod-advanced.speeds.run"}
 				]
 			}
 			getRanges(token) {
 				const walkSpeed = token.actor.system.movement.walk;
 				const jogSpeed = token.actor.system.movement.jog;
-				const runSpeed = token.actor.system.movement.run;           
+				const runSpeed = token.actor.system.movement.run;
 
 				//no need for multipliers in wod20 feet to meters 1feet = 0.3048m
 				const ranges = [
 					{range: walkSpeed, color: "walk"},
 					{range: jogSpeed, color: "jog"},
 					{range: runSpeed, color: "run"}
-				]            
+				]
 
 				return ranges
 			}
 		}
 
-		dragRuler.registerSystem("worldofdarkness", GndWoD20thSpeedProvider)
+		dragRuler.registerSystem("wod-advanced", GndWoD20thSpeedProvider)
 	});
 }
 

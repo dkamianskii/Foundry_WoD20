@@ -4,27 +4,27 @@
 
     <div class="pullRight">
         <!-- Macro icons -->
-        {{> "systems/worldofdarkness/templates/actor/parts/macro_icons.hbs"}}				        	
+        {{> "systems/wod-advanced/templates/actor/parts/macro_icons.hbs"}}
     </div>
 
     <div class="sheet-inner-area">
 
         {{#if actor.system.settings.hasshapes}}
             <!-- SHAPES - Always first, handled separately since they're Trait items -->
-            {{> "systems/worldofdarkness/templates/actor/parts/power_shapes.hbs" shapes=shapes actor=actor config=config locked=locked}}
+            {{> "systems/wod-advanced/templates/actor/parts/power_shapes.hbs" shapes=shapes actor=actor config=config locked=locked}}
         {{/if}}
 
         {{#if actor.system.settings.hasspheres}}
-            {{> "systems/worldofdarkness/templates/actor/parts/power_spheres.hbs" spheres=spheres actor=actor config=config}}
+            {{> "systems/wod-advanced/templates/actor/parts/power_spheres.hbs" spheres=spheres actor=actor config=config}}
         {{/if}}
 
         {{#if actor.system.settings.hasrealms}}
-            {{> "systems/worldofdarkness/templates/actor/parts/power_realms.hbs" realms=realms actor=actor config=config}}
+            {{> "systems/wod-advanced/templates/actor/parts/power_realms.hbs" realms=realms actor=actor config=config}}
         {{/if}}
 
         {{#each powerSections as |section|}}
             {{#if section.condition}}
-                
+
                 {{#if (eq section.id "gifts")}}
                     <!-- GIFTS - Special template -->
                     <div class="sheet-area flex-columns" style="min-height: 150px;">
@@ -37,13 +37,13 @@
                                     {{localize "wod.advantages.rank"}} {{rankGroup.rank}}
                                 </div>
                                 {{#each rankGroup.gifts as |item id|}}
-                                    {{> "systems/worldofdarkness/templates/actor/parts/power_listpower.hbs" 
+                                    {{> "systems/wod-advanced/templates/actor/parts/power_listpower.hbs"
                                         item=item config=../../../config actor=../../../actor locked=../../../locked showclear=false}}
                                 {{/each}}
                             </div>
                         {{/each}}
-                    </div>                
-                
+                    </div>
+
                 {{else if (eq section.template "hierarchical")}}
                     <!-- HIERARCHICAL POWER (Disciplines, Paths, etc.) -->
                     <div class="sheet-area flex-columns">
@@ -52,13 +52,13 @@
                                 <span class="sheet-banner-text">{{localize section.localizeKey}}</span>
                             </div>
                             {{#each section.data.items as |item id|}}
-                                {{> "systems/worldofdarkness/templates/actor/parts/power_listmainpower.hbs" 
+                                {{> "systems/wod-advanced/templates/actor/parts/power_listmainpower.hbs"
                                     mainpower=item config=../../config actor=../../actor locked=../../locked}}
                             {{/each}}
                         </div>
                     </div>
-                
-                {{else if (eq section.template "simple")}}                
+
+                {{else if (eq section.template "simple")}}
                     <!-- SIMPLE POWER LIST (Rites, Rituals, Combinations, etc.) -->
                     <div class="sheet-area flex-columns">
                         <div>
@@ -66,13 +66,13 @@
                                 <span class="sheet-banner-text">{{localize section.localizeKey}}</span>
                             </div>
                             {{#each section.data.items as |item id|}}
-                                {{> "systems/worldofdarkness/templates/actor/parts/power_listpower.hbs" 
+                                {{> "systems/wod-advanced/templates/actor/parts/power_listpower.hbs"
                                     item=item config=../../config actor=../../actor locked=../../locked showclear=false}}
                             {{/each}}
                         </div>
                     </div>
-                
-                {{else if (eq section.template "simpledots")}}                
+
+                {{else if (eq section.template "simpledots")}}
                     <!-- SIMPLE POWER LIST WITH DOTS (Resonances, etc.) -->
                     <div class="sheet-area flex-columns">
                         <div>
@@ -80,13 +80,13 @@
                                 <span class="sheet-banner-text">{{localize section.localizeKey}}</span>
                             </div>
                             {{#each section.data.items as |item id|}}
-                                {{> "systems/worldofdarkness/templates/actor/parts/power_listpowerdots.hbs" 
+                                {{> "systems/wod-advanced/templates/actor/parts/power_listpowerdots.hbs"
                                     item=item config=../../config actor=../../actor locked=../../locked showclear=false}}
                             {{/each}}
                         </div>
                     </div>
-                
-                {{else if (eq section.template "column")}}                
+
+                {{else if (eq section.template "column")}}
                     <!-- 2 COLUMN POWER LIST (Rotes, etc.) -->
                     <div class="sheet-area flex-columns">
                         <div>
@@ -99,7 +99,7 @@
                                 {{#each section.data.items as |item id|}}
 
                                     <div>
-                                        {{> "systems/worldofdarkness/templates/actor/parts/power_listpower.hbs" 
+                                        {{> "systems/wod-advanced/templates/actor/parts/power_listpower.hbs"
                                             item=item config=../../config actor=../../actor locked=../../locked showclear=false}}
                                     </div>
 
@@ -108,7 +108,7 @@
                             </div>
                         </div>
                     </div>
-                
+
                 {{else if (eq section.template "unsorted")}}
                     <!-- UNSORTED POWERS -->
                     <div class="sheet-area unsorted-area flex-columns">
@@ -116,7 +116,7 @@
                         <div class="area-box">
                             {{#each section.data.items as |item id|}}
                                 <div class="row">
-                                    <div class="pullLeft headlineNormal width-namebox vrollable" 
+                                    <div class="pullLeft headlineNormal width-namebox vrollable"
                                         data-action="powerSort"
                                         data-type="{{../../config.sheettype.mortal}}"
                                         data-object="{{section.sortAction}}"
@@ -124,9 +124,9 @@
                                         data-itemid="{{item._id}}">{{item.name}}</div>
                                     {{#if (eq ../../locked false)}}
                                         <div class="pullLeft power-iconbox">
-                                            <a class="pointer item-delete" 
-                                            title="{{localize 'wod.labels.remove.disciplinepower'}}" 
-                                            data-itemid="{{item._id}}" 
+                                            <a class="pointer item-delete"
+                                            title="{{localize 'wod.labels.remove.disciplinepower'}}"
+                                            data-itemid="{{item._id}}"
                                             data-action="itemDelete">
                                                 <i class="icon fa-solid fa-trash-can"></i>
                                             </a>
@@ -136,29 +136,29 @@
                             {{/each}}
                         </div>
                     </div>
-                
+
                 {{/if}}
-            
+
             {{/if}}
         {{/each}}
 
         {{#if actor.system.settings.hasapocalypticforms}}
-            {{> "systems/worldofdarkness/templates/actor/parts/power_apocalypticforms.hbs" apocalypticforms=apocalypticforms actor=actor config=config}}
+            {{> "systems/wod-advanced/templates/actor/parts/power_apocalypticforms.hbs" apocalypticforms=apocalypticforms actor=actor config=config}}
         {{/if}}
 
         {{#if (gt powertraits.length 0)}}
 
             <div class="sheet-area flex-columns">
                 <div class="headlineRow headlineList splatFont feature-itemlist">
-                    <div class="largeBox">{{localize "TYPES.Item.Feature"}}</div>                
+                    <div class="largeBox">{{localize "TYPES.Item.Feature"}}</div>
                 </div>
 
                 {{#each powertraits as |item id|}}
 
-                    {{> "systems/worldofdarkness/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.othertraits" deletetitle="wod.labels.remove.othertraits" showtype=false}}
+                    {{> "systems/wod-advanced/templates/actor/parts/feature_item.hbs" actor=../actor item=item locked=../locked edittitle="wod.labels.edit.othertraits" deletetitle="wod.labels.remove.othertraits" showtype=false}}
 
                 {{/each}}
-                
+
             </div>
 
         {{/if}}

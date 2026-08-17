@@ -3,15 +3,15 @@ import ActionHelper from "../../scripts/action-helpers.js";
 import CreateHelper from "../../scripts/create-helpers.js";
 
 export default class MummyActorSheet extends MortalActorSheet {
-	
+
 	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-sheet mummy"],
-			template: "systems/worldofdarkness/templates/actor/mummy-sheet.html"
+			template: "systems/wod-advanced/templates/actor/mummy-sheet.html"
 		});
 	}
-  
+
 	constructor(actor, options) {
 		super(actor, options);
 	}
@@ -30,9 +30,9 @@ export default class MummyActorSheet extends MortalActorSheet {
 
 	/** @override */
 	get template() {
-		return "systems/worldofdarkness/templates/actor/mummy-sheet.html";
+		return "systems/wod-advanced/templates/actor/mummy-sheet.html";
 	}
-	
+
 	/** @override */
 	activateListeners(html) {
 		super.activateListeners(html);
@@ -50,14 +50,14 @@ export default class MummyActorSheet extends MortalActorSheet {
 		html
 			.find(".resource-value > .resource-value-step")
 			.click(this._onDotCounterMummyChange.bind(this));
-		
+
 		// temporary squares
 		html
 			.find(".resource-counter > .resource-value-step")
 			.click(this._onDotCounterMummyChange.bind(this));
-	}	
+	}
 
-	_onRollMummyDialog(event) {		
+	_onRollMummyDialog(event) {
 		event.preventDefault();
 		const element = event.currentTarget;
 		const dataset = element.dataset;
@@ -82,9 +82,9 @@ export default class MummyActorSheet extends MortalActorSheet {
 			return;
 		}
 
-		const parent = $(element.parentNode);	
-		const steps = parent.find(".resource-value-step");	
-		const index = Number(dataset.index);		
+		const parent = $(element.parentNode);
+		const steps = parent.find(".resource-value-step");
+		const index = Number(dataset.index);
 
 		let itemid = undefined;
 
@@ -116,26 +116,26 @@ export default class MummyActorSheet extends MortalActorSheet {
 		else {
 			const fieldStrings = parent[0].dataset.name;
 			const fields = fieldStrings.split(".");
-	
+
 			if (index < 0 || index > steps.length) {
 				return;
 			}
-			
+
 			await this._assignToActorField(fields, index + 1);
-		}			
+		}
 	}
-	
+
 	async _assignToMummy(fields, value) {
 		if (type != CONFIG.worldofdarkness.sheettype.mummy) {
 			return;
-		}	
+		}
 
 		const actorData = foundry.utils.duplicate(this.actor);
 
-		let area = fields[0];	
-		const ability = fields[1];	
+		let area = fields[0];
+		const ability = fields[1];
 
-		if (area === "advantages") {			
+		if (area === "advantages") {
 			const abilityType = fields[2];
 
 			if (fields.length == 3) {

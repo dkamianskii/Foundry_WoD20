@@ -15,12 +15,12 @@ import { calculateHealth } from "../../scripts/health.js";
 import * as selectbox from "../../scripts/spec-select.js";
 
 export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
-	
+
 	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["wod20 wod-sheet mortal"],
-			template: "systems/worldofdarkness/templates/actor/mortal-sheet.html",
+			template: "systems/wod-advanced/templates/actor/mortal-sheet.html",
 			tabs: [{
 				navSelector: ".sheet-tabs",
 				contentSelector: ".sheet-body",
@@ -33,27 +33,27 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			}]
 		});
 	}
-  
+
 	constructor(actor, options) {
 		super(actor, options);
 
-		this.isGM = game.user.isGM;	
+		this.isGM = game.user.isGM;
 		this.isLimited = actor.limited;
 		this.locked = true;
 		this.isCharacter = true;
 		this.variantOpen = false;
-	}	
-	
+	}
+
 	/** @override */
 	get template() {
-		return "systems/worldofdarkness/templates/actor/mortal-sheet.html";
+		return "systems/wod-advanced/templates/actor/mortal-sheet.html";
 	}
 
 	/** @override */
 	async getData() {
-		const data = await super.getData();			
-		
-		data.config = CONFIG.worldofdarkness;	
+		const data = await super.getData();
+
+		data.config = CONFIG.worldofdarkness;
 		data.worldofdarkness = game.worldofdarkness;
 		data.userpermissions = ActionHelper._getUserPermissions(game.user);
 		data.graphicsettings = ActionHelper._getGraphicSettings();
@@ -61,7 +61,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 
 		data.locked = this.locked;
 		data.isCharacter = this.isCharacter;
-		data.isGM = this.isGM;		
+		data.isGM = this.isGM;
 
 		await ItemHelper.sortActorItems(data.actor, data.config);
 
@@ -104,7 +104,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			if (!this.variantOpen) {
 				this.variantOpen = true;
 				ActionHelper.openVariantDialog(this.actor);
-			}			
+			}
 		}
 		else if (((data.actor.system?.changingbreed == "") || (data.actor.system?.changingbreed == "general")) && (this.actor.type == CONFIG.worldofdarkness.sheettype.changingbreed)) {
 			if (!this.variantOpen) {
@@ -119,7 +119,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		// }
 
 		return data;
-	}	
+	}
 
 	/** @override */
 	activateListeners(html) {
@@ -132,7 +132,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 
 		// Everything below here is only needed if the sheet is editable
 		if (!this.options.editable) return;
-		
+
 		// lock button
 		html
 			.find(".lock-btn")
@@ -145,7 +145,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		// Click collapsed
 		html
 			.find('.unfold.button')
-			.click(event => ItemHelper._onTableCollapse(event, this.actor._id));		
+			.click(event => ItemHelper._onTableCollapse(event, this.actor._id));
 
 		// Receive collapsed state from flags
 		html.find('.unfold.button').toArray().filter(ele => {
@@ -170,7 +170,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		// drag and drop
 		html.find('.draggable').each((i, element) => {
             DropHelper.HandleDragDrop(this, this.actor, html, element);
-        }); 
+        });
 
 		// resource dots
 		html
@@ -186,7 +186,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		html
 			.find(".health > .resource-counter > .resource-value-step")
 			.click(this._onSquareCounterChange.bind(this));
-			
+
 		html
 			.find(".health > .resource-counter > .resource-value-step")
 			.on('contextmenu', this._onSquareCounterClear.bind(this));
@@ -194,7 +194,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		// set era Dark Ages
 		html
 			.find(".sheet_darkages")
-			.click(this._setDarkAges.bind(this));	
+			.click(this._setDarkAges.bind(this));
 
 		// set era Classical Ages
 		html
@@ -232,7 +232,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 
 		html
 			.find(".macroBtn")
-			.click(this._onRollDialog.bind(this));			
+			.click(this._onRollDialog.bind(this));
 
 		// items
 		html
@@ -246,7 +246,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		html
 			.find(".item-active")
 			.click(this._onItemActive.bind(this));
-			
+
 		html
 			.find(".item-delete")
 			.click(this._onItemDelete.bind(this));
@@ -262,8 +262,8 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		// skicka till chat
 		html
 			.find(".send-chat")
-			.click(this._onSendChat.bind(this));	
-			
+			.click(this._onSendChat.bind(this));
+
 		const collapsibles = html[0].querySelectorAll(".collapsible");
 
 		collapsibles.forEach(icon => {
@@ -278,8 +278,8 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 					bonusDiv.style.maxHeight = "0";
 					icon.classList.remove("fa-compress");
 					icon.classList.add("fa-expand");
-					bonusDiv.classList.remove("collapsible-open");					
-				} 
+					bonusDiv.classList.remove("collapsible-open");
+				}
 				else {
 					bonusDiv.style.maxHeight = bonusDiv.scrollHeight + "px";
 					bonusDiv.classList.add("collapsible-open");
@@ -291,7 +291,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 	}
 
 	async _onDrop(event) {
-		const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);		
+		const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
 
 		// Handle different data types
 		switch (data.type) {
@@ -328,7 +328,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 
 			if (!performDelete)
             	return;
-		}        
+		}
 
 		const element = event.currentTarget;
 		const dataset = element.dataset;
@@ -351,7 +351,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			found = true;
 			await CreateHelper.SetMortalAbilities(this.actor, "darkages");
 		}
-		
+
 		if (found) {
 			actorData.system.settings.era = CONFIG.worldofdarkness.era.darkages;
 			actorData.system.settings.isupdated = false;
@@ -375,7 +375,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 
 			if (!performDelete)
             	return;
-		}        
+		}
 
 		const element = event.currentTarget;
 		const dataset = element.dataset;
@@ -393,7 +393,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			found = true;
 			await CreateHelper.SetMortalAbilities(this.actor, "livinggods");
 		}
-		
+
 		if (found) {
 			actorData.system.settings.era = CONFIG.worldofdarkness.era.livinggods;
 			actorData.system.settings.isupdated = false;
@@ -401,7 +401,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			ui.notifications.info(game.i18n.localize("wod.labels.settings.setlivinggods"));
 		}
 	}
-	
+
 	async _setClassical(event) {
 		event.preventDefault();
 
@@ -417,7 +417,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 
 			if (!performDelete)
             	return;
-		}        
+		}
 
 		const element = event.currentTarget;
 		const dataset = element.dataset;
@@ -435,7 +435,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			found = true;
 			await CreateHelper.SetMortalAbilities(this.actor, "classical");
 		}
-		
+
 		if (found) {
 			actorData.system.settings.era = CONFIG.worldofdarkness.era.classical;
 			actorData.system.settings.isupdated = false;
@@ -486,13 +486,13 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			found = true;
 			await CreateHelper.SetMortalAbilities(this.actor, "victorian");
 		}
-		
+
 		if (found) {
 			actorData.system.settings.era = CONFIG.worldofdarkness.era.victorian;
 			actorData.system.settings.isupdated = false;
-			await this.actor.update(actorData);			
+			await this.actor.update(actorData);
 
-			if (dataset.type == CONFIG.worldofdarkness.sheettype.werewolf) { 
+			if (dataset.type == CONFIG.worldofdarkness.sheettype.werewolf) {
 				ui.notifications.info(game.i18n.localize("wod.labels.settings.setwildwest"));
 			}
 			else {
@@ -543,7 +543,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			found = true;
 			await CreateHelper.SetMortalAbilities(this.actor, "modern");
 		}
-		
+
 		if (found) {
 			actorData.system.settings.era = CONFIG.worldofdarkness.era.modern;
 			actorData.system.settings.isupdated = false;
@@ -551,7 +551,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			await this.actor.update(actorData);
 			ui.notifications.info(game.i18n.localize("wod.labels.settings.setmodern"));
 		}
-	}	
+	}
 
 	async _setVariant(event) {
 		event.preventDefault();
@@ -577,13 +577,13 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			actorData = await CreateHelper.SetMortalVariant(this.actor, actorData, dataset.value);
 		}
 		if (this.actor.type == CONFIG.worldofdarkness.sheettype.exalted) {
-			actorData = await CreateHelper.SetExaltedVariant(actorData, dataset.value);			
+			actorData = await CreateHelper.SetExaltedVariant(actorData, dataset.value);
 		}
 		if (this.actor.type == CONFIG.worldofdarkness.sheettype.creature) {
-			actorData = await CreateHelper.SetCreatureVariant(actorData, dataset.value);			
+			actorData = await CreateHelper.SetCreatureVariant(actorData, dataset.value);
 		}
 
-		actorData.system.settings.isupdated = false;		
+		actorData.system.settings.isupdated = false;
         await this.actor.update(actorData);
 		await CreateHelper.SetVariantItems(this.actor, dataset.value, game.system.version);
 	}
@@ -602,11 +602,11 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			let value = 0;
 
 			try {
-				value = parseInt(element.value);	
-			} 
+				value = parseInt(element.value);
+			}
 			catch (error) {
 				value = 0;
-			}		
+			}
 
 			actorData.system.attributes[attribute].bonus = value;
 		}
@@ -616,7 +616,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 
 			try {
 				value = parseInt(element.value);
-			} 
+			}
 			catch (error) {
 				value = 0;
 			}
@@ -664,7 +664,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 				value = 0;
 			}
 
-			actorData.system.initiative.bonus = value;			
+			actorData.system.initiative.bonus = value;
 		}
 		else if (source == "item") {
 			const itemid = dataset.itemid;
@@ -689,7 +689,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		//this.render();
 	}
 
-	_onRollDialog(event) {		
+	_onRollDialog(event) {
 		event.preventDefault();
 
 		const element = event.currentTarget;
@@ -699,10 +699,10 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			return;
 		}
 
-		ActionHelper.RollDialog(dataset, this.actor);		
+		ActionHelper.RollDialog(dataset, this.actor);
 	}
 
-	_onChatRoll(event) {		
+	_onChatRoll(event) {
 		event.preventDefault();
 
 		const element = event.currentTarget;
@@ -713,7 +713,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			return;
 		}
 
-		ActionHelper.RollDialog(dataset, this.actor);		
+		ActionHelper.RollDialog(dataset, this.actor);
 	}
 
 	/* Lock / unlock the sheet */
@@ -765,20 +765,20 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			actorData.system.settings[type] = !actorData.system.settings[type];
 		}
 		if (source == "soak") {
-			actorData.system.settings.soak[type].isrollable = !actorData.system.settings.soak[type].isrollable;		
+			actorData.system.settings.soak[type].isrollable = !actorData.system.settings.soak[type].isrollable;
 		}
 		if (source == "usesplatfont") {
 			actorData.system.settings.usesplatfont = !actorData.system.settings.usesplatfont;
 		}
 		if (source == "powers") {
-			actorData.system.settings.powers[type] = !actorData.system.settings.powers[type];		
-		}		
+			actorData.system.settings.powers[type] = !actorData.system.settings.powers[type];
+		}
 
 		actorData.system.settings.isupdated = false;
 		await this.actor.update(actorData);
 		this.render();
 	}
-  
+
 	/* Alter dots e.g attributes, abilities */
 	async _onDotCounterChange(event) {
 		event.preventDefault();
@@ -791,9 +791,9 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			return;
 		}
 
-		const parent = $(element.parentNode);	
-		const steps = parent.find(".resource-value-step");	
-		const index = Number(dataset.index);		
+		const parent = $(element.parentNode);
+		const steps = parent.find(".resource-value-step");
+		const index = Number(dataset.index);
 
 		let itemid = undefined;
 
@@ -826,7 +826,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			return;
 		}
 		else {
-			const abilityType = parent[0].dataset.ability;				
+			const abilityType = parent[0].dataset.ability;
 			const fieldStrings = parent[0].dataset.name;
 			const fields = fieldStrings.split(".");
 
@@ -835,11 +835,11 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			if ((this.actor.type == CONFIG.worldofdarkness.sheettype.creature) && (this.actor.system.settings.variant == "spirit")) {
 				isSpirit = true;
 			}
-	
+
 			if (index < 0 || index > steps.length) {
 				return;
 			}
-			
+
 			if (fields[2] == "health") {
 				return;
 			}
@@ -848,21 +848,21 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 				 ui.notifications.warn(game.i18n.localize("wod.system.sheetlocked"));
 				 return;
 			}
-			if (((fieldStrings == "advantages.willpower.permanent") && 
-						(CONFIG.worldofdarkness.attributeSettings == "5th") && 
+			if (((fieldStrings == "advantages.willpower.permanent") &&
+						(CONFIG.worldofdarkness.attributeSettings == "5th") &&
 						(CONFIG.worldofdarkness.fifthEditionWillpowerSetting == "5th") &&
 						(!isSpirit))) {
-				ui.notifications.error(game.i18n.localize("wod.advantages.willpowerchange"));	
+				ui.notifications.error(game.i18n.localize("wod.advantages.willpowerchange"));
 				return;
-			}			
-	
+			}
+
 			if (abilityType == "secondary") {
 				await this._updateSecondaryAbility(parent[0].dataset.key, index + 1);
 			}
 			else {
 				await this._assignToActorField(fields, index + 1);
 			}
-		}	
+		}
 
 		steps.removeClass("active");
 		steps.each(function (i) {
@@ -871,7 +871,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			}
 		});
 	}
-	
+
 	/* Clicked health boxes */
 	async _onSquareCounterChange(event) {
 		event.preventDefault();
@@ -888,25 +888,25 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		if (type != CONFIG.worldofdarkness.sheettype.mortal) {
 			return;
 		}
-		
+
 		if (currentState < 0) {
 			return;
 		}
-		
+
 		const actorData = foundry.utils.duplicate(this.actor);
 
 		if (oldState == "") {
 			actorData.system.health.damage.bashing = parseInt(actorData.system.health.damage.bashing) + 1;
 		}
-		else if (oldState == "/") { 
+		else if (oldState == "/") {
 			actorData.system.health.damage.bashing = parseInt(actorData.system.health.damage.bashing) - 1;
-			actorData.system.health.damage.lethal = parseInt(actorData.system.health.damage.lethal) + 1;			
+			actorData.system.health.damage.lethal = parseInt(actorData.system.health.damage.lethal) + 1;
 		}
-		else if (oldState == "x") { 
+		else if (oldState == "x") {
 			actorData.system.health.damage.lethal = parseInt(actorData.system.health.damage.lethal) - 1;
 			actorData.system.health.damage.aggravated = parseInt(actorData.system.health.damage.aggravated) + 1;
 		}
-		else if (oldState == "*") { 
+		else if (oldState == "*") {
 			actorData.system.health.damage.aggravated = parseInt(actorData.system.health.damage.aggravated) - 1;
 		}
 
@@ -945,13 +945,13 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		if (oldState == "") {
 			return
 		}
-		else if (oldState == "/") { 
+		else if (oldState == "/") {
 			actorData.system.health.damage.bashing = parseInt(actorData.system.health.damage.bashing) - 1;
 		}
-		else if (oldState == "x") { 
+		else if (oldState == "x") {
 			actorData.system.health.damage.lethal = parseInt(actorData.system.health.damage.lethal) - 1;
 		}
-		else if (oldState == "*") { 
+		else if (oldState == "*") {
 			actorData.system.health.damage.aggravated = parseInt(actorData.system.health.damage.aggravated) - 1;
 		}
 
@@ -970,7 +970,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		actorData.system.settings.isupdated = false;
 		await this.actor.update(actorData);
 		this.render();
-	}	
+	}
 
 	/**
    * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
@@ -982,21 +982,21 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		const type = $(event.currentTarget).data("type");
 		const itemtype = $(event.currentTarget).data("itemtype");
 
-		let itemData = undefined;	
-		
+		let itemData = undefined;
+
 		if (itemtype == "Bonus") {
 			found = true;
 			const id = $(event.currentTarget).data("parentid");
 
 			itemData = {
 				name: `${game.i18n.localize("wod.labels.new.bonus")}`,
-				type: itemtype,				
+				type: itemtype,
 				system: {
 					parentid: id
 				}
 			};
 		}
-		
+
 		if (itemtype == "All") {
 			// Define the actor's gamesystem, defaulting to "mortal" if it's not in the systems list
 			let system = this.actor.type;
@@ -1008,7 +1008,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			}
 
 			let origin = $(event.currentTarget).data("origin");
-			
+
 			if (this.actor.type != CONFIG.worldofdarkness.sheettype.changingbreed) {
 				sheettype = this.actor.type.toLowerCase();
 			}
@@ -1019,7 +1019,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			system = sheettype;
 
 			// Render the template
-			const itemselectionTemplate = 'systems/worldofdarkness/templates/dialogs/dialog-new-item.hbs';
+			const itemselectionTemplate = 'systems/wod-advanced/templates/dialogs/dialog-new-item.hbs';
 			const itemselectionData = {
 				tab: origin,
 				sheettype: sheettype,
@@ -1053,7 +1053,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 							return;
 						}
 					}
-				}				
+				}
 			}
 			if (origin == "combat") {
 				buttons = await CreateHelper.CreateButtonsCombat(this.actor);
@@ -1080,7 +1080,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			  ).render(true);
 
 			return;
-		}		
+		}
 	}
 
 	async _onItemEdit(event) {
@@ -1112,9 +1112,9 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		if (itemtype == "Sphere") {
 			SphereHelper.EditSphere(this.actor, itemid);
 			return;
-		}		
+		}
 
-		const item = await this.actor.getEmbeddedDocument("Item", itemid);		
+		const item = await this.actor.getEmbeddedDocument("Item", itemid);
 		item.sheetType = this.actor.type;
 
 		if (item instanceof Item) {
@@ -1122,13 +1122,13 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		}
 	}
 
-	async _onItemActive(event) {		
+	async _onItemActive(event) {
 		event.preventDefault();
         event.stopPropagation();
 
 		const itemId = $(event.currentTarget).data("item-id");
 		const type = $(event.currentTarget).data("type");
-		const item = await this.actor.getEmbeddedDocument("Item", itemId);		
+		const item = await this.actor.getEmbeddedDocument("Item", itemId);
 
 		if (type == "isactive") {
 			let active = false;
@@ -1162,7 +1162,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 				equipped = true;
 			}
 
-			await item.update({"system.isequipped" : equipped});			
+			await item.update({"system.isequipped" : equipped});
 		}
 
 		const actorData = foundry.utils.duplicate(this.actor);
@@ -1208,8 +1208,8 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		await ItemHelper.cleanItemList(this.actor, item);
 		// If removing an item you need to check if there are bonuses to it and remove them as well.
 		await ItemHelper.removeConnectedItems(this.actor, item);
-		await this.actor.deleteEmbeddedDocuments("Item", [itemId]);  
-		this.render();      
+		await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
+		this.render();
 	}
 
 	async _onProperty(event) {
@@ -1219,7 +1219,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 
 		const type = dataset.type;
 		const itemId = dataset.itemid;
-		
+
 		if (type == "bonus") {
 			let item = await this.actor.getEmbeddedDocument("Item", itemId);
 			const itemData = foundry.utils.duplicate(item);
@@ -1239,9 +1239,9 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			await item.update(itemData);
 
 			return;
-		}	
+		}
 
-		return;		
+		return;
 	}
 
 	async _clearPower(event) {
@@ -1267,7 +1267,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		if (powertype == "power") {
 			const itemData = foundry.utils.duplicate(item);
 			itemData.system.parentid = "";
-			await item.update(itemData);	
+			await item.update(itemData);
 		}
 		else if (powertype == "main") {
 			await ItemHelper.cleanItemList(this.actor, item);
@@ -1292,11 +1292,11 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 				system: system
 			}
 		};
-	
+
 		// Render the chat card template
-		const template = `systems/worldofdarkness/templates/dialogs/roll-template.hbs`;
+		const template = `systems/wod-advanced/templates/dialogs/roll-template.hbs`;
 		const html = await foundry.applications.handlebars.renderTemplate(template, templateData);
-	
+
 		const chatData = {
 			content: html,
 			speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -1318,17 +1318,17 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 		}
 
 		await item.update(itemData);
-	}	
-	  
+	}
+
 	/**
 	* If any changes are done to the Actor values.
 	*/
 	async _assignToActorField(fields, value) {
 		const actorData = foundry.utils.duplicate(this.actor);
-		let area = fields[0];	
-		const ability = fields[1];	
+		let area = fields[0];
+		const ability = fields[1];
 
-		if (area === "advantages") {			
+		if (area === "advantages") {
 			const abilityType = fields[2];
 
 			if (ability === "willpower") {
@@ -1346,9 +1346,9 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 						actorData.system.advantages.willpower.temporary = parseInt(value);
 					}
 				}
-				else if ((CONFIG.worldofdarkness.attributeSettings == "20th") || 
+				else if ((CONFIG.worldofdarkness.attributeSettings == "20th") ||
 							((CONFIG.worldofdarkness.attributeSettings == "5th") && (CONFIG.worldofdarkness.fifthEditionWillpowerSetting == "20th")) ||
-							(isSpirit)) {				
+							(isSpirit)) {
 					if (abilityType === "permanent") {
 						if (actorData.system.advantages.willpower.permanent == value) {
 							actorData.system.advantages.willpower.permanent = parseInt(actorData.system.advantages.willpower.permanent) - 1;
@@ -1357,8 +1357,8 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 							actorData.system.advantages.willpower.permanent = parseInt(value);
 						}
 					}
-				}				
-			}	
+				}
+			}
 			else if (fields.length == 3) {
 				const field = fields[2];
 
@@ -1379,9 +1379,9 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 					actorData.system.advantages[ability][abilityType][field] = parseInt(value);
 				}
 			}
-		}	
+		}
 		// renown (only v1 sheets)
-		else if (area === "renown") {	
+		else if (area === "renown") {
 			if (fields.length == 3) {
 				const field = fields[2];
 
@@ -1394,7 +1394,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 			}
 		}
 		// attribute or ability
-		else {			
+		else {
 			if (area == "abilities") {
 				const abilityType = fields[1];
 
@@ -1403,7 +1403,7 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 				}
 				else {
 					actorData.system[area][abilityType].value = parseInt(value);
-				}		
+				}
 			}
 			else if (area == "attributes") {
 
@@ -1413,12 +1413,12 @@ export default class MortalActorSheet extends foundry.appv1.sheets.ActorSheet {
 				else {
 					actorData.system[area][ability].value = parseInt(value);
 				}
-			}		
+			}
 		}
-		
+
 		actorData.system.settings.isupdated = false;
 		await this.actor.update(actorData);
-	}		
+	}
 }
 
 function parseCounterStates(states) {
