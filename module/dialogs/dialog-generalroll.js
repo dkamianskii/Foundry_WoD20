@@ -12,6 +12,7 @@ export class GeneralRoll {
 
         this.difficulty = 6;
         this.bonus = 0;
+		this.resistance = 0;
         this.key = key;
         this.type = type;
         this.name = "";
@@ -404,6 +405,8 @@ export class DialogGeneralRoll extends FormApplication {
             this.object.bonus = 0;
         }
 
+		this.object.resistance = Math.max(0, parseInt(formData["resistance"]) || 0);
+
         this.object.canRoll = this.object.difficulty > -1 ? true : false;
 
         this.render();
@@ -564,6 +567,7 @@ export class DialogGeneralRoll extends FormApplication {
         generalRoll.ability = this.object.abilityKey;
         generalRoll.dicetext = template;
         generalRoll.bonus = parseInt(this.object.bonus);
+		generalRoll.resistance = Math.max(0, parseInt(this.object.resistance) || 0);
         generalRoll.origin = "general";
         generalRoll.numDices = numDices;
         generalRoll.woundpenalty = parseInt(woundPenaltyVal);

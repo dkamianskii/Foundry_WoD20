@@ -82,6 +82,7 @@ export class DiceRollContainer {
 		this.ability = "noselected";
 		this.dicetext = [];
 		this.bonus = 0;
+		this.resistance = 0;
 		this.extraInfo = [];
 		this.origin = "";
 
@@ -394,13 +395,8 @@ export async function DiceRoller(diceRoll) {
 				else if (dice.result == 1) {
 					rolledOnes += 1;
 
-					if ((actor !== undefined) && (CONFIG.worldofdarkness.usehandleOnes) && (canBotch) &&
-							(!actor.system.attributes[diceRoll.attribute]?.isfavorited) && (!actor.system.attributes[diceRoll.ability]?.isfavorited) &&
-							(!actor.system.abilities[diceRoll.attribute]?.isfavorited) && (!actor.system.abilities[diceRoll.ability]?.isfavorited)) {
-						success = success - CONFIG.worldofdarkness.handleOnes;
-					}
-					// special rules regardingh Exalted
-					else if ((actor !== undefined) && ((actor.system.attributes[diceRoll.attribute]?.isfavorited) || (actor.system.attributes[diceRoll.ability]?.isfavorited) &&
+					// Preserve the informational marker for favored Exalted rolls.
+					if ((actor !== undefined) && ((actor.system.attributes[diceRoll.attribute]?.isfavorited) || (actor.system.attributes[diceRoll.ability]?.isfavorited) &&
 							(actor.system.abilities[diceRoll.attribute]?.isfavorited) || (actor.system.abilities[diceRoll.ability]?.isfavorited)) {
 						isfavorited = true;
 					}
@@ -419,17 +415,20 @@ export async function DiceRoller(diceRoll) {
 			});
 		}
 
+		const baseResistance = Math.max(0, parseInt(diceRoll.resistance) || 0);
+		const totalResistance = baseResistance + rolledOnes;
+		const successesBeforeResistance = success;
+
 		if (zeroPoolFailure) {
 			success = 0;
 			rolledAnySuccesses = false;
 			rollResult = "fail";
 		}
 		else {
+			success = Math.max(0, successesBeforeResistance - totalResistance);
+
 			if ((actor?.type !== "PC") && (usewillpower && !CONFIG.worldofdarkness.willpowerBonusDice) && (success < 1)) {
 				success = 1;
-			}
-			else if (success < 0) {
-				success = 0;
 			}
 
 			if ((rolledOnes > rawSuccesses) && (canBotch)) {
@@ -449,7 +448,14 @@ export async function DiceRoller(diceRoll) {
 			rollResult = "fail";
 		}
 
+		const marginOfFailure = Math.max(0, totalResistance - rawSuccesses);
+		const additionalSuccesses = Math.max(0, success - 1);
+		rolledAnySuccesses = rollResult === "success";
+
 		diceResult.successes = `${game.i18n.localize("wod.dice.successes")}: ${success}`;
+		diceResult.resistance = totalResistance;
+		diceResult.marginOfFailure = marginOfFailure;
+		diceResult.additionalSuccesses = additionalSuccesses;
 		diceResult.rolledAnySuccesses = rolledAnySuccesses;
 		diceResult.rollResult = rollResult;
 		diceResult.zeroPoolFailure = zeroPoolFailure;

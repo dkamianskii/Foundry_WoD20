@@ -320,7 +320,7 @@ The PC API bypasses dialogs for `rollAttribute`, `rollAbility`, and `rollAdvanta
 
 ### 7.2 Pool construction
 
-`DiceRollContainer` in `module/scripts/roll-dice.js` is the shared request DTO. Important fields are actor, attribute/ability keys, display text, base dice, special dice, bonus, wound penalty, explicit exhaustion penalty, difficulty, action/origin, targets, speciality, Willpower use, system text, power type, and incoming/applicable damage. `exhaustionpenalty` defaults to `null`, which tells `DiceRoller` to derive it from PC Willpower state; an explicit `0` or `-2` overrides that default.
+`DiceRollContainer` in `module/scripts/roll-dice.js` is the shared request DTO. Important fields are actor, attribute/ability keys, display text, base dice, special dice, bonus, Resistance, wound penalty, explicit exhaustion penalty, difficulty, action/origin, targets, speciality, Willpower use, system text, power type, and incoming/applicable damage. Resistance defaults to `0`. `exhaustionpenalty` defaults to `null`, which tells `DiceRoller` to derive it from PC Willpower state; an explicit `0` or `-2` overrides that default.
 
 Dialogs are responsible for:
 
@@ -351,10 +351,12 @@ Evaluation sequence:
 8. compute `numberDices = target.numDices + woundpenalty + exhaustionpenalty`, clamped to zero;
 9. when that value is zero, create no Foundry `Roll` objects, force zero successes and a failure result, and mark `diceResult.zeroPoolFailure`;
 10. otherwise evaluate a separate `Roll("1d10")` for each die and collect each face/color;
-11. count faces at or above difficulty, apply 10/speciality extra successes, reroll exploding 10s by extending the loop, and subtract configured successes for ones where allowed;
-12. classify result as success, fail, or botch, applying speciality botch protection;
-13. add informational lines (difficulty, speciality, wound penalty, exhaustion penalty, Willpower, automatic successes, soak remainder, and Demon evocation Torment outcome);
-14. render and create the chat message, then return the last target's numeric success count.
+11. count raw successful dice and natural 1s separately, apply 10/speciality extra successes, and reroll exploding 10s by extending the loop;
+12. add natural 1s to explicit Resistance, subtract total Resistance once, and clamp net successes to zero;
+13. classify result as success, fail, or botch, applying the `rolledOnes > rawSuccesses` predicate and existing botch-prevention gates;
+14. calculate per-target margin of failure and additional successes, applying speciality botch protection;
+15. add informational lines (difficulty, speciality, wound penalty, exhaustion penalty, Willpower, automatic successes, soak remainder, and Demon evocation Torment outcome);
+16. render and create the chat message, then return the last target's numeric success count.
 
 Important implications:
 
@@ -362,7 +364,8 @@ Important implications:
 - `rolls: allDices` is attached to the chat message so Foundry and modules such as Dice So Nice can still see roll objects.
 - A zero final pool is an automatic failure even if the request also contains automatic successes; the chat card renders a localized zero-pool explanation in standard, attack, and damage layouts.
 - Multi-target results are displayed together, but the returned `success` variable is the final target's value.
-- Favored-die behavior is inferred from actor attribute/ability flags during handling of ones.
+- Each displayed target result contains total Resistance and conditionally renders either margin of failure or additional successes.
+- Favored attribute/ability flags currently add informational chat metadata only; they do not exempt natural 1s from Resistance.
 - Demon Lore Torment compares successful die faces with permanent Torment after the normal roll.
 
 `InitiativeRoll` is separate: it rolls one d10, adds derived initiative, tries to add/update the actor's token combatant, and emits the same chat template.

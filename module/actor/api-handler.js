@@ -66,6 +66,7 @@ export default class PCActorAPI {
      * @param {number} options.difficulty - Difficulty level (default: 6)
      * @param {boolean} options.useWillpower - Use willpower (default: false)
      * @param {number} options.bonus - Bonus dice (default: 0)
+     * @param {number} options.resistance - Resistance applied to successes (default: 0)
      * @returns {Promise<number>} Number of successes
      */
     async rollAttribute(attributeKey, options = {}) {
@@ -97,6 +98,7 @@ export default class PCActorAPI {
 
         const useWillpower = options.useWillpower ?? false;
         const bonus = options.bonus ?? 0;
+		const resistance = Math.max(0, parseInt(options.resistance) || 0);
 
         // Get attribute value (total includes bonuses)
         const attributeValue = parseInt(attribute.total) || 0;
@@ -127,6 +129,7 @@ export default class PCActorAPI {
         diceRoll.ability = "noselected";
         diceRoll.dicetext = [`${attributeName} (${attributeValue})`];
         diceRoll.bonus = bonus;
+		diceRoll.resistance = resistance;
         diceRoll.origin = "general";
         diceRoll.numDices = numDices;
         diceRoll.woundpenalty = woundPenalty;
@@ -149,6 +152,7 @@ export default class PCActorAPI {
      * @param {boolean} options.useWillpower - Use willpower (default: false)
      * @param {boolean} options.fullWillpower - For Willpower only, ignore light wounds (default: false)
      * @param {number} options.bonus - Bonus dice (default: 0)
+     * @param {number} options.resistance - Resistance applied to successes (default: 0)
      * @returns {Promise<number>} Number of successes
      */
     async rollAbility(abilityId, attributeKey = null, options = {}) {
@@ -179,6 +183,7 @@ export default class PCActorAPI {
         }
         const useWillpower = options.useWillpower ?? false;
         const bonus = options.bonus ?? 0;
+		const resistance = Math.max(0, parseInt(options.resistance) || 0);
 
         // Get ability value
         const abilityValue = parseInt(ability.system.value) || 0;
@@ -236,6 +241,7 @@ export default class PCActorAPI {
         diceRoll.ability = abilityId;
         diceRoll.dicetext = diceText;
         diceRoll.bonus = bonus;
+		diceRoll.resistance = resistance;
         diceRoll.origin = "general";
         diceRoll.numDices = numDices;
         diceRoll.woundpenalty = woundPenalty;
@@ -256,6 +262,7 @@ export default class PCActorAPI {
      * @param {number} options.difficulty - Difficulty level (default: 6)
      * @param {boolean} options.useWillpower - Use willpower (default: false)
      * @param {number} options.bonus - Bonus dice (default: 0)
+     * @param {number} options.resistance - Resistance applied to successes (default: 0)
      * @returns {Promise<number|false>} Number of successes, or false if advantage cannot be rolled
      */
     async rollAdvantage(advantageId, options = {}) {
@@ -303,6 +310,7 @@ export default class PCActorAPI {
         }
         const useWillpower = options.useWillpower ?? false;
         const bonus = options.bonus ?? 0;
+		const resistance = Math.max(0, parseInt(options.resistance) || 0);
 
         // Get advantage roll value
         // For PC actors, advantages are stored in both items and system.advantages
@@ -337,6 +345,7 @@ export default class PCActorAPI {
         diceRoll.ability = "noselected";
         diceRoll.dicetext = [`${advantageName} (${advantageRollValue})`];
         diceRoll.bonus = bonus;
+		diceRoll.resistance = resistance;
         diceRoll.origin = "general";
         diceRoll.numDices = numDices;
         diceRoll.woundpenalty = woundPenalty;

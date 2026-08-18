@@ -87,6 +87,18 @@ Compatibility and migration:
 
 `RULES_SPEC.md` states that exhaustion applies `-2` to all Tests. The general-dialog checkbox permits a user to suppress it. This is the currently requested UI behavior, but it is a deliberate exception/override to keep documented if the specification is intended to be mandatory.
 
+### 2.4 Resistance and Test margins
+
+**Status: Implemented in the shared evaluator and chat result.**
+
+- `DiceRollContainer.resistance` defaults to 0.
+- the general Test dialog and direct PC roll API accept non-negative explicit Resistance;
+- `DiceRoller` adds one Resistance for every natural 1, then clamps net successes to zero;
+- each per-target result exposes total Resistance, margin of failure, and additional successes;
+- the shared chat card shows additional successes for a successful Test and margin of failure for a failed or botched Test.
+
+Affected files are `module/scripts/roll-dice.js`, `module/dialogs/dialog-generalroll.js`, `module/actor/api-handler.js`, the general-roll and chat templates, and all localization catalogs. Resistance is request data only and requires no persisted-data migration. Specialized dialogs currently use the shared default of 0 because they do not expose their own Resistance input. Configurable legacy ten/speciality success behavior remains and can still change the successes present before Resistance.
+
 ## 3. Requirement matrix
 
 ### 3.1 Generic Dice Tests
@@ -95,15 +107,15 @@ Compatibility and migration:
 | --- | --- | --- | --- |
 | Final pool is base + bonuses - penalties | Partial | Dialogs assemble pools and `DiceRoller` adds wound/exhaustion penalties, but modifiers are distributed across dialogs and `BonusHelper`. | Define one normalized Test request/modifier contract and make all dialog/API callers use it. |
 | Minimum pool 0; zero dice means automatic failure | **Implemented** | `DiceRoller` skips all rolls and sets `zeroPoolFailure`. | Add permanent automated coverage for general, attack, damage, multi-target, and automatic-success cases. |
-| Difficulty range 3–9, default 6 | Not implemented | Lower limit comes from configurable `lowestDifficulty` (currently legacy values); no universal maximum clamp. | Clamp after every modifier to 3–9 in the evaluator; set default 6; update controls and retire/confine the legacy minimum setting. |
+| Difficulty range 3–9, default 6 | **Implemented** | The evaluator clamps to 3–9, shared selectors use the same bounds, and the default Test difficulty is 6. Legacy saved minimum settings below 3 are clamped during initialization. | Add permanent automated boundary coverage and eventually retire the legacy minimum setting. |
 | Each die at or above difficulty is one raw success | Partial | Threshold counting exists, but extra-ten and ones settings mutate the same running success value. | Track `rawSuccesses` independently before resistance. |
-| Resistance defaults to 0 and subtracts raw successes | Not implemented | There is no first-class resistance field/result. Ones directly subtract configured successes. | Add request `resistance`, default 0, and result fields for base/final resistance. |
-| Each natural 1 increases resistance by 1 | Not implemented | Ones subtract a configurable `theRollofOne` amount only under legacy origin/favored/settings rules. | Count every rolled 1, add that count to resistance, and remove legacy branching from the target evaluator. |
+| Resistance defaults to 0 and subtracts raw successes | **Implemented** | `DiceRollContainer` has a default-zero Resistance field; the general Test dialog and PC API accept it, and `DiceRoller` subtracts total Resistance before clamping. | Expose the input in specialized Test dialogs if those workflows require nonzero explicit Resistance. |
+| Each natural 1 increases resistance by 1 | **Implemented** | Every natural 1, including results from explosion dice, adds one to total Resistance independently of botch prevention. | Remove or formally deprecate the now-obsolete configurable ones-subtraction setting. |
 | Each natural 10 succeeds and explodes recursively | Partial | Explosions and extra successes exist but are controlled by `explodingDice`, speciality, and `tenAddSuccess`. | Make every 10 worth its normal success and enqueue one die recursively; prevent settings from changing the target rule. |
-| `net = max(0, raw - resistance)` | Partial | Final successes are clamped, but raw and resistance are not separate outputs. | Compute and expose the specified fields without mutating raw successes. |
+| `net = max(0, raw - resistance)` | **Implemented** | The evaluator retains rolled raw-success counts for botch calculation, subtracts total Resistance once, clamps net successes to zero, and exposes total Resistance in each result. | Add a structured public result contract rather than returning only the final target's numeric net successes. |
 | Botch iff rolled ones > raw successes, before clamp | **Implemented** | `DiceRoller` separately counts per-target natural 1s and raw successful dice, then evaluates the predicate before ordinary success/failure classification. Existing Willpower, origin, and speciality rules can explicitly prevent or downgrade a botch. | Add permanent automated coverage for exploding dice, automatic successes, multi-target rolls, and each botch-prevention gate. |
-| Failure and margin of failure | Partial | Failure at zero exists; margin is absent. | Add `marginOfFailure = max(0, resistance - rawSuccesses)` and render it. |
-| Success and additional successes | Partial | Success classification exists; some weapon code locally calculates successes minus one. | Add `additionalSuccesses = max(0, netSuccesses - 1)` to the common result and remove caller recomputation. |
+| Failure and margin of failure | **Implemented** | Per-target results calculate and render `marginOfFailure = max(0, resistance - rawSuccesses)` for failed and botched Tests. | Add automated chat-card and numerical boundary coverage. |
+| Success and additional successes | Partial | Per-target results calculate and render `additionalSuccesses = max(0, netSuccesses - 1)`, but weapon code still recomputes successes minus one from the numeric return value. | Migrate weapon and other downstream callers to a structured Test result. |
 | Specialization reduces difficulty by 1 before clamp | Partial | Dialogs apply setting-controlled speciality effects inconsistently; default reduction may be zero. | Represent applicable/enabled specialization on the request, apply exactly `-1` in the evaluator, then clamp to 3–9. |
 
 Primary files: `module/scripts/roll-dice.js`, all builders in `module/dialogs/`, `module/actor/api-handler.js`, `module/scripts/action-helpers.js`, `module/settings.js`, `wod.js`, `templates/dialogs/roll-template.hbs`, and `lang/*.json`.

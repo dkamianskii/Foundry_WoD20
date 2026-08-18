@@ -47,6 +47,11 @@
                     <div>
                         {{result.successes}}
                     </div>
+					{{#if (eq result.rollResult "success")}}
+						<div>{{localize "wod.dice.additionalsuccesses"}}: {{result.additionalSuccesses}}</div>
+					{{else}}
+						<div>{{localize "wod.dice.marginoffailure"}}: {{result.marginOfFailure}}</div>
+					{{/if}}
                 </div>
 
                 <div>     
@@ -122,6 +127,11 @@
                     <div>
                         {{result.successes}}
                     </div>
+					{{#if (eq result.rollResult "success")}}
+						<div>{{localize "wod.dice.additionalsuccesses"}}: {{result.additionalSuccesses}}</div>
+					{{else}}
+						<div>{{localize "wod.dice.marginoffailure"}}: {{result.marginOfFailure}}</div>
+					{{/if}}
                 </div>
 
                 <div>
@@ -178,6 +188,11 @@
                     <div>
                         {{result.successes}}
                     </div>
+					{{#if (eq result.rollResult "success")}}
+						<div>{{localize "wod.dice.additionalsuccesses"}}: {{result.additionalSuccesses}}</div>
+					{{else}}
+						<div>{{localize "wod.dice.marginoffailure"}}: {{result.marginOfFailure}}</div>
+					{{/if}}
                 </div>
 
                 <div>
