@@ -364,7 +364,7 @@ Important implications:
 - `rolls: allDices` is attached to the chat message so Foundry and modules such as Dice So Nice can still see roll objects.
 - A zero final pool is an automatic failure even if the request also contains automatic successes; the chat card renders a localized zero-pool explanation in standard, attack, and damage layouts.
 - Multi-target results are displayed together, but the returned `success` variable is the final target's value.
-- Each displayed target result contains total Resistance and conditionally renders either margin of failure or additional successes.
+- Each displayed target result renders successes before Resistance subtraction, nonzero total Resistance, the final outcome, and then either margin of failure or additional successes, in that order.
 - Favored attribute/ability flags currently add informational chat metadata only; they do not exempt natural 1s from Resistance.
 - Demon Lore Torment compares successful die faces with permanent Torment after the normal roll.
 

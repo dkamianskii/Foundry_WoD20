@@ -452,7 +452,7 @@ export async function DiceRoller(diceRoll) {
 		const additionalSuccesses = Math.max(0, success - 1);
 		rolledAnySuccesses = rollResult === "success";
 
-		diceResult.successes = `${game.i18n.localize("wod.dice.successes")}: ${success}`;
+		diceResult.successes = `${game.i18n.localize("wod.dice.successes")}: ${successesBeforeResistance}`;
 		diceResult.resistance = totalResistance;
 		diceResult.marginOfFailure = marginOfFailure;
 		diceResult.additionalSuccesses = additionalSuccesses;

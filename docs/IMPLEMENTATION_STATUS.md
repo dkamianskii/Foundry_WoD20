@@ -95,7 +95,7 @@ Compatibility and migration:
 - the general Test dialog and direct PC roll API accept non-negative explicit Resistance;
 - `DiceRoller` adds one Resistance for every natural 1, then clamps net successes to zero;
 - each per-target result exposes total Resistance, margin of failure, and additional successes;
-- the shared chat card shows additional successes for a successful Test and margin of failure for a failed or botched Test.
+- the shared chat card shows pre-Resistance successes first, nonzero total Resistance second, the final outcome third, then additional successes for a successful Test or margin of failure for a failed or botched Test.
 
 Affected files are `module/scripts/roll-dice.js`, `module/dialogs/dialog-generalroll.js`, `module/actor/api-handler.js`, the general-roll and chat templates, and all localization catalogs. Resistance is request data only and requires no persisted-data migration. Specialized dialogs currently use the shared default of 0 because they do not expose their own Resistance input. Configurable legacy ten/speciality success behavior remains and can still change the successes present before Resistance.
 

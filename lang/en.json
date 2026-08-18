@@ -1995,7 +1995,7 @@
 			"marginoffailure": "Margin of failure",
 			"additionalsuccesses": "Additional successes",
 			"botch": "Botch",
-			"fail": "Fail",
+			"fail": "Failure",
 			"zeropoolfailure": "Dice pool reduced to zero: automatic failure.",
 			"success": "Success",
 			"rollingdice": "Rolling dice",

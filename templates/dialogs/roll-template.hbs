@@ -35,22 +35,24 @@
         {{#each data.multipleresult as |result key|}}
             <div class="tray-roll-area">
                 <div class="tray-success-area">
-					{{#if result.zeroPoolFailure}}
-						<div><span class="danger">{{localize "wod.dice.zeropoolfailure"}}</span></div>
-					{{/if}}
-                    {{#if (eq result.rolledAnySuccesses false)}}                    
-                        <div>
-                            {{#if (eq result.rollResult "fail")}}<span class="danger">{{localize "wod.dice.fail"}}</span>{{/if}}
-                            {{#if (eq result.rollResult "botch")}}<span class="danger">{{localize "wod.dice.botch"}}</span>{{/if}}
-                        </div>
-                    {{/if}}
                     <div>
                         {{result.successes}}
                     </div>
+					{{#if (gt result.resistance 0)}}
+						<div>{{localize "wod.dice.resistance"}}: {{result.resistance}}</div>
+					{{/if}}
+					<div>
+						{{#if (eq result.rollResult "botch")}}<span class="danger">{{localize "wod.dice.botch"}}</span>{{/if}}
+						{{#if (eq result.rollResult "fail")}}<span class="danger">{{localize "wod.dice.fail"}}</span>{{/if}}
+						{{#if (eq result.rollResult "success")}}{{localize "wod.dice.success"}}{{/if}}
+					</div>
 					{{#if (eq result.rollResult "success")}}
 						<div>{{localize "wod.dice.additionalsuccesses"}}: {{result.additionalSuccesses}}</div>
 					{{else}}
 						<div>{{localize "wod.dice.marginoffailure"}}: {{result.marginOfFailure}}</div>
+					{{/if}}
+					{{#if result.zeroPoolFailure}}
+						<div><span class="danger">{{localize "wod.dice.zeropoolfailure"}}</span></div>
 					{{/if}}
                 </div>
 
@@ -115,22 +117,24 @@
         {{#each data.multipleresult as |result key|}}
             <div class="tray-roll-area">
                 <div class="tray-success-area">
-					{{#if result.zeroPoolFailure}}
-						<div><span class="danger">{{localize "wod.dice.zeropoolfailure"}}</span></div>
-					{{/if}}
-                    {{#if (eq result.rolledAnySuccesses false)}}                    
-                        <div>
-                            {{#if (eq result.rollResult "fail")}}<span class="danger">{{localize "wod.dice.fail"}}</span>{{/if}}
-                            {{#if (eq result.rollResult "botch")}}<span class="danger">{{localize "wod.dice.botch"}}</span>{{/if}}
-                        </div>
-                    {{/if}}
                     <div>
                         {{result.successes}}
                     </div>
+					{{#if (gt result.resistance 0)}}
+						<div>{{localize "wod.dice.resistance"}}: {{result.resistance}}</div>
+					{{/if}}
+					<div>
+						{{#if (eq result.rollResult "botch")}}<span class="danger">{{localize "wod.dice.botch"}}</span>{{/if}}
+						{{#if (eq result.rollResult "fail")}}<span class="danger">{{localize "wod.dice.fail"}}</span>{{/if}}
+						{{#if (eq result.rollResult "success")}}{{localize "wod.dice.success"}}{{/if}}
+					</div>
 					{{#if (eq result.rollResult "success")}}
 						<div>{{localize "wod.dice.additionalsuccesses"}}: {{result.additionalSuccesses}}</div>
 					{{else}}
 						<div>{{localize "wod.dice.marginoffailure"}}: {{result.marginOfFailure}}</div>
+					{{/if}}
+					{{#if result.zeroPoolFailure}}
+						<div><span class="danger">{{localize "wod.dice.zeropoolfailure"}}</span></div>
 					{{/if}}
                 </div>
 
@@ -176,22 +180,24 @@
         {{#each data.multipleresult as |result key|}}
             <div class="tray-roll-area">
                 <div class="tray-success-area">
-					{{#if result.zeroPoolFailure}}
-						<div><span class="danger">{{localize "wod.dice.zeropoolfailure"}}</span></div>
-					{{/if}}
-                    {{#if (eq result.rolledAnySuccesses false)}}                    
-                        <div>
-                            {{#if (eq result.rollResult "fail")}}<span class="danger">{{localize "wod.dice.fail"}}</span>{{/if}}
-                            {{#if (eq result.rollResult "botch")}}<span class="danger">{{localize "wod.dice.botch"}}</span>{{/if}}
-                        </div>
-                    {{/if}}
                     <div>
                         {{result.successes}}
                     </div>
+					{{#if (gt result.resistance 0)}}
+						<div>{{localize "wod.dice.resistance"}}: {{result.resistance}}</div>
+					{{/if}}
+					<div>
+						{{#if (eq result.rollResult "botch")}}<span class="danger">{{localize "wod.dice.botch"}}</span>{{/if}}
+						{{#if (eq result.rollResult "fail")}}<span class="danger">{{localize "wod.dice.fail"}}</span>{{/if}}
+						{{#if (eq result.rollResult "success")}}{{localize "wod.dice.success"}}{{/if}}
+					</div>
 					{{#if (eq result.rollResult "success")}}
 						<div>{{localize "wod.dice.additionalsuccesses"}}: {{result.additionalSuccesses}}</div>
 					{{else}}
 						<div>{{localize "wod.dice.marginoffailure"}}: {{result.marginOfFailure}}</div>
+					{{/if}}
+					{{#if result.zeroPoolFailure}}
+						<div><span class="danger">{{localize "wod.dice.zeropoolfailure"}}</span></div>
 					{{/if}}
                 </div>
 
