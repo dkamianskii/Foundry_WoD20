@@ -268,7 +268,6 @@ export async function DiceRoller(diceRoll) {
 	let rolledDices;
 	let success;
 	let bonusSuccesses = 0;
-	let rolledOne = false;
 	let rolledAnySuccesses = false;
 	let isfavorited = false;
 	let canBotch = true;
@@ -335,6 +334,8 @@ export async function DiceRoller(diceRoll) {
 
 	for (const target of targetlist) {
 		success = bonusSuccesses;
+		let rawSuccesses = 0;
+		let rolledOnes = 0;
 		rolledAnySuccesses = success > 0;
 		rolledDices = 0;
 		diceResult = [];
@@ -361,6 +362,7 @@ export async function DiceRoller(diceRoll) {
 			roll.terms[0].results.forEach((dice) => {
 
 				if (dice.result == 10) {
+					rawSuccesses += 1;
 					if ((CONFIG.worldofdarkness.usespecialityAddSuccess) && (diceRoll.speciality)) {
 						success += CONFIG.worldofdarkness.specialityAddSuccess;
 					}
@@ -385,22 +387,23 @@ export async function DiceRoller(diceRoll) {
 					rolledAnySuccesses = true;
 				}
 				else if (dice.result >= difficulty) {
+					rawSuccesses += 1;
 					rolledAnySuccesses = true;
 					success += 1;
 				}
-				else if ((dice.result == 1) && (actor !== undefined)) {
-					if ((CONFIG.worldofdarkness.usehandleOnes) && (canBotch) &&
+				else if (dice.result == 1) {
+					rolledOnes += 1;
+
+					if ((actor !== undefined) && (CONFIG.worldofdarkness.usehandleOnes) && (canBotch) &&
 							(!actor.system.attributes[diceRoll.attribute]?.isfavorited) && (!actor.system.attributes[diceRoll.ability]?.isfavorited) &&
 							(!actor.system.abilities[diceRoll.attribute]?.isfavorited) && (!actor.system.abilities[diceRoll.ability]?.isfavorited)) {
 						success = success - CONFIG.worldofdarkness.handleOnes;
 					}
 					// special rules regardingh Exalted
-					else if ((actor.system.attributes[diceRoll.attribute]?.isfavorited) || (actor.system.attributes[diceRoll.ability]?.isfavorited) &&
+					else if ((actor !== undefined) && ((actor.system.attributes[diceRoll.attribute]?.isfavorited) || (actor.system.attributes[diceRoll.ability]?.isfavorited) &&
 							(actor.system.abilities[diceRoll.attribute]?.isfavorited) || (actor.system.abilities[diceRoll.ability]?.isfavorited)) {
 						isfavorited = true;
 					}
-
-					rolledOne = true;
 				}
 
 				if ((diceRoll.numSpecialDices >= rolledDices) && (diceRoll.numSpecialDices > 0)) {
@@ -429,14 +432,12 @@ export async function DiceRoller(diceRoll) {
 				success = 0;
 			}
 
-			if (success > 0) {
+			if ((rolledOnes > rawSuccesses) && (canBotch)) {
+				rollResult = "botch";
+				rolledAnySuccesses = false;
+			}
+			else if (success > 0) {
 				rollResult = "success";
-			}
-			else if ((CONFIG.worldofdarkness.usehandleOnes) && (rolledOne) && (!rolledAnySuccesses) && (canBotch)) {
-				rollResult = "botch";
-			}
-			else if ((!CONFIG.worldofdarkness.usehandleOnes) && (rolledOne) && (canBotch)) {
-				rollResult = "botch";
 			}
 			else {
 				rollResult = "fail";

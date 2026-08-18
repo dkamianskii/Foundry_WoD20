@@ -11,7 +11,7 @@ Status labels:
 
 ## 1. Executive status
 
-The repository has completed the package rename, the PC Willpower redesign, Splat compatibility for that redesign, and zero-pool automatic failure. The main conversion is not otherwise complete. Dice evaluation still implements configurable WoD20-style ones, tens, botches, and specialities. Health still uses seven configurable legacy wound levels and aggregate damage counts. Damage, weapons, and armor do not yet model the specification's independent nature/lethality, concentrated damage, or effective Protection pipeline.
+The repository has completed the package rename, the PC Willpower redesign, Splat compatibility for that redesign, zero-pool automatic failure, and the specified botch comparison. The main conversion is not otherwise complete. Dice evaluation still implements configurable WoD20-style ones, tens, and specialities around that botch comparison. Health still uses seven configurable legacy wound levels and aggregate damage counts. Damage, weapons, and armor do not yet model the specification's independent nature/lethality, concentrated damage, or effective Protection pipeline.
 
 The remaining work should be done in this dependency order:
 
@@ -101,7 +101,7 @@ Compatibility and migration:
 | Each natural 1 increases resistance by 1 | Not implemented | Ones subtract a configurable `theRollofOne` amount only under legacy origin/favored/settings rules. | Count every rolled 1, add that count to resistance, and remove legacy branching from the target evaluator. |
 | Each natural 10 succeeds and explodes recursively | Partial | Explosions and extra successes exist but are controlled by `explodingDice`, speciality, and `tenAddSuccess`. | Make every 10 worth its normal success and enqueue one die recursively; prevent settings from changing the target rule. |
 | `net = max(0, raw - resistance)` | Partial | Final successes are clamped, but raw and resistance are not separate outputs. | Compute and expose the specified fields without mutating raw successes. |
-| Botch iff rolled ones > raw successes, before clamp | Not implemented | Current botch is broadly “a one exists and no rolled success remains,” with speciality/origin exceptions. | Evaluate the exact predicate from stored counts before clamping; Willpower remains the explicit botch-prevention flag. |
+| Botch iff rolled ones > raw successes, before clamp | **Implemented** | `DiceRoller` separately counts per-target natural 1s and raw successful dice, then evaluates the predicate before ordinary success/failure classification. Existing Willpower, origin, and speciality rules can explicitly prevent or downgrade a botch. | Add permanent automated coverage for exploding dice, automatic successes, multi-target rolls, and each botch-prevention gate. |
 | Failure and margin of failure | Partial | Failure at zero exists; margin is absent. | Add `marginOfFailure = max(0, resistance - rawSuccesses)` and render it. |
 | Success and additional successes | Partial | Success classification exists; some weapon code locally calculates successes minus one. | Add `additionalSuccesses = max(0, netSuccesses - 1)` to the common result and remove caller recomputation. |
 | Specialization reduces difficulty by 1 before clamp | Partial | Dialogs apply setting-controlled speciality effects inconsistently; default reduction may be zero. | Represent applicable/enabled specialization on the request, apply exactly `-1` in the evaluator, then clamp to 3–9. |
