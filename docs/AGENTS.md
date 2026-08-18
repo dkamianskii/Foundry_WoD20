@@ -32,6 +32,28 @@ Never silently change persisted Actor or Item schema.
 If a persisted field changes, document the migration requirement in
 docs/MIGRATION.md.
 
+# Project Documentation
+
+Before implementing a feature, read:
+
+- docs/RULES_SPEC.md
+- docs/IMPLEMENTATION_STATUS.md
+- relevant sections of docs/ARCHITECTURE.md
+
+Do not reimplement mechanics already marked as implemented without first
+inspecting their existing implementation.
+
+After completing a feature, update IMPLEMENTATION_STATUS.md with:
+
+- implementation status;
+- affected files;
+- important architectural decisions;
+- remaining work;
+- known issues.
+
+RULES_SPEC.md describes desired game behavior and must not be modified merely
+to match the implementation.
+
 # Implementation
 
 For each requested feature:

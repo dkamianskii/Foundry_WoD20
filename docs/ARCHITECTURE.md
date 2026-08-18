@@ -1,12 +1,12 @@
-# World of Darkness 20th Edition System Architecture
+# World of Darkness V20 Advanced System Architecture
 
-This document describes the architecture of the repository as it exists in version 7.2.9 (Foundry VTT v14). It is intended as a map for building a substantially modified derivative system, not as a rules reference.
+This document describes the architecture of the repository as it exists in version 7.3.0 (Foundry VTT v14). It records current behavior, including partially migrated and compatibility paths; it is not the target rules definition. See `RULES_SPEC.md` for desired rules and `IMPLEMENTATION_STATUS.md` for the requirement-by-requirement gap analysis and roadmap.
 
 ## 1. Executive summary
 
 The system is in the middle of an architectural migration and effectively contains two implementations behind shared document classes and roll code:
 
-- **PC/ApplicationV2 path:** the single `PC` actor type uses a typed Foundry `DataModel`, an `ActorSheetV2`, and item-centric character construction. A dropped `Splat` item configures the actor; `Ability`, `Advantage`, `Sphere`, and `Realm` items are typed documents. Embedded items are projected into transient `actor.system.abilities` and `actor.system.advantages` lookup objects during preparation.
+- **PC/ApplicationV2 path:** the single `PC` actor type uses a typed Foundry `DataModel`, an `ActorSheetV2`, and mostly item-centric character construction. A dropped `Splat` item configures the actor; `Ability`, `Advantage`, `Sphere`, and `Realm` items are typed documents. Embedded items are projected into transient `actor.system.abilities` and `actor.system.advantages` lookup objects during preparation. Willpower is the exception: its damage is canonical actor data and preparation creates a transient Advantage-shaped compatibility facade.
 - **Legacy/AppV1 path:** the named actor types (`Mortal`, `Vampire`, `Werewolf`, etc.) use `template.json`, persist abilities and advantages directly under `actor.system`, and use `MortalActorSheet` plus game-specific subclasses. Most equipment, feature, trait, and power items also remain `template.json` types with the legacy `WoDItemSheet`.
 
 Both paths converge on:
@@ -18,13 +18,13 @@ Both paths converge on:
 - `templates/dialogs/roll-template.hbs` and `ChatMessage.create` for chat cards;
 - `CONFIG.worldofdarkness`, settings, localization keys, bonus helpers, and common health/combat helpers.
 
-For a derivative game, the most consequential design choice is whether to retain both paths or standardize on the PC/item-centric path. The two representations are not interchangeable: PC advantages have paths such as `actor.system.advantages.willpower.system.temporary`, while legacy advantages use `actor.system.advantages.willpower.temporary`.
+For a derivative game, the most consequential design choice is whether to retain both paths or standardize on the PC/typed-model path. Ordinary PC advantages have an extra `.system` level in their runtime projection; legacy advantages do not. PC Willpower is neither representation: it is stored at `actor.system.willpower.damage`, while legacy actors still use `actor.system.advantages.willpower`.
 
 ## 2. Top-level layout and runtime entry points
 
 | Area | Relevant files | Responsibility |
 | --- | --- | --- |
-| Manifest and legacy schemas | `system.json`, `template.json` | Foundry metadata, document types, languages, compendia, HTML fields, and legacy template inheritance |
+| Manifest and legacy schemas | `system.json`, `template.json` | The `wod-advanced` package id, Foundry metadata, document types, languages, compendia, HTML fields, and legacy template inheritance |
 | Runtime entry point | `wod.js` | `init`, `setup`, and `ready`; registers settings, models, documents, sheets, helpers, hooks, icons, migrations, and global lookup data |
 | Static configuration | `module/config.js` | Populates the imported `wod` object with sheet types, splats, eras, attribute/ability lists, damage types, wound levels, and other localization-key maps |
 | Document classes | `module/actor/data/wod-actor-base.js`, `module/items/data/wod-item-base.js` | Shared Actor and Item preparation/lifecycle behavior |
@@ -57,6 +57,8 @@ system.json loads wod.js
      -> cache language and dark-mode state
 ```
 
+The package id and all runtime asset/template/settings/flag/compendium namespaces are `wod-advanced`. The internal JavaScript compatibility namespaces remain `CONFIG.worldofdarkness` and `game.worldofdarkness`; they are object names rather than Foundry package ids. Old `Compendium.worldofdarkness.*` references found in imported Splat data are normalized at runtime by `DropHelper`.
+
 ## 3. Actor data models
 
 ### 3.1 Declared actor types
@@ -70,6 +72,7 @@ Relevant files:
 - `module/actor/datamodel/pc-actor-datamodel.js` — `PCDataModel`.
 - `module/actor/datamodel/base/actor_attributes.js` — eleven attribute records (20th- and 5th-edition alternatives coexist and visibility selects the active set).
 - `module/actor/datamodel/base/actor_health.js` — damage counters and seven named wound levels.
+- `module/actor/datamodel/base/actor_willpower.js` — actor-owned PC Willpower light/heavy damage counters.
 - `module/actor/datamodel/base/actor_settings.js` — feature flags, splat/variant/era, maximums, and soak permissions/bonuses.
 - `module/actor/datamodel/base/actor_traits.js` — aggregate health-level value/max.
 - `module/actor/datamodel/_module.js` — model export used by `wod.js`.
@@ -81,10 +84,11 @@ Important PC schema branches:
 - `attributes`: value, bonus, total, max, type, label, speciality, ordering, visibility, and favored state.
 - `soak`: derived normal and chimerical pools.
 - `health`: normal/chimerical damage counters plus wound-level configuration.
+- `willpower.damage`: persistent `light` and `heavy` wound counts. Maximum/current/full values and display boxes are derived rather than persisted.
 - `traits.health.totalhealthlevels`: derived current/max health boxes.
 - `initiative`, `conditions`, `movement`, `gear`, and `favoriterolls`.
 
-`PCDataModel.migrateData` backfills chimerical soak and damage objects. It does not define persistent `abilities` or `advantages`: `WoDActor._prepareCharacterData` creates those runtime projections from embedded items.
+`PCDataModel.migrateData` backfills chimerical soak/damage objects and the PC Willpower damage object. It does not define persistent `abilities` or `advantages`: `WoDActor._prepareCharacterData` creates those runtime projections from embedded items and installs the transient Willpower compatibility facade.
 
 ### 3.3 Legacy actor templates
 
@@ -118,12 +122,15 @@ Foundry Actor.prepareData()
 
 `_prepareCharacterData` is the major normalization layer. On PC actors it:
 
-1. filters embedded items into abilities, advantages, spheres, realms, powers, shapes, and other groups;
+1. filters embedded items into abilities, advantages, spheres, realms, powers, shapes, and other groups, deliberately excluding legacy Willpower Advantage items;
 2. applies configured trait maximums and 20th/5th attribute visibility;
-3. builds `system.abilities[key] = ability.toObject()` and `system.advantages[key] = advantage.toObject()`;
-4. derives presence flags (`haswillpower`, `hasvirtue`, and similar);
-5. applies special resource rules such as 5th-edition Willpower, path bearing, virtue limits, blood-pool generation limits, and quintessence/paradox constraints;
-6. creates list/group data consumed by sheets and rolls and may batch-update embedded items where persisted values are stale.
+3. builds `system.abilities[key] = ability.toObject()` and ordinary `system.advantages[key] = advantage.toObject()` projections;
+4. derives PC Willpower through `getWillpowerState`, installs `createWillpowerAdvantageFacade(...)` at `system.advantages.willpower` for old readers, and keeps `settings.haswillpower` enabled;
+5. derives presence flags for other resource families;
+6. applies special resource rules such as path bearing, virtue limits, blood-pool generation limits, and quintessence/paradox constraints;
+7. creates list/group data consumed by sheets and rolls and may batch-update embedded items where persisted values are stale.
+
+`WoDActor._preUpdate` also clamps PC Willpower wound counts when Composure or Resolve changes so `light + heavy` cannot exceed the newly derived maximum.
 
 On legacy actors the same document class works directly with persistent `system.abilities`, `system.advantages`, and game-specific branches. `_preCreate` uses `CreateHelper` to seed type/era data. `_onUpdate` and `_onUpdateDescendantDocuments` coordinate recalculation, `calculateTotals`, and embedded-item changes. `_setItems` synchronizes item maximums/bonuses where actor changes affect them.
 
@@ -171,9 +178,9 @@ Type additions include armor soak and dexterity penalty, ranged weapon mode/clip
 - `_preCreate` stamps creation/version fields at the correct typed or legacy path, chooses default images, initializes ability id/label/type, disables legacy soak behavior on shape forms, and gives PC advantages an order.
 - `_preUpdate` dispatches to `_handleAbilitiesCalculations`, `_handleAdvantagesCalculations`, or `_handlePowerCalculations`.
 - ability/power handlers enforce the owning actor's configured maximum.
-- `_handleAdvantagesCalculations` implements 5th-edition Willpower, virtue maximums, path bearing, permanent/temporary clamping, and the derived `roll` selection controlled by `advantageRolls` and item settings.
+- `_handleAdvantagesCalculations` implements legacy/resource Advantage rules: 5th-edition Willpower for actors still using a Willpower item, virtue maximums, path bearing, permanent/temporary clamping, and the derived `roll` selection controlled by `advantageRolls` and item settings. It is not the canonical PC Willpower handler.
 
-Advantages are therefore both resources and rollable traits. Their `settings.usepermanent`, `usetemporary`, `usebothrolls`, `useroll`, and `highertemporary` flags determine data validation and which rating becomes `system.roll`.
+Advantages are therefore both resources and rollable traits. Their `settings.usepermanent`, `usetemporary`, `usebothrolls`, `useroll`, and `highertemporary` flags determine data validation and which rating becomes `system.roll`. The actor-owned PC Willpower track is a deliberate exception and is adapted to this interface only through a transient facade.
 
 ### 4.3 Splat/template application
 
@@ -187,6 +194,14 @@ The `Splat` item is the PC character-construction model. Its arrays describe wha
 
 Dependencies: actor preparation expects specific embedded item ids/groups; power and weapon dialogs read legacy item fields; bonus calculation scans active/equipped embedded items and their `bonuslist` arrays.
 
+PC Splat/drop compatibility rules are concentrated in `DropHelper`:
+
+- `IsWillpowerAdvantage` recognizes legacy Willpower entries and prevents them from being installed by a Splat or direct item drop; the PC keeps its actor-owned track instead.
+- `NormalizeCompendiumUuid` rewrites old `Compendium.worldofdarkness.*` references to the current `Compendium.wod-advanced.*` namespace before lookup and storage.
+- Splat replacement deletes prior embedded content through the target actor, preserves `settings.haswillpower`, and guards missing compendium documents.
+
+Migration `7.3.0` converts an existing PC Willpower Advantage's spent temporary points into actor-owned light wounds, ensures the new damage object exists, and removes the obsolete embedded item. Bundled LevelDB data may still contain old namespace strings; runtime normalization is the compatibility boundary until those packs are rebuilt.
+
 ## 5. Actor sheets
 
 ### 5.1 PC ActorSheetV2
@@ -194,6 +209,8 @@ Dependencies: actor preparation expects specific embedded item ids/groups; power
 `PCActorSheet` in `module/actor/template/pc-actor-sheet.js` extends `HandlebarsApplicationMixin(ActorSheetV2)`.
 
 Its `PARTS` are navigation, bio, stats, powers, combat, gear, feature, effects, and settings. `_prepareContext` creates shared context; `_preparePartContext` delegates to part-specific context builders in the same file. Important prepared values include enriched HTML, lists of embedded items, grouped advantages/powers, `calculateHealth` output, permission/lock state, and select-list data.
+
+The stats context calls `getWillpowerState(actor)` and `templates/actor/parts/stats_willpower.hbs` renders the resulting health-style boxes. Each box is empty, light (`/`), or heavy (`X`); empty boxes are available Willpower. The `editWillpower` action maps to `OnWillpowerCounterChange`, while the sheet's context-menu listener calls `OnWillpowerCounterClear`; both delegate to `getWillpowerUpdate` and persist only `system.willpower.damage.light/heavy`. A left click advances a box, exhaustion converts an existing light wound to heavy, and a right click clears damage. The actor rerender then derives current/full values and rebuilds the facade.
 
 Static `DEFAULT_OPTIONS.actions` maps `data-action` events to functions imported mostly from `module/scripts/action-helpers.js` and `module/scripts/item-actions.js`. Typical flow:
 
@@ -231,6 +248,7 @@ Legacy roll flow begins at `.vrollable` or `.macroBtn` listeners in `activateLis
 
 - Both sheet generations depend heavily on `CONFIG.worldofdarkness` maps and translation keys.
 - PC context depends on transient projections created by `WoDActor._prepareCharacterData`.
+- PC Willpower context and actions depend on `module/scripts/willpower.js`; templates must not recreate or drop an Advantage item for it.
 - Legacy templates directly address `actor.system.abilities`, `advantages`, and game branches.
 - `module/hooks.js` applies language, splat, font, and dark-mode CSS classes after rendering.
 - `BonusHelper`, `SelectHelper`, `DropHelper`, `ItemHelper`, and `ActionHelper` act as service/controller modules; the sheets themselves remain large orchestration classes.
@@ -302,7 +320,7 @@ The PC API bypasses dialogs for `rollAttribute`, `rollAbility`, and `rollAdvanta
 
 ### 7.2 Pool construction
 
-`DiceRollContainer` in `module/scripts/roll-dice.js` is the shared request DTO. Important fields are actor, attribute/ability keys, display text, base dice, special dice, bonus, wound penalty, difficulty, action/origin, targets, speciality, Willpower use, system text, power type, and incoming/applicable damage.
+`DiceRollContainer` in `module/scripts/roll-dice.js` is the shared request DTO. Important fields are actor, attribute/ability keys, display text, base dice, special dice, bonus, wound penalty, explicit exhaustion penalty, difficulty, action/origin, targets, speciality, Willpower use, system text, power type, and incoming/applicable damage. `exhaustionpenalty` defaults to `null`, which tells `DiceRoller` to derive it from PC Willpower state; an explicit `0` or `-2` overrides that default.
 
 Dialogs are responsible for:
 
@@ -311,8 +329,9 @@ Dialogs are responsible for:
 3. applying `BonusHelper` pool and difficulty modifiers;
 4. identifying speciality and optionally reducing difficulty;
 5. adding wound penalties unless the action ignores them;
-6. adding attack successes to damage where configured;
-7. setting `origin` (`general`, `power`, `attack`, `damage`, `soak`, or `initiative`) so the evaluator can apply origin-specific rules.
+6. for the general Test dialog, exposing a checked-by-default “Use exhausted penalty (-2)” control when the PC is exhausted and writing an explicit `-2` or `0` to the container;
+7. adding attack successes to damage where configured;
+8. setting `origin` (`general`, `power`, `attack`, `damage`, `soak`, or `initiative`) so the evaluator can apply origin-specific rules.
 
 Weapon attack is a two-stage chain: `DialogWeaponV2._rollAttack` builds and evaluates the attack; if it succeeds and damage is rollable it opens/continues in damage state with `extraSuccesses` (usually successes minus one). `_rollDamage` builds target-specific pools and calls the same evaluator.
 
@@ -328,17 +347,20 @@ Evaluation sequence:
 4. disable botching for damage/soak when their “ones” settings are off;
 5. choose themed dice colors from actor type, Splat, variant sheet, or per-actor dice setting;
 6. create a default target when none is supplied, otherwise evaluate each target pool;
-7. compute `numberDices = target.numDices + woundpenalty`, clamped to zero;
-8. evaluate a separate `Roll("1d10")` for each die and collect each face/color;
-9. count faces at or above difficulty, apply 10/speciality extra successes, reroll exploding 10s by extending the loop, and subtract configured successes for ones where allowed;
-10. classify result as success, fail, or botch, applying speciality botch protection;
-11. add informational lines (difficulty, speciality, wound penalty, Willpower, automatic successes, soak remainder, and Demon evocation Torment outcome);
-12. render and create the chat message, then return the last target's numeric success count.
+7. resolve the exhaustion penalty: use an explicit container value when supplied, otherwise apply `-2` automatically to an exhausted PC;
+8. compute `numberDices = target.numDices + woundpenalty + exhaustionpenalty`, clamped to zero;
+9. when that value is zero, create no Foundry `Roll` objects, force zero successes and a failure result, and mark `diceResult.zeroPoolFailure`;
+10. otherwise evaluate a separate `Roll("1d10")` for each die and collect each face/color;
+11. count faces at or above difficulty, apply 10/speciality extra successes, reroll exploding 10s by extending the loop, and subtract configured successes for ones where allowed;
+12. classify result as success, fail, or botch, applying speciality botch protection;
+13. add informational lines (difficulty, speciality, wound penalty, exhaustion penalty, Willpower, automatic successes, soak remainder, and Demon evocation Torment outcome);
+14. render and create the chat message, then return the last target's numeric success count.
 
 Important implications:
 
 - It does not evaluate one Foundry pool formula such as `10d10`; it evaluates one Foundry `Roll` per die. All success/botch/explosion logic is custom JavaScript.
 - `rolls: allDices` is attached to the chat message so Foundry and modules such as Dice So Nice can still see roll objects.
+- A zero final pool is an automatic failure even if the request also contains automatic successes; the chat card renders a localized zero-pool explanation in standard, attack, and damage layouts.
 - Multi-target results are displayed together, but the returned `success` variable is the final target's value.
 - Favored-die behavior is inferred from actor attribute/ability flags during handling of ones.
 - Demon Lore Torment compares successful die faces with permanent Torment after the normal roll.
@@ -403,27 +425,44 @@ General behavior:
 - damage rolls use it only when the `usePenaltyDamage` world setting is enabled;
 - the chat card displays the localized wound level and numeric penalty when applied.
 
+PC Willpower exhaustion is the second centralized pool penalty. `getWillpowerState` reports exhaustion when every Willpower box is at least light-damaged. `DiceRoller` then applies `-2` to every PC Test that leaves `DiceRollContainer.exhaustionpenalty` unset. `DialogGeneralRoll` exposes a checked-by-default checkbox and writes `-2` or `0`, allowing that dialog to include or suppress the penalty explicitly. Other dialogs and direct API callers currently inherit automatic exhaustion handling. Wound and exhaustion penalties are additive; if their sum reduces the pool to zero, no dice are rolled and the Test automatically fails.
+
 Other penalties/bonuses are not unified into a single modifier pipeline. Dialogs query specialized `BonusHelper` methods for attribute, ability, attack, soak, movement, health, initiative, fixed-value, and difficulty effects. Armor applies its configured `dexpenalty` while `calculateTotals` derives Dexterity. A derivative system should treat `BonusHelper` and dialog code together as the effective modifier engine.
 
 ## 11. Willpower and other resources
 
 ### 11.1 Willpower storage and derived roll value
 
-- PC: embedded `Advantage` item with `system.id === "willpower"`; projected as `actor.system.advantages.willpower`, with actual fields below `.system`.
-- Legacy: persistent `actor.system.advantages.willpower` object.
+- PC canonical storage: `actor.system.willpower.damage.light` and `.heavy`, defined by `module/actor/datamodel/base/actor_willpower.js`.
+- PC derived state: `module/scripts/willpower.js::getWillpowerState` computes `max = composure.value + resolve.value`, `current = max - light - heavy`, `full = max - heavy`, exhaustion, and the rendered box sequence. Empty boxes are available points; `/` is light damage and `X` is heavy damage.
+- PC compatibility view: `createWillpowerAdvantageFacade` places a transient Advantage-shaped object at `actor.system.advantages.willpower` during actor preparation so existing readers and roll dispatch can obtain `system.roll`. This object is never canonical and must not be updated as an embedded item.
+- Legacy actors: persistent `actor.system.advantages.willpower` remains in use and follows the original permanent/temporary logic.
 
-`WoDItem._handleAdvantagesCalculations` and `WoDActor` preparation derive `roll` from permanent/temporary values. `advantageRolls` selects permanent versus the lower available temporary/permanent pool; `usebothrolls` sums them. When both the attribute and Willpower modes are configured for 5th edition, permanent Willpower becomes Composure + Resolve (subject to max/clamping).
+For a PC Willpower roll, the default pool is `current`; selecting “Use full Willpower” in `DialogGeneralRoll` uses `full`, so light wounds are ignored but heavy wounds still reduce the pool. Ordinary Advantage and legacy Willpower rolls retain `WoDItem._handleAdvantagesCalculations` and the `advantageRolls` settings behavior.
 
 ### 11.2 Spending Willpower in rolls
 
 `DiceRoller` owns the transaction through private `_spendTemporaryWillpower`:
 
-1. locate the PC Advantage item or legacy actor path;
-2. require at least one temporary point;
-3. immediately persist a decrement;
-4. if `willpowerBonusDice` is enabled, add three dice and prevent botching; otherwise add one automatic success and guarantee at least one final success.
+1. for a PC, call `spendWillpower(actor)`; for a legacy actor, locate the old persistent Willpower path;
+2. on a PC, add a light wound to an empty box, or when no box is empty upgrade one light wound to heavy; a fully heavy track cannot be spent further;
+3. persist the actor update before dice evaluation;
+4. grant one automatic success and prevent a botch for the Test. The legacy branch retains its older setting-dependent bonus-dice behavior.
 
 Dialogs only set `container.usewillpower`; they do not spend the resource. This means direct API and UI rolls share the same spending behavior.
+
+Tracker/edit call chain:
+
+```text
+PCActorSheet stats context
+  -> getWillpowerState(actor)
+  -> stats_willpower.hbs
+  -> click data-action="editWillpower" / sheet contextmenu listener
+  -> OnWillpowerCounterChange / OnWillpowerCounterClear
+  -> getWillpowerUpdate(state, box, button)
+  -> actor.update(system.willpower.damage.*)
+  -> preparation rebuilds state and compatibility facade
+```
 
 ### 11.3 Other resources
 
@@ -527,7 +566,7 @@ Dependencies: initialization order is significant because document preparation, 
 
 | Group | Important keys | Main consumers |
 | --- | --- | --- |
-| Core rules | `advantageRolls`, `specialityLevel`, `attributeSettings`, `fifthEditionWillpowerSetting`, `willpowerBonusDice` | Actor/item preparation, roll dialogs, `DiceRoller` |
+| Core rules | `advantageRolls`, `specialityLevel`, `attributeSettings`, `fifthEditionWillpowerSetting`, `willpowerBonusDice` | Ordinary/legacy Advantage preparation and roll behavior; PC Willpower uses the actor-owned rules service instead |
 | Dice | `theRollofOne`, `successesToDamageRolls`, `useOnesDamage`, `usePenaltyDamage`, `useOnesSoak`, `lowestDifficulty`, `specialityAddSuccess`, `specialityReduceDiff`, `specialityAllowBotch`, `tenAddSuccess`, `explodingDice` | Dialog pool building and `DiceRoller` evaluation |
 | Era | `eraMortal`, `eraMage`, `eraVampire`, `eraWerewolf` | Actor creation and ability seeding |
 | Combat | `autoAmmo` | Ranged weapon dialog |
@@ -577,6 +616,8 @@ DiceRoller / InitiativeRoll
 
 The template renders selected informational/system fields with triple braces because descriptions and several rule annotations are HTML. Any derivative that accepts less-trusted content should review this trust boundary.
 
+For a zero final dice pool, `DiceRoller` emits no roll objects and puts `zeroPoolFailure` on the result. The standard, attack, and damage branches of `roll-template.hbs` display `wod.dice.zeropoolfailure`; all seven language catalogs define that key. Exhaustion controls use `wod.dialog.useexhaustedpenalty`.
+
 Dependencies: chat generation requires localization, actor condition state, the SVG Handlebars helpers/partials, Foundry roll objects, and the data contract built by the evaluator or send helper.
 
 ## 17. Cross-subsystem dependency map
@@ -597,7 +638,7 @@ sheet/API action
   -> specialized dialog
   -> DiceRollContainer
   -> DiceRoller
-       |--> Willpower item/actor update
+       |--> PC actor-owned Willpower update / legacy Advantage update
        |--> custom d10 evaluation
        |--> roll-template.hbs + SVG helpers
        +--> ChatMessage
@@ -615,7 +656,7 @@ The highest-coupling modules are `WoDActor`, `ActionHelper`, `BonusHelper`, `mod
 ## 18. Architectural considerations for a derivative
 
 1. **Choose one document representation early.** New work should preferably use typed models and embedded items consistently. Maintaining both PC and legacy paths doubles nearly every resource, dialog, and template branch.
-2. **Do not treat transient PC projections as canonical storage.** The embedded `Ability`/`Advantage` items are canonical; `system.abilities` and `system.advantages` are rebuilt convenience indexes.
+2. **Do not treat transient PC projections as canonical storage.** Embedded `Ability`/ordinary `Advantage` items are canonical; `system.abilities` and `system.advantages` are rebuilt convenience indexes. PC Willpower is the explicit exception: `system.willpower.damage` is canonical and its projected Advantage facade is read-only compatibility data.
 3. **Separate ids from display labels.** Existing code frequently falls back from slug to id to lowercased name and sometimes compares localization keys. A derivative should establish stable identifiers.
 4. **Centralize modifiers if changing core rules.** Wound penalties are relatively centralized, but bonus dice, difficulty changes, fixed values, armor penalties, specialities, and form effects are distributed among `BonusHelper`, totals, and dialogs.
 5. **Treat dialogs as rule code.** They do much more than collect input: they resolve traits, apply bonuses, enforce speciality rules, add attack successes, and choose resource behavior.
@@ -637,7 +678,7 @@ The highest-coupling modules are `WoDActor`, `ActionHelper`, `BonusHelper`, `mod
 | Dice evaluation | `module/scripts/roll-dice.js` | `bonus-helpers.js`, `combat-helpers.js`, settings/config |
 | Damage/health | `module/scripts/combat-helpers.js`; `health.js`; `WoDActor._handleWoundLevelCalculations`; `dialog-soak.js` | `api-handler.js`, `totals.js`, health templates/helpers |
 | Roll penalties | `WoDActor._handleWoundLevelCalculations`; dialog pool builders; `DiceRoller` | `CombatHelper.ignoresPain`, `BonusHelper`, `totals.js` |
-| Willpower/resources | `roll-dice.js`; `wod-item-base.js`; `wod-actor-base.js` | power/casting dialogs, `action-helpers.js`, settings |
+| Willpower/resources | `module/scripts/willpower.js`; `module/actor/datamodel/base/actor_willpower.js`; `roll-dice.js`; `wod-actor-base.js` | `pc-actor-sheet.js`, `stats_willpower.hbs`, `dialog-generalroll.js`, migration, legacy `wod-item-base.js` |
 | Handlebars | `module/templates.js`; `module/handlebars.js`; `templates/**` | `module/ui/icons.js`, sheet context builders |
 | Hooks/init | `wod.js`; `module/hooks.js` | `settings-sidebar.js`, `migration.js`, tours |
 | Settings | `module/settings.js`; relevant initialization in `wod.js` | settings dialog templates, `settings-sidebar.js` |
