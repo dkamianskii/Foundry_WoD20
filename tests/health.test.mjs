@@ -4,11 +4,13 @@ import assert from "node:assert/strict";
 import {
     applyWounds,
     calculateMaxHealth,
+    cycleHealthBox,
     distributeHealthLevels,
     getActorHealthState,
     getHealthState,
     migrateLegacyHealth,
-    migratePCHealthSource
+    migratePCHealthSource,
+    setHealthBox
 } from "../module/scripts/health.js";
 
 test("maximum Health uses Strength, Stamina-as-Endurance, and bonus", () => {
@@ -42,6 +44,29 @@ test("only the actually displaced wound participates in a cascade", () => {
     assert.deepEqual(applyWounds(initial, "heavy", 1, 7), [
         "heavy", "heavy", "heavy", "heavy", "heavy", "heavy", "heavy", "light"
     ]);
+});
+
+test("sheet clicks promote the first wound of the clicked severity", () => {
+    assert.deepEqual(
+        cycleHealthBox(["light", "heavy", "light"], 2, "light", 7),
+        ["heavy", "heavy", "light"]
+    );
+    assert.deepEqual(
+        cycleHealthBox(["light", "heavy", "heavy"], 2, "heavy", 7),
+        ["light", "aggravated", "heavy"]
+    );
+});
+
+test("sheet clicks add at the first empty box and remove aggravated wounds compactly", () => {
+    assert.deepEqual(cycleHealthBox(["heavy"], 6, "", 7), ["heavy", "light"]);
+    assert.deepEqual(
+        cycleHealthBox(["light", "aggravated", "heavy"], 1, "aggravated", 7),
+        ["light", "heavy"]
+    );
+    assert.deepEqual(
+        setHealthBox(["light", "heavy", "aggravated"], 1, null, 7),
+        ["light", "aggravated"]
+    );
 });
 
 test("light wounds do not activate a wound penalty", () => {

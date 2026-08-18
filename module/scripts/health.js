@@ -83,6 +83,28 @@ export function setHealthBox(wounds, index, severity, maxHealth) {
     return result;
 }
 
+/** Apply the character-sheet left-click cycle without allowing gaps in the track. */
+export function cycleHealthBox(wounds, clickedIndex, clickedSeverity, maxHealth) {
+    const result = normalizeWounds(wounds);
+
+    if (!clickedSeverity) return applyWounds(result, "light", 1, maxHealth);
+
+    if (clickedSeverity === "light" || clickedSeverity === "heavy") {
+        const firstMatchingIndex = result.indexOf(clickedSeverity);
+        if (firstMatchingIndex < 0) return result;
+        result[firstMatchingIndex] = clickedSeverity === "light" ? "heavy" : "aggravated";
+        return result;
+    }
+
+    if (clickedSeverity === "aggravated") {
+        const box = Math.max(0, integer(clickedIndex));
+        const aggravatedIndex = result[box] === "aggravated" ? box : result.indexOf("aggravated");
+        if (aggravatedIndex >= 0) result.splice(aggravatedIndex, 1);
+    }
+
+    return result;
+}
+
 export function legacyDamageToWounds(damage) {
     return normalizeWounds([
         ...repeat("aggravated", damage?.aggravated),

@@ -3108,6 +3108,8 @@ input.sheet-infoWidth {
 }
 
 .wod20 .resource-counter .pc-health-box[data-state="aggravated"]::after {
-  content: "Ж";
-  font-size: 10px;
+  content: "\0416";
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 900;
 }
