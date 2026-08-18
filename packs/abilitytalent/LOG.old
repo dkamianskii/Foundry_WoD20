@@ -1,11 +1,5 @@
-2026/08/18-02:04:20.290 7998 Delete type=3 #1
-2026/08/18-02:05:56.593 79cc Level-0 table #704: started
-2026/08/18-02:05:56.593 79cc Level-0 table #704: 0 bytes OK
-2026/08/18-02:05:56.596 79cc Delete type=0 #702
-2026/08/18-02:05:56.604 79cc Manual compaction at level-0 from '!items!1DwELJjwxTBmcIrh' @ 72057594037927935 : 1 .. '!items!zQLhdJWmaDKOdiqo' @ 0 : 0; will stop at '!items!zQLhdJWmaDKOdiqo' @ 53 : 1
-2026/08/18-02:05:56.604 79cc Compacting 1@0 + 0@1 files
-2026/08/18-02:05:56.606 79cc Generated table #705@0: 21 keys, 5577 bytes
-2026/08/18-02:05:56.606 79cc Compacted 1@0 + 0@1 files => 5577 bytes
-2026/08/18-02:05:56.609 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.609 79cc Delete type=2 #621
-2026/08/18-02:05:56.624 79cc Manual compaction at level-0 from '!items!zQLhdJWmaDKOdiqo' @ 53 : 1 .. '!items!zQLhdJWmaDKOdiqo' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:40.466 8108 Log #707: 0 ops saved to Table #708 OK
+2026/08/18-21:18:40.466 8108 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\abilitytalent/000707.log: OK
+2026/08/18-21:18:40.466 8108 Table #705: 21 entries OK
+2026/08/18-21:18:40.469 8108 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\abilitytalent/MANIFEST-000706: OK
+2026/08/18-21:18:40.473 8108 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\abilitytalent; recovered 1 files; 5577 bytes. Some data may have been lost. ****

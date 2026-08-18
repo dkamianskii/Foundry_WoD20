@@ -1,11 +1,5 @@
-2026/08/18-02:04:19.843 7998 Delete type=3 #1
-2026/08/18-02:05:56.210 79cc Level-0 table #1146: started
-2026/08/18-02:05:56.210 79cc Level-0 table #1146: 0 bytes OK
-2026/08/18-02:05:56.214 79cc Delete type=0 #1144
-2026/08/18-02:05:56.222 79cc Manual compaction at level-0 from '!items!JngpkkgjnX8umoh0' @ 72057594037927935 : 1 .. '!items!xcCWbgZuAIz9RSds' @ 0 : 0; will stop at '!items!xcCWbgZuAIz9RSds' @ 15 : 1
-2026/08/18-02:05:56.222 79cc Compacting 1@0 + 0@1 files
-2026/08/18-02:05:56.224 79cc Generated table #1147@0: 4 keys, 5600 bytes
-2026/08/18-02:05:56.224 79cc Compacted 1@0 + 0@1 files => 5600 bytes
-2026/08/18-02:05:56.227 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.227 79cc Delete type=2 #147
-2026/08/18-02:05:56.251 79cc Manual compaction at level-0 from '!items!xcCWbgZuAIz9RSds' @ 15 : 1 .. '!items!xcCWbgZuAIz9RSds' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:40.015 6c98 Log #1149: 0 ops saved to Table #1150 OK
+2026/08/18-21:18:40.015 6c98 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\infernalshapeshifting/001149.log: OK
+2026/08/18-21:18:40.015 6c98 Table #1147: 4 entries OK
+2026/08/18-21:18:40.023 6c98 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\infernalshapeshifting/MANIFEST-001148: OK
+2026/08/18-21:18:40.027 6c98 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\infernalshapeshifting; recovered 1 files; 5600 bytes. Some data may have been lost. ****

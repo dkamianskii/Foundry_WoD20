@@ -1,11 +1,5 @@
-2026/08/18-02:04:20.149 7998 Delete type=3 #1
-2026/08/18-02:05:56.498 79cc Level-0 table #1100: started
-2026/08/18-02:05:56.498 79cc Level-0 table #1100: 0 bytes OK
-2026/08/18-02:05:56.500 79cc Delete type=0 #1098
-2026/08/18-02:05:56.512 79cc Manual compaction at level-0 from '!items!7AUFkhbJdUo06Tm6' @ 72057594037927935 : 1 .. '!items!v2IVhsELQO27Air2' @ 0 : 0; will stop at '!items!v2IVhsELQO27Air2' @ 39 : 1
-2026/08/18-02:05:56.512 79cc Compacting 1@0 + 0@1 files
-2026/08/18-02:05:56.520 79cc Generated table #1101@0: 8 keys, 3504 bytes
-2026/08/18-02:05:56.520 79cc Compacted 1@0 + 0@1 files => 3504 bytes
-2026/08/18-02:05:56.524 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.524 79cc Delete type=2 #101
-2026/08/18-02:05:56.546 79cc Manual compaction at level-0 from '!items!v2IVhsELQO27Air2' @ 39 : 1 .. '!items!v2IVhsELQO27Air2' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:40.326 8108 Log #1103: 0 ops saved to Table #1104 OK
+2026/08/18-21:18:40.326 8108 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\devoureraruruform/001103.log: OK
+2026/08/18-21:18:40.326 8108 Table #1101: 8 entries OK
+2026/08/18-21:18:40.329 8108 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\devoureraruruform/MANIFEST-001102: OK
+2026/08/18-21:18:40.333 8108 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\devoureraruruform; recovered 1 files; 3504 bytes. Some data may have been lost. ****

@@ -1,11 +1,5 @@
-2026/08/18-02:04:20.165 7534 Delete type=3 #1
-2026/08/18-02:05:56.500 79cc Level-0 table #1096: started
-2026/08/18-02:05:56.500 79cc Level-0 table #1096: 0 bytes OK
-2026/08/18-02:05:56.503 79cc Delete type=0 #1094
-2026/08/18-02:05:56.524 79cc Manual compaction at level-0 from '!items!9YQQGLkH5uGqAKzf' @ 72057594037927935 : 1 .. '!items!pgS8e7pOQXpuHEkw' @ 0 : 0; will stop at '!items!pgS8e7pOQXpuHEkw' @ 47 : 1
-2026/08/18-02:05:56.524 79cc Compacting 1@0 + 0@1 files
-2026/08/18-02:05:56.531 79cc Generated table #1097@0: 8 keys, 4077 bytes
-2026/08/18-02:05:56.531 79cc Compacted 1@0 + 0@1 files => 4077 bytes
-2026/08/18-02:05:56.533 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.534 79cc Delete type=2 #97
-2026/08/18-02:05:56.546 79cc Manual compaction at level-0 from '!items!pgS8e7pOQXpuHEkw' @ 47 : 1 .. '!items!pgS8e7pOQXpuHEkw' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:40.343 6c98 Log #1099: 0 ops saved to Table #1100 OK
+2026/08/18-21:18:40.343 6c98 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\slayernamtarform/001099.log: OK
+2026/08/18-21:18:40.343 6c98 Table #1097: 8 entries OK
+2026/08/18-21:18:40.345 6c98 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\slayernamtarform/MANIFEST-001098: OK
+2026/08/18-21:18:40.349 6c98 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\slayernamtarform; recovered 1 files; 4077 bytes. Some data may have been lost. ****

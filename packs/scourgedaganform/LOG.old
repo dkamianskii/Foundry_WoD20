@@ -1,11 +1,5 @@
-2026/08/18-02:04:19.925 76d8 Delete type=3 #1
-2026/08/18-02:05:56.265 79cc Level-0 table #1130: started
-2026/08/18-02:05:56.265 79cc Level-0 table #1130: 0 bytes OK
-2026/08/18-02:05:56.270 79cc Delete type=0 #1128
-2026/08/18-02:05:56.305 79cc Manual compaction at level-0 from '!items!4mAm0b5TocXJO2Nb' @ 72057594037927935 : 1 .. '!items!yfRXsU6v4PKhcpRX' @ 0 : 0; will stop at '!items!yfRXsU6v4PKhcpRX' @ 35 : 1
-2026/08/18-02:05:56.305 79cc Compacting 1@0 + 0@1 files
-2026/08/18-02:05:56.307 79cc Generated table #1131@0: 8 keys, 4205 bytes
-2026/08/18-02:05:56.307 79cc Compacted 1@0 + 0@1 files => 4205 bytes
-2026/08/18-02:05:56.309 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.309 79cc Delete type=2 #131
-2026/08/18-02:05:56.311 79cc Manual compaction at level-0 from '!items!yfRXsU6v4PKhcpRX' @ 35 : 1 .. '!items!yfRXsU6v4PKhcpRX' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:40.097 5d80 Log #1133: 0 ops saved to Table #1134 OK
+2026/08/18-21:18:40.097 5d80 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\scourgedaganform/001133.log: OK
+2026/08/18-21:18:40.097 5d80 Table #1131: 8 entries OK
+2026/08/18-21:18:40.100 5d80 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\scourgedaganform/MANIFEST-001132: OK
+2026/08/18-21:18:40.103 5d80 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\scourgedaganform; recovered 1 files; 4205 bytes. Some data may have been lost. ****

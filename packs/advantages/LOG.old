@@ -1,12 +1,5 @@
-2026/08/18-02:04:20.238 7534 Delete type=3 #1
-2026/08/18-02:05:56.551 79cc Level-0 table #757: started
-2026/08/18-02:05:56.551 79cc Level-0 table #757: 0 bytes OK
-2026/08/18-02:05:56.553 79cc Delete type=0 #755
-2026/08/18-02:05:56.569 79cc Manual compaction at level-0 from '!folders!BAiZQnrHdFAkdJNy' @ 72057594037927935 : 1 .. '!items!uuzfVjwtIeWk00ti' @ 0 : 0; will stop at '!items!fCaCB2DeZ9IkKqsH' @ 415 : 1
-2026/08/18-02:05:56.569 79cc Compacting 2@0 + 0@1 files
-2026/08/18-02:05:56.573 79cc Generated table #758@0: 76 keys, 21926 bytes
-2026/08/18-02:05:56.573 79cc Compacted 2@0 + 0@1 files => 21926 bytes
-2026/08/18-02:05:56.575 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.575 79cc Delete type=2 #703
-2026/08/18-02:05:56.575 79cc Delete type=2 #749
-2026/08/18-02:05:56.592 79cc Manual compaction at level-0 from '!items!fCaCB2DeZ9IkKqsH' @ 415 : 1 .. '!items!uuzfVjwtIeWk00ti' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:40.412 6c98 Log #760: 0 ops saved to Table #761 OK
+2026/08/18-21:18:40.412 6c98 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\advantages/000760.log: OK
+2026/08/18-21:18:40.413 6c98 Table #758: 76 entries OK
+2026/08/18-21:18:40.415 6c98 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\advantages/MANIFEST-000759: OK
+2026/08/18-21:18:40.419 6c98 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\advantages; recovered 1 files; 21926 bytes. Some data may have been lost. ****

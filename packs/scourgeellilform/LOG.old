@@ -1,11 +1,5 @@
-2026/08/18-02:04:19.956 7534 Delete type=3 #1
-2026/08/18-02:05:56.315 79cc Level-0 table #1130: started
-2026/08/18-02:05:56.315 79cc Level-0 table #1130: 0 bytes OK
-2026/08/18-02:05:56.317 79cc Delete type=0 #1128
-2026/08/18-02:05:56.332 79cc Manual compaction at level-0 from '!items!1w7GeCz4mxOOrPu5' @ 72057594037927935 : 1 .. '!items!gFQMKfQj4dWkWQSA' @ 0 : 0; will stop at '!items!gFQMKfQj4dWkWQSA' @ 24 : 1
-2026/08/18-02:05:56.332 79cc Compacting 1@0 + 0@1 files
-2026/08/18-02:05:56.341 79cc Generated table #1131@0: 8 keys, 3802 bytes
-2026/08/18-02:05:56.341 79cc Compacted 1@0 + 0@1 files => 3802 bytes
-2026/08/18-02:05:56.344 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.344 79cc Delete type=2 #131
-2026/08/18-02:05:56.372 79cc Manual compaction at level-0 from '!items!gFQMKfQj4dWkWQSA' @ 24 : 1 .. '!items!gFQMKfQj4dWkWQSA' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:40.129 8108 Log #1133: 0 ops saved to Table #1134 OK
+2026/08/18-21:18:40.129 8108 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\scourgeellilform/001133.log: OK
+2026/08/18-21:18:40.129 8108 Table #1131: 8 entries OK
+2026/08/18-21:18:40.133 8108 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\scourgeellilform/MANIFEST-001132: OK
+2026/08/18-21:18:40.135 8108 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\scourgeellilform; recovered 1 files; 3802 bytes. Some data may have been lost. ****

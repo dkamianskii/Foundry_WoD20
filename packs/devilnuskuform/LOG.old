@@ -1,11 +1,5 @@
-2026/08/18-02:04:19.893 7534 Delete type=3 #1
-2026/08/18-02:05:56.256 79cc Level-0 table #1138: started
-2026/08/18-02:05:56.256 79cc Level-0 table #1138: 0 bytes OK
-2026/08/18-02:05:56.258 79cc Delete type=0 #1136
-2026/08/18-02:05:56.283 79cc Manual compaction at level-0 from '!items!7ruvjla7ewlfN36i' @ 72057594037927935 : 1 .. '!items!xbOSZwZ7SZt4FDVz' @ 0 : 0; will stop at '!items!xbOSZwZ7SZt4FDVz' @ 24 : 1
-2026/08/18-02:05:56.283 79cc Compacting 1@0 + 0@1 files
-2026/08/18-02:05:56.292 79cc Generated table #1139@0: 8 keys, 3372 bytes
-2026/08/18-02:05:56.292 79cc Compacted 1@0 + 0@1 files => 3372 bytes
-2026/08/18-02:05:56.294 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.294 79cc Delete type=2 #139
-2026/08/18-02:05:56.310 79cc Manual compaction at level-0 from '!items!xbOSZwZ7SZt4FDVz' @ 24 : 1 .. '!items!xbOSZwZ7SZt4FDVz' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:40.066 8108 Log #1141: 0 ops saved to Table #1142 OK
+2026/08/18-21:18:40.066 8108 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\devilnuskuform/001141.log: OK
+2026/08/18-21:18:40.066 8108 Table #1139: 8 entries OK
+2026/08/18-21:18:40.069 8108 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\devilnuskuform/MANIFEST-001140: OK
+2026/08/18-21:18:40.073 8108 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\devilnuskuform; recovered 1 files; 3372 bytes. Some data may have been lost. ****

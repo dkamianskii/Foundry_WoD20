@@ -1,11 +1,5 @@
-2026/08/18-02:04:19.876 4394 Delete type=3 #1
-2026/08/18-02:05:56.253 79cc Level-0 table #1139: started
-2026/08/18-02:05:56.253 79cc Level-0 table #1139: 0 bytes OK
-2026/08/18-02:05:56.256 79cc Delete type=0 #1137
-2026/08/18-02:05:56.270 79cc Manual compaction at level-0 from '!items!0eczThutznp60FG8' @ 72057594037927935 : 1 .. '!items!yHPuNRsLK4PXznY2' @ 0 : 0; will stop at '!items!yHPuNRsLK4PXznY2' @ 45 : 1
-2026/08/18-02:05:56.270 79cc Compacting 1@0 + 0@1 files
-2026/08/18-02:05:56.280 79cc Generated table #1140@0: 8 keys, 3489 bytes
-2026/08/18-02:05:56.280 79cc Compacted 1@0 + 0@1 files => 3489 bytes
-2026/08/18-02:05:56.283 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.283 79cc Delete type=2 #140
-2026/08/18-02:05:56.309 79cc Manual compaction at level-0 from '!items!yHPuNRsLK4PXznY2' @ 45 : 1 .. '!items!yHPuNRsLK4PXznY2' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:40.051 73f0 Log #1142: 0 ops saved to Table #1143 OK
+2026/08/18-21:18:40.051 73f0 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\devilbelform/001142.log: OK
+2026/08/18-21:18:40.051 73f0 Table #1140: 8 entries OK
+2026/08/18-21:18:40.054 73f0 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\devilbelform/MANIFEST-001141: OK
+2026/08/18-21:18:40.057 73f0 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\devilbelform; recovered 1 files; 3489 bytes. Some data may have been lost. ****

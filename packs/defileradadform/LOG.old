@@ -1,11 +1,5 @@
-2026/08/18-02:04:20.086 7998 Delete type=3 #1
-2026/08/18-02:05:56.437 79cc Level-0 table #1108: started
-2026/08/18-02:05:56.437 79cc Level-0 table #1108: 0 bytes OK
-2026/08/18-02:05:56.440 79cc Delete type=0 #1106
-2026/08/18-02:05:56.457 79cc Manual compaction at level-0 from '!items!3HQkv9vBUsDjAGot' @ 72057594037927935 : 1 .. '!items!tpkyuBnBeRo6VvOB' @ 0 : 0; will stop at '!items!tpkyuBnBeRo6VvOB' @ 24 : 1
-2026/08/18-02:05:56.457 79cc Compacting 1@0 + 0@1 files
-2026/08/18-02:05:56.467 79cc Generated table #1109@0: 8 keys, 3281 bytes
-2026/08/18-02:05:56.467 79cc Compacted 1@0 + 0@1 files => 3281 bytes
-2026/08/18-02:05:56.469 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.469 79cc Delete type=2 #109
-2026/08/18-02:05:56.493 79cc Manual compaction at level-0 from '!items!tpkyuBnBeRo6VvOB' @ 24 : 1 .. '!items!tpkyuBnBeRo6VvOB' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:40.260 8108 Log #1111: 0 ops saved to Table #1112 OK
+2026/08/18-21:18:40.260 8108 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\defileradadform/001111.log: OK
+2026/08/18-21:18:40.260 8108 Table #1109: 8 entries OK
+2026/08/18-21:18:40.264 8108 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\defileradadform/MANIFEST-001110: OK
+2026/08/18-21:18:40.267 8108 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\defileradadform; recovered 1 files; 3281 bytes. Some data may have been lost. ****

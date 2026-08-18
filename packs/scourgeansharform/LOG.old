@@ -1,11 +1,5 @@
-2026/08/18-02:04:19.941 4394 Delete type=3 #1
-2026/08/18-02:05:56.311 79cc Level-0 table #1130: started
-2026/08/18-02:05:56.311 79cc Level-0 table #1130: 0 bytes OK
-2026/08/18-02:05:56.315 79cc Delete type=0 #1128
-2026/08/18-02:05:56.322 79cc Manual compaction at level-0 from '!items!3BqNGBHylr04PoLs' @ 72057594037927935 : 1 .. '!items!tWwzDBKZrNO9PE21' @ 0 : 0; will stop at '!items!tWwzDBKZrNO9PE21' @ 24 : 1
-2026/08/18-02:05:56.322 79cc Compacting 1@0 + 0@1 files
-2026/08/18-02:05:56.330 79cc Generated table #1131@0: 8 keys, 3326 bytes
-2026/08/18-02:05:56.330 79cc Compacted 1@0 + 0@1 files => 3326 bytes
-2026/08/18-02:05:56.332 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.332 79cc Delete type=2 #131
-2026/08/18-02:05:56.372 79cc Manual compaction at level-0 from '!items!tWwzDBKZrNO9PE21' @ 24 : 1 .. '!items!tWwzDBKZrNO9PE21' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:40.114 73f0 Log #1133: 0 ops saved to Table #1134 OK
+2026/08/18-21:18:40.114 73f0 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\scourgeansharform/001133.log: OK
+2026/08/18-21:18:40.114 73f0 Table #1131: 8 entries OK
+2026/08/18-21:18:40.117 73f0 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\scourgeansharform/MANIFEST-001132: OK
+2026/08/18-21:18:40.120 73f0 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\scourgeansharform; recovered 1 files; 3326 bytes. Some data may have been lost. ****

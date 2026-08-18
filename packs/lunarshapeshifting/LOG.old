@@ -1,11 +1,5 @@
-2026/08/18-02:04:19.812 4394 Delete type=3 #1
-2026/08/18-02:05:56.217 79cc Level-0 table #1248: started
-2026/08/18-02:05:56.217 79cc Level-0 table #1248: 0 bytes OK
-2026/08/18-02:05:56.219 79cc Delete type=0 #1246
-2026/08/18-02:05:56.232 79cc Manual compaction at level-0 from '!items!4wb0jZskSDXKmkWZ' @ 72057594037927935 : 1 .. '!items!uJYkdGWthEKNELJI' @ 0 : 0; will stop at '!items!uJYkdGWthEKNELJI' @ 28 : 1
-2026/08/18-02:05:56.232 79cc Compacting 1@0 + 0@1 files
-2026/08/18-02:05:56.242 79cc Generated table #1249@0: 6 keys, 3499 bytes
-2026/08/18-02:05:56.242 79cc Compacted 1@0 + 0@1 files => 3499 bytes
-2026/08/18-02:05:56.245 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.245 79cc Delete type=2 #249
-2026/08/18-02:05:56.252 79cc Manual compaction at level-0 from '!items!uJYkdGWthEKNELJI' @ 28 : 1 .. '!items!uJYkdGWthEKNELJI' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:39.984 73f0 Log #1251: 0 ops saved to Table #1252 OK
+2026/08/18-21:18:39.984 73f0 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\lunarshapeshifting/001251.log: OK
+2026/08/18-21:18:39.984 73f0 Table #1249: 6 entries OK
+2026/08/18-21:18:39.987 73f0 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\lunarshapeshifting/MANIFEST-001250: OK
+2026/08/18-21:18:39.990 73f0 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\lunarshapeshifting; recovered 1 files; 3499 bytes. Some data may have been lost. ****

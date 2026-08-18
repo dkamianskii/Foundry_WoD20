@@ -1,11 +1,5 @@
-2026/08/18-02:04:19.828 7534 Delete type=3 #1
-2026/08/18-02:05:56.219 79cc Level-0 table #1150: started
-2026/08/18-02:05:56.219 79cc Level-0 table #1150: 0 bytes OK
-2026/08/18-02:05:56.222 79cc Delete type=0 #1148
-2026/08/18-02:05:56.245 79cc Manual compaction at level-0 from '!items!08LrQfuiPWEnwKru' @ 72057594037927935 : 1 .. '!items!wEg2ihmGiNMzctaB' @ 0 : 0; will stop at '!items!wEg2ihmGiNMzctaB' @ 114 : 1
-2026/08/18-02:05:56.245 79cc Compacting 1@0 + 0@1 files
-2026/08/18-02:05:56.249 79cc Generated table #1151@0: 25 keys, 10926 bytes
-2026/08/18-02:05:56.249 79cc Compacted 1@0 + 0@1 files => 10926 bytes
-2026/08/18-02:05:56.251 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.251 79cc Delete type=2 #151
-2026/08/18-02:05:56.252 79cc Manual compaction at level-0 from '!items!wEg2ihmGiNMzctaB' @ 114 : 1 .. '!items!wEg2ihmGiNMzctaB' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:39.999 8108 Log #1153: 0 ops saved to Table #1154 OK
+2026/08/18-21:18:39.999 8108 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\lunaraspects/001153.log: OK
+2026/08/18-21:18:39.999 8108 Table #1151: 25 entries OK
+2026/08/18-21:18:40.002 8108 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\lunaraspects/MANIFEST-001152: OK
+2026/08/18-21:18:40.005 8108 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\lunaraspects; recovered 1 files; 10926 bytes. Some data may have been lost. ****

@@ -1,11 +1,5 @@
-2026/08/18-02:04:19.988 76d8 Delete type=3 #1
-2026/08/18-02:05:56.319 79cc Level-0 table #1122: started
-2026/08/18-02:05:56.319 79cc Level-0 table #1122: 0 bytes OK
-2026/08/18-02:05:56.322 79cc Delete type=0 #1120
-2026/08/18-02:05:56.361 79cc Manual compaction at level-0 from '!items!3Bhzw6iSUOGVPrHp' @ 72057594037927935 : 1 .. '!items!iATIpIAXKwwoP91W' @ 0 : 0; will stop at '!items!iATIpIAXKwwoP91W' @ 27 : 1
-2026/08/18-02:05:56.361 79cc Compacting 1@0 + 0@1 files
-2026/08/18-02:05:56.369 79cc Generated table #1123@0: 8 keys, 3722 bytes
-2026/08/18-02:05:56.369 79cc Compacted 1@0 + 0@1 files => 3722 bytes
-2026/08/18-02:05:56.372 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.372 79cc Delete type=2 #123
-2026/08/18-02:05:56.373 79cc Manual compaction at level-0 from '!items!iATIpIAXKwwoP91W' @ 27 : 1 .. '!items!iATIpIAXKwwoP91W' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:40.161 5d80 Log #1125: 0 ops saved to Table #1126 OK
+2026/08/18-21:18:40.161 5d80 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\malefactorantuform/001125.log: OK
+2026/08/18-21:18:40.161 5d80 Table #1123: 8 entries OK
+2026/08/18-21:18:40.164 5d80 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\malefactorantuform/MANIFEST-001124: OK
+2026/08/18-21:18:40.167 5d80 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\malefactorantuform; recovered 1 files; 3722 bytes. Some data may have been lost. ****

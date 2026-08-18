@@ -1,11 +1,5 @@
-2026/08/18-02:04:20.117 76d8 Delete type=3 #1
-2026/08/18-02:05:56.443 79cc Level-0 table #1100: started
-2026/08/18-02:05:56.443 79cc Level-0 table #1100: 0 bytes OK
-2026/08/18-02:05:56.446 79cc Delete type=0 #1098
-2026/08/18-02:05:56.481 79cc Manual compaction at level-0 from '!items!5TCab9fbDnqnwNFQ' @ 72057594037927935 : 1 .. '!items!Zoa9W8StZzmO4rL9' @ 0 : 0; will stop at '!items!Zoa9W8StZzmO4rL9' @ 30 : 1
-2026/08/18-02:05:56.481 79cc Compacting 1@0 + 0@1 files
-2026/08/18-02:05:56.490 79cc Generated table #1101@0: 8 keys, 3780 bytes
-2026/08/18-02:05:56.490 79cc Compacted 1@0 + 0@1 files => 3780 bytes
-2026/08/18-02:05:56.492 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.492 79cc Delete type=2 #101
-2026/08/18-02:05:56.495 79cc Manual compaction at level-0 from '!items!Zoa9W8StZzmO4rL9' @ 30 : 1 .. '!items!Zoa9W8StZzmO4rL9' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:40.293 5d80 Log #1103: 0 ops saved to Table #1104 OK
+2026/08/18-21:18:40.293 5d80 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\devourerzaltuform/001103.log: OK
+2026/08/18-21:18:40.294 5d80 Table #1101: 8 entries OK
+2026/08/18-21:18:40.297 5d80 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\devourerzaltuform/MANIFEST-001102: OK
+2026/08/18-21:18:40.301 5d80 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\devourerzaltuform; recovered 1 files; 3780 bytes. Some data may have been lost. ****

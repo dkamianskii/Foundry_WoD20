@@ -1,11 +1,5 @@
-2026/08/18-02:04:19.908 7998 Delete type=3 #1
-2026/08/18-02:05:56.258 79cc Level-0 table #1138: started
-2026/08/18-02:05:56.258 79cc Level-0 table #1138: 0 bytes OK
-2026/08/18-02:05:56.264 79cc Delete type=0 #1136
-2026/08/18-02:05:56.295 79cc Manual compaction at level-0 from '!items!23OpjjCUCW0PNBJN' @ 72057594037927935 : 1 .. '!items!qlZJZoRePptNA46D' @ 0 : 0; will stop at '!items!qlZJZoRePptNA46D' @ 24 : 1
-2026/08/18-02:05:56.295 79cc Compacting 1@0 + 0@1 files
-2026/08/18-02:05:56.302 79cc Generated table #1139@0: 8 keys, 3851 bytes
-2026/08/18-02:05:56.302 79cc Compacted 1@0 + 0@1 files => 3851 bytes
-2026/08/18-02:05:56.305 79cc compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/08/18-02:05:56.305 79cc Delete type=2 #139
-2026/08/18-02:05:56.310 79cc Manual compaction at level-0 from '!items!qlZJZoRePptNA46D' @ 24 : 1 .. '!items!qlZJZoRePptNA46D' @ 0 : 0; will stop at (end)
+2026/08/18-21:18:40.082 6c98 Log #1141: 0 ops saved to Table #1142 OK
+2026/08/18-21:18:40.082 6c98 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\devilqinguform/001141.log: OK
+2026/08/18-21:18:40.082 6c98 Table #1139: 8 entries OK
+2026/08/18-21:18:40.085 6c98 Archiving D:\FoundryVTT\Data\systems\wod-advanced\packs\devilqinguform/MANIFEST-001140: OK
+2026/08/18-21:18:40.088 6c98 **** Repaired leveldb D:\FoundryVTT\Data\systems\wod-advanced\packs\devilqinguform; recovered 1 files; 3851 bytes. Some data may have been lost. ****
