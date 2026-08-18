@@ -266,6 +266,12 @@ export class DialogSoakRoll extends FormApplication {
         }
 
         const chimerical = this.object.soaktype === "chimerical";
+
+        if (this.actor.type === "PC" && !chimerical) {
+            await this.actor.api.modifyHealth(damageType, amount);
+            return amount;
+        }
+
         const capacity = this._getApplicableDamageCapacity(chimerical);
         amount = Math.min(amount, capacity);
 
@@ -279,11 +285,6 @@ export class DialogSoakRoll extends FormApplication {
             CombatHelper.ApplyDamageWithOverflow(track, damageType, amount, this._getMaxHealthLevels());
             actorData.system.settings.isupdated = false;
             await this.actor.update(actorData);
-            return amount;
-        }
-
-        if (this.actor.type === "PC") {
-            await this.actor.api.modifyHealth(damageType, amount);
             return amount;
         }
 

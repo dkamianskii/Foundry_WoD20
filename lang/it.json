@@ -962,7 +962,15 @@
 			"chimericalsoak": "Assorbimento chimerico",
 			"penalty": "Penalità",
 			"chimerical": "Chimerico",
-			"normal": "Normale"
+			"normal": "Normale",
+			"current": "Current Health",
+			"bonus": "Health Bonus",
+			"endurance": "Endurance (Stamina)",
+			"itembonus": "Active item bonus",
+			"maximum": "Maximum Health",
+			"overflow": "Overflow wounds",
+			"light": "Light",
+			"heavy": "Heavy"
 		},
 		"advantages": {
 			"advantages": "Vantaggi",
@@ -1958,7 +1966,9 @@
 				"attribute3": "Totale - il numero totale di dadi per l'Attributo",
 				"attribute4": "Massimo - il valore massimo disponibile dell'Attributo",
 				"healthvalue": "Valore - il numero di punti salute che il personaggio ha per quel livello",
-				"healthpenalty": "Malus - il malus di ferita che il personaggio ha per quel livello"
+				"healthpenalty": "Malus - il malus di ferita che il personaggio ha per quel livello",
+				"healthformula": "Maximum Health = 3 + Strength + Endurance + Health Bonus.",
+				"healthdistribution": "Health boxes are distributed automatically, with remainders assigned from Crippled toward Bruised."
 			},
 			"items": {
 				"spheres": "Inserisci che Sfere e a che livello servono per lanciare l'accordo"

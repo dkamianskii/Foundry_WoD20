@@ -962,7 +962,15 @@
 			"chimericalsoak": "Absorption chimérique",
 			"penalty": "Pénalité de blessure",
 			"chimerical": "Chimérique",
-			"normal": "Normal"
+			"normal": "Normal",
+			"current": "Current Health",
+			"bonus": "Health Bonus",
+			"endurance": "Endurance (Stamina)",
+			"itembonus": "Active item bonus",
+			"maximum": "Maximum Health",
+			"overflow": "Overflow wounds",
+			"light": "Light",
+			"heavy": "Heavy"
 		},
 		"advantages": {
 			"advantages": "Avantages",
@@ -1958,7 +1966,9 @@
 				"attribute3": "Total - Le nombre total de dés pour l'Attribut",
 				"attribute4": "Max - La valeur maximum pour l'Attribut",
 				"healthvalue": "Valeur - Le nombre de cases de santé du personnage pour ce niveau",
-				"healthpenalty": "Pénalité - La pénalité de blessure(s) du personnage pour ce niveau"
+				"healthpenalty": "Pénalité - La pénalité de blessure(s) du personnage pour ce niveau",
+				"healthformula": "Maximum Health = 3 + Strength + Endurance + Health Bonus.",
+				"healthdistribution": "Health boxes are distributed automatically, with remainders assigned from Crippled toward Bruised."
 			},
 			"items": {
 				"spheres": "Indiquer quelle(s) Sphère(s) et quel niveau(x) est(sont) nécessaire(s) pour lancer la Routine"

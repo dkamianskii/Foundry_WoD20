@@ -9,6 +9,7 @@ import BonusHelper from "./bonus-helpers.js";
 import ItemHelper from "./item-helpers.js";
 import DropHelper from "./drop-helpers.js";
 import { getWillpowerState, getWillpowerUpdate } from "./willpower.js";
+import { getHealthState, setHealthBox } from "./health.js";
 
 import AttributeHelper from "./attribute-helpers.js";
 import SphereHelper from "./sphere-helpers.js";
@@ -724,6 +725,17 @@ export const OnSquareCounterChange = async function (event, target) {
 	const dataset = target.dataset;
 
 	const oldState = dataset.state || "";
+
+	if (this.actor.type === "PC" && dataset.type === CONFIG.worldofdarkness.sheettype.mortal) {
+		const state = getHealthState(this.actor);
+		const nextState = {"": "light", light: "heavy", heavy: "aggravated", aggravated: null}[oldState];
+		if (nextState === undefined) return;
+		const wounds = setHealthBox(state.wounds, dataset.index, nextState, state.max);
+		await this.actor.update({"system.health.wounds": wounds, "system.settings.isupdated": false});
+		this.render();
+		return;
+	}
+
 	const states = parseCounterStates("/:bashing,x:lethal,*:aggravated");
 
 	const allStates = ["", ...Object.keys(states)];
@@ -835,6 +847,15 @@ export const OnSquareCounterClear = async function (event) {
 	const oldState = element.dataset.state || "";
 	const dataset = element.dataset;
 	const type = dataset.type;
+
+	if (this.actor.type === "PC" && type === CONFIG.worldofdarkness.sheettype.mortal) {
+		if (oldState === "") return;
+		const state = getHealthState(this.actor);
+		const wounds = setHealthBox(state.wounds, dataset.index, null, state.max);
+		await this.actor.update({"system.health.wounds": wounds, "system.settings.isupdated": false});
+		this.render();
+		return;
+	}
 
 	let actorData = foundry.utils.duplicate(this.actor);
 

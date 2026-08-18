@@ -1,4 +1,5 @@
 import BonusHelper from "./bonus-helpers.js";
+import { getActorHealthState } from "./health.js";
 
 export async function calculateTotals(updateData) {
 	let toForm = getForm(updateData);
@@ -252,11 +253,22 @@ export async function calculateTotals(updateData) {
 	}
 	
 
-	// health levels totals
-	for (const i in CONFIG.worldofdarkness.woundLevels) {
-		const bonus = await BonusHelper.GetHealthlevelsBuff(updateData, i);
-		updateData.system.health[i].total = parseInt(updateData.system.health[i].value) + bonus;		
-	}	
+	// PC Health is derived from attributes and a single Health bonus. Legacy
+	// actors retain their configurable per-level totals.
+	if (updateData.type === "PC") {
+		const health = getActorHealthState(updateData);
+		updateData.system.health.wounds = health.wounds;
+		updateData.system.health.damage.woundlevel = health.woundlevel;
+		updateData.system.health.damage.woundpenalty = health.woundpenalty;
+		updateData.system.traits.health.totalhealthlevels.value = health.current;
+		updateData.system.traits.health.totalhealthlevels.max = health.max;
+	}
+	else {
+		for (const i in CONFIG.worldofdarkness.woundLevels) {
+			const bonus = await BonusHelper.GetHealthlevelsBuff(updateData, i);
+			updateData.system.health[i].total = parseInt(updateData.system.health[i].value) + bonus;
+		}
+	}
 
 	if (updateData.system.settings.variant != "spirit") {
 		// intitiative totals

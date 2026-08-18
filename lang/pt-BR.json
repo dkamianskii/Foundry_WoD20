@@ -962,7 +962,15 @@
 			"chimericalsoak": "Absorção quimérica",
 			"penalty": "Penalidade da Ferida",
 			"chimerical": "Quimérico",
-			"normal": "Normal"
+			"normal": "Normal",
+			"current": "Current Health",
+			"bonus": "Health Bonus",
+			"endurance": "Endurance (Stamina)",
+			"itembonus": "Active item bonus",
+			"maximum": "Maximum Health",
+			"overflow": "Overflow wounds",
+			"light": "Light",
+			"heavy": "Heavy"
 		},
 		"advantages": {
 			"advantages": "Vantagens",
@@ -1958,7 +1966,9 @@
 				"attribute3": "Total - o número total de dados daquele Atributo",
 				"attribute4": "Máximo - o maior valor disponível desse Atributo",
 				"healthvalue": "Valor - número de caixas de saúde que o personagem tem para aquele nível",
-				"healthpenalty": "Penalidade - penalidade de ferida que o personagem tem para aquele nível"
+				"healthpenalty": "Penalidade - penalidade de ferida que o personagem tem para aquele nível",
+				"healthformula": "Maximum Health = 3 + Strength + Endurance + Health Bonus.",
+				"healthdistribution": "Health boxes are distributed automatically, with remainders assigned from Crippled toward Bruised."
 			},
 			"items": {
 				"spheres": "Preencha quais Esferas e qual nível são necessários para lançar a Rotina."

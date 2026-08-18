@@ -1296,6 +1296,9 @@ export const prepareCombatContext = async function (context, actor) {
 	context.powercombat		= actor.items.filter(item => item.type === "Power" && item.system.type === "wod.types.gift" && item.system.isactive);
 
 	context.health = await calculateHealth(actor, CONFIG.worldofdarkness.sheettype.mortal);
+	context.chimericalhealth = actor.system.settings.usechimerical
+		? await calculateHealth(actor, CONFIG.worldofdarkness.sheettype.changeling)
+		: undefined;
 
   	return context;
 }
@@ -1366,6 +1369,7 @@ export const prepareEffectContext = async function (context, actor) {
 
 export const prepareSettingsContext = async function (context, actor) {
   	context.tab = context.tabs.settings;
+	context.health = await calculateHealth(actor, CONFIG.worldofdarkness.sheettype.mortal);
 
 	// Bio
 	context.splatfields = actor.system.bio.splatfields;

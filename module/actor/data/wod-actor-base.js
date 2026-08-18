@@ -4,6 +4,7 @@ import CreateHelper from "../../scripts/create-helpers.js";
 import Functions from "../../functions.js";
 import PCActorAPI from "../api-handler.js";
 import { createWillpowerAdvantageFacade, getWillpowerState } from "../../scripts/willpower.js";
+import { getActorHealthState } from "../../scripts/health.js";
 
 /**
  * Extend the base Actor entity by defining a custom roll data structure which is ideal for the Simple system.
@@ -66,6 +67,32 @@ export class WoDActor extends Actor {
 
         foundry.utils.setProperty(changed, "system.willpower.damage.light", willpower.light);
         foundry.utils.setProperty(changed, "system.willpower.damage.heavy", willpower.heavy);
+
+        const healthCandidate = {
+            type: "PC",
+            items: this.items,
+            system: {
+                attributes: {
+                    strength: {value: value("system.attributes.strength.value", this.system.attributes.strength.value)},
+                    stamina: {value: value("system.attributes.stamina.value", this.system.attributes.stamina.value)}
+                },
+                health: {
+                    bonus: value("system.health.bonus", this.system.health.bonus),
+                    wounds: value("system.health.wounds", this.system.health.wounds),
+                    damage: {
+                        chimerical: value("system.health.damage.chimerical", this.system.health.damage.chimerical)
+                    }
+                },
+                settings: {usechimerical: this.system.settings.usechimerical}
+            }
+        };
+        const health = getActorHealthState(healthCandidate);
+
+        foundry.utils.setProperty(changed, "system.health.wounds", health.wounds);
+        foundry.utils.setProperty(changed, "system.health.damage.woundlevel", health.woundlevel);
+        foundry.utils.setProperty(changed, "system.health.damage.woundpenalty", health.woundpenalty);
+        foundry.utils.setProperty(changed, "system.traits.health.totalhealthlevels.value", health.current);
+        foundry.utils.setProperty(changed, "system.traits.health.totalhealthlevels.max", health.max);
     }
 
     async prepareDerivedData() {
@@ -866,9 +893,28 @@ export class WoDActor extends Actor {
     _onUpdateDescendantDocuments(parent, collection, documents, changes, options, userId) {
         super._onUpdateDescendantDocuments(parent, collection, documents, changes, options, userId);
 
-        if (this.type === "PC") return;
         if (this.permission < 3) return;
         if (collection !== "items" || !documents?.length) return;
+
+        if (this.type === "PC") {
+            const health = getActorHealthState(this);
+            const storedMax = parseInt(this.system.traits.health.totalhealthlevels.max) || 0;
+            const storedCurrent = parseInt(this.system.traits.health.totalhealthlevels.value) || 0;
+            const storedPenalty = parseInt(this.system.health.damage.woundpenalty) || 0;
+            if (storedMax !== health.max || storedCurrent !== health.current || storedPenalty !== health.woundpenalty
+                || this.system.health.damage.woundlevel !== health.woundlevel) {
+                this.update({
+                    "system.health.damage.woundlevel": health.woundlevel,
+                    "system.health.damage.woundpenalty": health.woundpenalty,
+                    "system.traits.health.totalhealthlevels.value": health.current,
+                    "system.traits.health.totalhealthlevels.max": health.max
+                }).catch(error => {
+                    ui.notifications.error(`Cannot refresh Health for Actor ${this?.name}. Please check console for details.`);
+                    console.error(error);
+                });
+            }
+            return;
+        }
 
         (async () => {
             try {
@@ -924,6 +970,16 @@ export class WoDActor extends Actor {
     async _handleWoundLevelCalculations(actorData) {
         try
         {
+            if (actorData.type === "PC") {
+                const health = getActorHealthState(actorData);
+                actorData.system.health.wounds = health.wounds;
+                actorData.system.health.damage.woundlevel = health.woundlevel;
+                actorData.system.health.damage.woundpenalty = health.woundpenalty;
+                actorData.system.traits.health.totalhealthlevels.value = health.current;
+                actorData.system.traits.health.totalhealthlevels.max = health.max;
+                return actorData;
+            }
+
             let totalNormWoundLevels = parseInt(actorData.system.health.damage.bashing) + parseInt(actorData.system.health.damage.lethal) + parseInt(actorData.system.health.damage.aggravated);
             let totalChimericalWoundLevels = 0;
 

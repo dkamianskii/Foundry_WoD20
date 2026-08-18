@@ -1,183 +1,312 @@
-let bashing = 0;
-let lethal = 0;
-let aggravated = 0;
+export const HEALTH_LEVELS = Object.freeze([
+    {id: "bruised", label: "wod.health.bruised", penalty: 0},
+    {id: "hurt", label: "wod.health.hurt", penalty: -1},
+    {id: "wounded", label: "wod.health.wounded", penalty: -2},
+    {id: "mauled", label: "wod.health.mauled", penalty: -3},
+    {id: "crippled", label: "wod.health.crippled", penalty: -5}
+]);
 
+export const WOUND_SEVERITIES = Object.freeze(["light", "heavy", "aggravated"]);
+
+const SEVERITY_RANK = Object.freeze({light: 1, heavy: 2, aggravated: 3});
+const WOUND_MARKERS = Object.freeze({light: "/", heavy: "X", aggravated: "Ж"});
+const LEGACY_DAMAGE_SEVERITY = Object.freeze({bashing: "light", lethal: "heavy", aggravated: "aggravated"});
+
+export function calculateMaxHealth(strength, endurance, healthBonus = 0) {
+    return Math.max(0, 3 + integer(strength) + integer(endurance) + integer(healthBonus));
+}
+
+export function distributeHealthLevels(maxHealth) {
+    const maximum = Math.max(0, integer(maxHealth));
+    const base = Math.floor(maximum / HEALTH_LEVELS.length);
+    const distribution = HEALTH_LEVELS.map(level => ({...level, count: base}));
+    let remainder = maximum % HEALTH_LEVELS.length;
+
+    for (let index = distribution.length - 1; index >= 0 && remainder > 0; index--, remainder--) {
+        distribution[index].count += 1;
+    }
+
+    return distribution;
+}
+
+export function normalizeWounds(wounds) {
+    return Array.from(wounds ?? [])
+        .filter(severity => WOUND_SEVERITIES.includes(severity));
+}
+
+/** Apply wounds to a finite track and retain any unresolved overflow. */
+export function applyWounds(wounds, severity, amount, maxHealth) {
+    if (!WOUND_SEVERITIES.includes(severity)) throw new Error(`Unknown wound severity '${severity}'.`);
+
+    const maximum = Math.max(0, integer(maxHealth));
+    const normalized = normalizeWounds(wounds);
+    const track = normalized.slice(0, maximum);
+    const overflow = normalized.slice(maximum);
+    let remaining = Math.max(0, integer(amount));
+
+    while (remaining-- > 0) {
+        const displaced = applyOneWound(track, severity, maximum);
+        if (displaced) overflow.push(displaced);
+    }
+
+    return normalizeWounds([...track, ...overflow]);
+}
+
+export function removeWounds(wounds, severity, amount) {
+    if (!WOUND_SEVERITIES.includes(severity)) throw new Error(`Unknown wound severity '${severity}'.`);
+
+    const result = normalizeWounds(wounds);
+    let remaining = Math.max(0, integer(amount));
+    while (remaining-- > 0) {
+        const index = result.lastIndexOf(severity);
+        if (index < 0) break;
+        result.splice(index, 1);
+    }
+    return result;
+}
+
+export function setHealthBox(wounds, index, severity, maxHealth) {
+    const result = normalizeWounds(wounds);
+    const box = Math.max(0, integer(index));
+
+    if (severity !== null && !WOUND_SEVERITIES.includes(severity)) {
+        throw new Error(`Unknown wound severity '${severity}'.`);
+    }
+
+    if (box < result.length) {
+        if (severity === null) result.splice(box, 1);
+        else result[box] = severity;
+        return normalizeWounds(result);
+    }
+
+    if (severity !== null) return applyWounds(result, severity, 1, maxHealth);
+    return result;
+}
+
+export function legacyDamageToWounds(damage) {
+    return normalizeWounds([
+        ...repeat("aggravated", damage?.aggravated),
+        ...repeat("heavy", damage?.lethal),
+        ...repeat("light", damage?.bashing)
+    ]);
+}
+
+export function migrateLegacyHealth(source) {
+    const health = source?.health ?? {};
+    const damage = health.damage ?? {};
+    const levels = ["bruised", "hurt", "injured", "wounded", "mauled", "crippled", "incapacitated"];
+    const hasLegacyHealth = ["bashing", "lethal", "aggravated"].some(type => damage[type] !== undefined)
+        || levels.some(level => health[level] !== undefined);
+
+    if (!hasLegacyHealth) return {bonus: Math.max(0, integer(health.bonus)), wounds: normalizeWounds(health.wounds)};
+
+    const configuredMaximum = levels.reduce((total, level) => total + (integer(health[level]?.value)), 0);
+    const legacyMaximum = configuredMaximum > 0
+        ? configuredMaximum
+        : integer(source?.traits?.health?.totalhealthlevels?.max);
+    const formulaBase = 3
+        + integer(source?.attributes?.strength?.value)
+        + integer(source?.attributes?.stamina?.value);
+
+    return {
+        bonus: legacyMaximum > 0 ? Math.max(0, legacyMaximum - formulaBase) : 0,
+        wounds: legacyDamageToWounds(damage)
+    };
+}
+
+export function getActiveHealthBonus(actor) {
+    let bonus = 0;
+    for (const item of actor?.items ?? []) {
+        if (item?.type === "Bonus" && item.system?.isactive && item.system?.type === "health_buff") {
+            bonus += integer(item.system.value);
+        }
+        for (const embedded of Array.isArray(item?.system?.bonuslist) ? item.system.bonuslist : []) {
+            if (embedded?.isactive && embedded.type === "health_buff") bonus += integer(embedded.value);
+        }
+    }
+    return bonus;
+}
+
+export function getHealthState(actor, {wounds, itemBonus} = {}) {
+    const manualBonus = Math.max(0, integer(actor?.system?.health?.bonus));
+    const activeBonus = itemBonus === undefined ? getActiveHealthBonus(actor) : integer(itemBonus);
+    const strength = integer(actor?.system?.attributes?.strength?.value);
+    const endurance = integer(actor?.system?.attributes?.stamina?.value);
+    const max = calculateMaxHealth(strength, endurance, manualBonus + activeBonus);
+    const allWounds = normalizeWounds(wounds ?? actor?.system?.health?.wounds);
+    const trackWounds = allWounds.slice(0, max);
+    const overflow = allWounds.slice(max);
+    const boxes = [];
+    let offset = 0;
+
+    const levels = distributeHealthLevels(max).map(level => {
+        const levelBoxes = [];
+        for (let localIndex = 0; localIndex < level.count; localIndex++) {
+            const index = offset + localIndex;
+            const severity = trackWounds[index] ?? null;
+            const legacyMarker = severity === "heavy" ? "x" : severity === "aggravated" ? "*" : severity ? "/" : "";
+            const box = {index, severity, marker: severity ? WOUND_MARKERS[severity] : "", legacyMarker};
+            boxes.push(box);
+            levelBoxes.push(box);
+        }
+        offset += level.count;
+        return {...level, boxes: levelBoxes};
+    });
+
+    let activeLevel = null;
+    for (let index = trackWounds.length - 1; index >= 0; index--) {
+        if (trackWounds[index] === "heavy" || trackWounds[index] === "aggravated") {
+            activeLevel = levels.find(level => level.boxes.some(box => box.index === index)) ?? null;
+            break;
+        }
+    }
+
+    return {
+        strength,
+        endurance,
+        manualBonus,
+        itemBonus: activeBonus,
+        totalBonus: manualBonus + activeBonus,
+        max,
+        current: Math.max(0, max - trackWounds.length),
+        wounds: allWounds,
+        trackWounds,
+        overflow,
+        boxes,
+        levels,
+        woundlevel: activeLevel?.label ?? "",
+        woundpenalty: activeLevel?.penalty ?? 0
+    };
+}
+
+/** Preserve the existing PC rule that the worse normal/chimerical track drives shared penalties. */
+export function getActorHealthState(actor) {
+    const normal = getHealthState(actor);
+    if (!actor?.system?.settings?.usechimerical) return normal;
+
+    const chimerical = getHealthState(actor, {
+        wounds: legacyDamageToWounds(actor.system.health?.damage?.chimerical)
+    });
+    const chimericalIsWorse = chimerical.woundpenalty < normal.woundpenalty;
+
+    return {
+        ...normal,
+        current: Math.min(normal.current, chimerical.current),
+        woundlevel: chimericalIsWorse ? chimerical.woundlevel : normal.woundlevel,
+        woundpenalty: chimericalIsWorse ? chimerical.woundpenalty : normal.woundpenalty
+    };
+}
+
+/** Existing sheet entry point. PC tracks use the new state; legacy tracks keep their representation. */
 export async function calculateHealth(actor, type) {
-
-    const healthLevels = [];
-    let woundPenalty = 0;
-    
-    if (type == CONFIG.worldofdarkness.sheettype.mortal) {
-        bashing = actor.system.health.damage.bashing;
-        lethal = actor.system.health.damage.lethal;
-        aggravated = actor.system.health.damage.aggravated;
+    if (actor?.type === "PC") {
+        if (type === CONFIG.worldofdarkness.sheettype.changeling) {
+            return getHealthState(actor, {wounds: legacyDamageToWounds(actor.system.health.damage.chimerical)});
+        }
+        return getHealthState(actor);
     }
-    if (type == CONFIG.worldofdarkness.sheettype.changeling) {
-        bashing = actor.system.health.damage.chimerical.bashing;
-        lethal = actor.system.health.damage.chimerical.lethal;
-        aggravated = actor.system.health.damage.chimerical.aggravated;
+    return calculateLegacyHealth(actor, type);
+}
+
+function applyOneWound(track, severity, maxHealth) {
+    if (maxHealth <= 0) return severity;
+
+    if (track.length < maxHealth) {
+        track.push(severity);
+        return null;
     }
-    if (type == CONFIG.worldofdarkness.sheettype.wraith) {
-        bashing = actor.system.health.damage.corpus.bashing;
-        lethal = actor.system.health.damage.corpus.lethal;
-        aggravated = actor.system.health.damage.corpus.aggravated;
 
-        for (let i=0; i < actor.system.advantages.corpus.permanent; i++) {
-            let status = await calculateStatus();
+    let index = track.findIndex(existing => SEVERITY_RANK[existing] < SEVERITY_RANK[severity]);
+    if (index < 0) index = track.findIndex(existing => existing === severity);
+    if (index < 0) return severity;
 
-            const healthLevel = {
-                label: "", 
-                status: status
-            };
+    let carry = severity;
+    while (carry && index < maxHealth) {
+        const existing = track[index];
+        const carryRank = SEVERITY_RANK[carry];
+        const existingRank = SEVERITY_RANK[existing];
 
-            healthLevels.push(healthLevel);
+        if (carryRank > existingRank) {
+            track[index] = carry;
+            carry = existing;
+            index++;
+            continue;
         }
 
-        healthLevels.woundPenalty = 0;
+        if (carryRank === existingRank) {
+            if (carry === "aggravated") {
+                index++;
+                continue;
+            }
+            track[index] = carry === "light" ? "heavy" : "aggravated";
+            carry = null;
+            break;
+        }
 
+        index++;
+    }
+
+    return carry;
+}
+
+function repeat(value, amount) {
+    return Array.from({length: Math.max(0, integer(amount))}, () => value);
+}
+
+function integer(value) {
+    const parsed = Number.parseInt(value, 10);
+    return Number.isFinite(parsed) ? parsed : 0;
+}
+
+async function calculateLegacyHealth(actor, type) {
+    let damage;
+    if (type === CONFIG.worldofdarkness.sheettype.changeling) damage = actor.system.health.damage.chimerical;
+    else if (type === CONFIG.worldofdarkness.sheettype.wraith) damage = actor.system.health.damage.corpus;
+    else damage = actor.system.health.damage;
+
+    let bashing = integer(damage?.bashing);
+    let lethal = integer(damage?.lethal);
+    let aggravated = integer(damage?.aggravated);
+    const healthLevels = [];
+
+    if (type === CONFIG.worldofdarkness.sheettype.wraith) {
+        for (let index = 0; index < integer(actor.system.advantages.corpus.permanent); index++) {
+            healthLevels.push({label: "", status: nextLegacyMarker()});
+        }
+        healthLevels.woundPenalty = 0;
         return healthLevels;
     }
 
-    if (actor.system.health.bruised.total > 0) {
-        for (let i=0; i < actor.system.health.bruised.total; i++) {
-            let status = await calculateStatus();
-
-            if (status != "") {
-                woundPenalty = parseInt(actor.system.health.bruised.penalty);
-            }
-
-            const healthLevel = {
-                label: actor.system.health.bruised.label, 
-                status: status
-            };
-
-            healthLevels.push(healthLevel);
+    let woundPenalty = 0;
+    for (const id of Object.keys(CONFIG.worldofdarkness.woundLevels)) {
+        const level = actor.system.health[id];
+        for (let index = 0; index < integer(level?.total); index++) {
+            const status = nextLegacyMarker();
+            if (status) woundPenalty = integer(level.penalty);
+            healthLevels.push({label: level.label, status});
         }
     }
 
-    if (actor.system.health.hurt.total > 0) {
-        for (let i=0; i < actor.system.health.hurt.total; i++) {
-            let status = await calculateStatus();
-
-            if (status != "") {
-                woundPenalty = parseInt(actor.system.health.hurt.penalty);
-            }
-
-            const healthLevel = {
-                label: actor.system.health.hurt.label, 
-                status: status
-            };
-
-            healthLevels.push(healthLevel);
-        }
-    }
-
-    if (actor.system.health.injured.total > 0) {
-        for (let i=0; i < actor.system.health.injured.total; i++) {
-            let status = await calculateStatus();
-
-            if (status != "") {
-                woundPenalty = parseInt(actor.system.health.injured.penalty);
-            }
-
-            const healthLevel = {
-                label: actor.system.health.injured.label, 
-                status: status
-            };
-
-            healthLevels.push(healthLevel);
-        }
-    }
-
-    if (actor.system.health.wounded.total > 0) {
-        for (let i=0; i < actor.system.health.wounded.total; i++) {
-            let status = await calculateStatus();
-
-            if (status != "") {
-                woundPenalty = parseInt(actor.system.health.wounded.penalty);
-            }
-
-            const healthLevel = {
-                label: actor.system.health.wounded.label, 
-                status: status
-            };
-
-            healthLevels.push(healthLevel);
-        }
-    }
-
-    if (actor.system.health.mauled.total > 0) {
-        for (let i=0; i < actor.system.health.mauled.total; i++) {
-            let status = await calculateStatus();
-
-            if (status != "") {
-                woundPenalty = parseInt(actor.system.health.mauled.penalty);
-            }
-
-            const healthLevel = {
-                label: actor.system.health.mauled.label, 
-                status: status
-            };
-
-            healthLevels.push(healthLevel);
-        }
-    }
-
-    if (actor.system.health.crippled.total > 0) {
-        for (let i=0; i < actor.system.health.crippled.total; i++) {
-            let status = await calculateStatus();
-
-            if (status != "") {
-                woundPenalty = parseInt(actor.system.health.crippled.penalty);
-            }
-
-            const healthLevel = {
-                label: actor.system.health.crippled.label, 
-                status: status
-            };
-
-            healthLevels.push(healthLevel);
-        }
-    }
-
-    if (actor.system.health.incapacitated.total > 0) {
-        for (let i=0; i < actor.system.health.incapacitated.total; i++) {
-            let status = await calculateStatus();
-
-            if (status != "") {
-                woundPenalty = parseInt(actor.system.health.incapacitated.penalty);
-            }
-
-            const healthLevel = {
-                label: actor.system.health.incapacitated.label, 
-                status: status
-            };
-
-            healthLevels.push(healthLevel);
-        }
-    }   
-    
     healthLevels.woundPenalty = woundPenalty;
-
     return healthLevels;
+
+    function nextLegacyMarker() {
+        if (aggravated > 0) {
+            aggravated--;
+            return "*";
+        }
+        if (lethal > 0) {
+            lethal--;
+            return "x";
+        }
+        if (bashing > 0) {
+            bashing--;
+            return "/";
+        }
+        return "";
+    }
 }
 
-async function calculateStatus() {
-    if (aggravated > 0) {
-        aggravated -= 1;
-
-        return "*";
-    }
-    if (lethal > 0) {
-        lethal -= 1;
-
-        return "x";
-    }
-    if (bashing > 0) {
-        bashing -= 1;
-
-        return "/";
-    }
-
-    return "";
+export function mapLegacyDamageType(damageType) {
+    return LEGACY_DAMAGE_SEVERITY[damageType] ?? damageType;
 }

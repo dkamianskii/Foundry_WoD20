@@ -962,7 +962,15 @@
 			"chimericalsoak": "Absorción quimérica",
 			"penalty": "Penalizador por heridas",
 			"chimerical": "Quimérico",
-			"normal": "Normal"
+			"normal": "Normal",
+			"current": "Current Health",
+			"bonus": "Health Bonus",
+			"endurance": "Endurance (Stamina)",
+			"itembonus": "Active item bonus",
+			"maximum": "Maximum Health",
+			"overflow": "Overflow wounds",
+			"light": "Light",
+			"heavy": "Heavy"
 		},
 		"advantages": {
 			"advantages": "Ventajas",
@@ -1958,7 +1966,9 @@
 				"attribute3": "Total — el total de dados actual de ese Atributo",
 				"attribute4": "Máx. — el valor máximo disponible para cada Atributo",
 				"healthvalue": "Valor — Número de casillas de Salud que el personaje tiene para ese nivel",
-				"healthpenalty": "Penalizador — Penalizador por heridas del personaje para ese nivel"
+				"healthpenalty": "Penalizador — Penalizador por heridas del personaje para ese nivel",
+				"healthformula": "Maximum Health = 3 + Strength + Endurance + Health Bonus.",
+				"healthdistribution": "Health boxes are distributed automatically, with remainders assigned from Crippled toward Bruised."
 			},
 			"items": {
 				"spheres": "Rellena qué Esferas y niveles necesitas para conjurar esta Fórmula"

@@ -4,6 +4,7 @@ import ActionHelper from "../scripts/action-helpers.js";
 import BonusHelper from "../scripts/bonus-helpers.js";
 import CombatHelper from "../scripts/combat-helpers.js";
 import { createWillpowerAdvantageFacade, getWillpowerState } from "../scripts/willpower.js";
+import { applyWounds, getActorHealthState, getHealthState, mapLegacyDamageType, removeWounds } from "../scripts/health.js";
 
 /**
  * PC Actor API Handler
@@ -634,15 +635,14 @@ export default class PCActorAPI {
 
     /**
      * Modify actor health
-     * @param {string} damageType - Type of damage ("bashing", "lethal", "aggravated")
+     * @param {string} damageType - Wound severity, or a legacy damage type
      * @param {number} amount - Amount of damage (positive = add damage, negative = remove damage)
      * @param {Object} options - Modification options
      * @param {boolean} options.heal - If true, treat amount as healing (default: false)
      * @returns {Promise<Object>} Updated health data
      *
-     * Adding damage follows V20/W20 Applying Damage: fill empty boxes; excess
-     * bashing upgrades bashing to lethal; excess aggravated converts bashing/lethal
-     * to aggravated. Further lethal overflow is not converted (death/torpor separately).
+     * Legacy callers are mapped as bashing→light and lethal→heavy until the
+     * separate Damage pipeline is migrated.
      */
     async modifyHealth(damageType, amount, options = {}) {
         this._validatePCActor();
@@ -651,7 +651,7 @@ export default class PCActorAPI {
             throw new Error("damageType is required");
         }
 
-        const validTypes = ["bashing", "lethal", "aggravated"];
+        const validTypes = ["bashing", "lethal", "light", "heavy", "aggravated"];
         if (!validTypes.includes(damageType)) {
             throw new Error(`Invalid damageType '${damageType}'. Must be one of: ${validTypes.join(", ")}`);
         }
@@ -662,51 +662,35 @@ export default class PCActorAPI {
 
         const heal = options.heal ?? false;
 
-        // Get current health damage
-        const actorData = foundry.utils.duplicate(this.actor);
-
-        // Apply modification
+        const severity = mapLegacyDamageType(damageType);
+        const currentState = getHealthState(this.actor);
+        let wounds;
         if (heal) {
-            let currentDamage = parseInt(actorData.system.health.damage[damageType]) || 0;
-            currentDamage = Math.max(0, currentDamage - Math.abs(amount));
-            actorData.system.health.damage[damageType] = currentDamage;
+            wounds = removeWounds(currentState.wounds, severity, Math.abs(amount));
         } else {
-            let maxLevels = parseInt(actorData.system.traits?.health?.totalhealthlevels?.max) || 0;
-            if (maxLevels <= 0) {
-                for (const level in CONFIG.worldofdarkness.woundLevels) {
-                    maxLevels += parseInt(actorData.system.health?.[level]?.total) || 0;
-                }
-            }
-            CombatHelper.ApplyDamageWithOverflow(
-                actorData.system.health.damage,
-                damageType,
-                Math.abs(amount),
-                maxLevels
-            );
+            wounds = applyWounds(currentState.wounds, severity, Math.abs(amount), currentState.max);
         }
 
-        // Ensure values don't go negative
-        if (parseInt(actorData.system.health.damage.bashing) < 0) {
-            actorData.system.health.damage.bashing = 0;
-        }
-        if (parseInt(actorData.system.health.damage.lethal) < 0) {
-            actorData.system.health.damage.lethal = 0;
-        }
-        if (parseInt(actorData.system.health.damage.aggravated) < 0) {
-            actorData.system.health.damage.aggravated = 0;
-        }
+        await this.actor.update({
+            "system.health.wounds": wounds,
+            "system.settings.isupdated": false
+        });
 
-        // Update actor (this will trigger _handleWoundLevelCalculations automatically)
-        actorData.system.settings.isupdated = false;
-        await this.actor.update(actorData);
-
-        // Return updated health data
+        const state = getActorHealthState(this.actor);
+        const light = state.wounds.filter(wound => wound === "light").length;
+        const heavy = state.wounds.filter(wound => wound === "heavy").length;
         return {
-            bashing: parseInt(this.actor.system.health.damage.bashing) || 0,
-            lethal: parseInt(this.actor.system.health.damage.lethal) || 0,
-            aggravated: parseInt(this.actor.system.health.damage.aggravated) || 0,
-            woundlevel: this.actor.system.health.damage.woundlevel || "",
-            woundpenalty: parseInt(this.actor.system.health.damage.woundpenalty) || 0
+            light,
+            heavy,
+            bashing: light,
+            lethal: heavy,
+            aggravated: state.wounds.filter(wound => wound === "aggravated").length,
+            wounds: state.wounds,
+            max: state.max,
+            current: state.current,
+            overflow: state.overflow,
+            woundlevel: state.woundlevel,
+            woundpenalty: state.woundpenalty
         };
     }
 }

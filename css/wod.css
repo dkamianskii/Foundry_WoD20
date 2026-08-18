@@ -3090,3 +3090,23 @@ input.sheet-infoWidth {
   margin-top: auto;
   border-top: 1px solid var(--main-full-color);
 }
+
+.wod20 .resource-counter .pc-health-box {
+  position: relative;
+  text-align: center;
+  line-height: 12px;
+  font-weight: 700;
+}
+
+.wod20 .resource-counter .pc-health-box[data-state="light"]::after {
+  content: "/";
+}
+
+.wod20 .resource-counter .pc-health-box[data-state="heavy"]::after {
+  content: "X";
+}
+
+.wod20 .resource-counter .pc-health-box[data-state="aggravated"]::after {
+  content: "Ж";
+  font-size: 10px;
+}

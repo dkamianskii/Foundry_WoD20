@@ -472,84 +472,32 @@
 				<div class="clearareaBox">
 					<div class="headlineGroup splatFont">{{localize "wod.health.health"}}</div>
 					<div class="clearareaBox">
-						<div class="pullLeft" style="width: 150px;">&nbsp;</div>
-						<div class="pullLeft headlineNormal numberBox">{{localize "wod.labels.value"}}</div>
-						<div class="pullLeft headlineNormal numberBox">{{localize "wod.labels.total"}}</div>
-						<div class="pullLeft headlineNormal numberBox">{{localize "wod.labels.penalty"}}</div>
+						<label class="pullLeft headlineNormal settings-leftwidth settings-verticalcenter" for="system.health.bonus">{{localize "wod.health.bonus"}}</label>
+						<input class="pullLeft sheet-infoValues numberBox {{#if (eq locked false)}}editable{{/if}}"
+							name="system.health.bonus" type="number" min="0" value="{{health.manualBonus}}"
+							data-dtype="Number" {{#if locked}}readonly{{/if}} />
+					</div>
+					<div class="clearareaBox"><span class="pullLeft settings-leftwidth">{{localize "wod.attributes.strength"}}</span><span>{{health.strength}}</span></div>
+					<div class="clearareaBox"><span class="pullLeft settings-leftwidth">{{localize "wod.health.endurance"}}</span><span>{{health.endurance}}</span></div>
+					<div class="clearareaBox"><span class="pullLeft settings-leftwidth">{{localize "wod.health.itembonus"}}</span><span>{{health.itemBonus}}</span></div>
+					<div class="clearareaBox bold"><span class="pullLeft settings-leftwidth">{{localize "wod.health.maximum"}}</span><span>{{health.max}}</span></div>
+					<div class="clearareaBox headlineNormal">
+						<span class="pullLeft settings-leftwidth">{{localize "wod.health.health"}}</span>
+						<span class="pullLeft numberBox">{{localize "wod.labels.value"}}</span>
+						<span class="pullLeft numberBox">{{localize "wod.labels.penalty"}}</span>
 					</div>
 
-					<div class="clearareaBox">
-						<label for="data.system.health.bruised.value" class="pullLeft headlineNormal settings-leftwidth settings-verticalcenter"
-							data-label="{{actor.system.health.bruised.value}}"
-							data-ability="true" style="width: 150px;">{{localize "wod.health.bruised"}}</label>
-						<input class="pullLeft sheet-infoValues numberBox {{#if (eq locked false)}}editable{{/if}}" name="system.health.bruised.value" type="text" value="{{actor.system.health.bruised.value}}" data-dtype="Number" {{#if locked}} readonly {{/if}} />
-						<input class="pullLeft sheet-infoValues numberBox" type="text" value="{{actor.system.health.bruised.total}}" readonly />
-						<input class="pullLeft sheet-infoValues numberBox inputdata {{#if (eq locked false)}}editable{{/if}}" name="system.health.bruised.penalty" type="text" value="{{actor.system.health.bruised.penalty}}"
-							data-name="data.system.health.bruised.penalty"
-							data-dtype="Number" {{#if locked}} readonly {{/if}} />
-					</div>
-
-					<div class="clearareaBox">
-						<label for="data.system.health.hurt.value" class="pullLeft headlineNormal settings-leftwidth settings-verticalcenter"
-							data-label="{{actor.system.health.hurt.value}}"
-							data-ability="true" style="width: 150px;">{{localize "wod.health.hurt"}}</label>
-						<input class="pullLeft sheet-infoValues numberBox {{#if (eq locked false)}}editable{{/if}}" name="system.health.hurt.value" type="text" value="{{actor.system.health.hurt.value}}" data-dtype="Number" {{#if locked}} readonly {{/if}} />
-						<input class="pullLeft sheet-infoValues numberBox" type="text" value="{{actor.system.health.hurt.total}}" readonly />
-						<input class="pullLeft sheet-infoValues numberBox inputdata {{#if (eq locked false)}}editable{{/if}}" name="system.health.hurt.penalty" type="text" value="{{actor.system.health.hurt.penalty}}"
-							data-name="data.system.health.hurt.penalty" data-dtype="Number" {{#if locked}} readonly {{/if}} />
-					</div>
-
-					<div class="clearareaBox">
-						<label for="data.system.health.injured.value" class="pullLeft headlineNormal settings-leftwidth settings-verticalcenter"
-							data-label="{{actor.system.health.injured.value}}"
-							data-ability="true" style="width: 150px;">{{localize "wod.health.injured"}}</label>
-						<input class="pullLeft sheet-infoValues numberBox {{#if (eq locked false)}}editable{{/if}}" name="system.health.injured.value" type="text" value="{{actor.system.health.injured.value}}" data-dtype="Number" {{#if locked}} readonly {{/if}} />
-							<input class="pullLeft sheet-infoValues numberBox" type="text" value="{{actor.system.health.injured.total}}" readonly />
-						<input class="pullLeft sheet-infoValues numberBox inputdata {{#if (eq locked false)}}editable{{/if}}" name="system.health.injured.penalty" type="text" value="{{actor.system.health.injured.penalty}}"
-							data-name="data.system.health.injured.penalty" data-dtype="Number" {{#if locked}} readonly {{/if}} />
-					</div>
-
-					<div class="clearareaBox">
-						<label for="data.system.health.wounded.value" class="pullLeft headlineNormal settings-leftwidth settings-verticalcenter"
-							data-label="{{actor.system.health.wounded.value}}"
-							data-ability="true" style="width: 150px;">{{localize "wod.health.wounded"}}</label>
-						<input class="pullLeft sheet-infoValues numberBox {{#if (eq locked false)}}editable{{/if}}" name="system.health.wounded.value" type="text" value="{{actor.system.health.wounded.value}}" data-dtype="Number" {{#if locked}} readonly {{/if}} />
-						<input class="pullLeft sheet-infoValues numberBox" type="text" value="{{actor.system.health.wounded.total}}" readonly />
-						<input class="pullLeft sheet-infoValues numberBox inputdata {{#if (eq locked false)}}editable{{/if}}" name="system.health.wounded.penalty" type="text" value="{{actor.system.health.wounded.penalty}}"
-							data-name="data.system.health.wounded.penalty" data-dtype="Number" {{#if locked}} readonly {{/if}} />
-					</div>
-
-					<div class="clearareaBox">
-						<label for="data.system.health.mauled.value" class="pullLeft headlineNormal settings-leftwidth settings-verticalcenter"
-							data-label="{{actor.system.health.mauled.value}}"
-							data-ability="true" style="width: 150px;">{{localize "wod.health.mauled"}}</label>
-						<input class="pullLeft sheet-infoValues numberBox {{#if (eq locked false)}}editable{{/if}}" name="system.health.mauled.value" type="text" value="{{actor.system.health.mauled.value}}" data-dtype="Number" {{#if locked}} readonly {{/if}} />
-						<input class="pullLeft sheet-infoValues numberBox" type="text" value="{{actor.system.health.mauled.total}}" readonly />
-						<input class="pullLeft sheet-infoValues numberBox inputdata {{#if (eq locked false)}}editable{{/if}}" name="system.health.mauled.penalty" type="text" value="{{actor.system.health.mauled.penalty}}"
-							data-name="data.system.health.mauled.penalty" data-dtype="Number" {{#if locked}} readonly {{/if}} />
-					</div>
-
-					<div class="clearareaBox">
-						<label for="data.system.health.crippled.value" class="pullLeft headlineNormal settings-leftwidth settings-verticalcenter"
-							data-label="{{actor.system.health.crippled.value}}"
-							data-ability="true" style="width: 150px;">{{localize "wod.health.crippled"}}</label>
-						<input class="pullLeft sheet-infoValues numberBox {{#if (eq locked false)}}editable{{/if}}" name="system.health.crippled.value" type="text" value="{{actor.system.health.crippled.value}}" data-dtype="Number" {{#if locked}} readonly {{/if}} />
-						<input class="pullLeft sheet-infoValues numberBox" type="text" value="{{actor.system.health.crippled.total}}" readonly />
-						<input class="pullLeft sheet-infoValues numberBox inputdata {{#if (eq locked false)}}editable{{/if}}" name="system.health.crippled.penalty" type="text" value="{{actor.system.health.crippled.penalty}}"
-							data-name="data.system.health.crippled.penalty" data-dtype="Number" {{#if locked}} readonly {{/if}} />
-					</div>
-
-					<div class="clearareaBox">
-						<label for="data.system.health.incapacitated.value" class="pullLeft headlineNormal settings-leftwidth settings-verticalcenter"
-							data-label="{{actor.system.health.incapacitated.value}}"
-							data-ability="true" style="width: 150px;">{{localize "wod.health.incapacitated"}}</label>
-						<input class="pullLeft sheet-infoValues numberBox {{#if (eq locked false)}}editable{{/if}}" name="system.health.incapacitated.value" type="text" value="{{actor.system.health.incapacitated.value}}" data-dtype="Number" {{#if locked}} readonly {{/if}} />
-						<input class="pullLeft sheet-infoValues numberBox" type="text" value="{{actor.system.health.incapacitated.total}}" readonly />
-					</div>
+					{{#each health.levels as |level|}}
+						<div class="clearareaBox">
+							<span class="pullLeft settings-leftwidth">{{localize level.label}}</span>
+							<span class="pullLeft numberBox">{{level.count}}</span>
+							<span class="pullLeft numberBox">{{level.penalty}}</span>
+						</div>
+					{{/each}}
 				</div>
 				<div class="clearareaBox information-area">
-					{{localize "wod.info.settings.healthvalue"}}<br />
-					{{localize "wod.info.settings.healthpenalty"}}
+					{{localize "wod.info.settings.healthformula"}}<br />
+					{{localize "wod.info.settings.healthdistribution"}}
 				</div>
 			</div>
 		</div>

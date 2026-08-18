@@ -1,6 +1,7 @@
 import MessageHelper from "./scripts/message-helpers.js"
 import BonusHelper from "./scripts/bonus-helpers.js";
 import MigrationWizard from "./ui/migration-wizard-helper.js";
+import { getHealthState } from "./scripts/health.js";
 
 /**
  * Time to update the entire world and patch it correctly
@@ -2478,6 +2479,7 @@ export  const updates = async () => {
  */
  async function updatePCActor(actor, migrationVersion) {
     let update = false;
+    const actorVersion = actor.system.settings.version;
 
     if (_compareVersion(actor.system.settings.version, "7.2.4")) {
 
@@ -2528,6 +2530,29 @@ export  const updates = async () => {
             await actor.deleteEmbeddedDocuments("Item", [legacyWillpower.id]);
             console.log(`WoD Migration | Converted embedded Willpower on ${actor.name} to the PC Willpower wound track.`);
         }
+    }
+
+    if (_compareVersion(actorVersion, "7.4.0")) {
+        const health = getHealthState(actor);
+        const updateData = {
+            "system.settings.version": migrationVersion,
+            "system.health.bonus": health.manualBonus,
+            "system.health.wounds": health.wounds,
+            "system.health.damage.woundlevel": health.woundlevel,
+            "system.health.damage.woundpenalty": health.woundpenalty,
+            "system.traits.health.totalhealthlevels.value": health.current,
+            "system.traits.health.totalhealthlevels.max": health.max,
+            "system.health.damage.-=bashing": null,
+            "system.health.damage.-=lethal": null,
+            "system.health.damage.-=aggravated": null
+        };
+
+        for (const level of ["bruised", "hurt", "injured", "wounded", "mauled", "crippled", "incapacitated"]) {
+            updateData[`system.health.-=${level}`] = null;
+        }
+
+        await actor.update(updateData);
+        console.log(`WoD Migration | Converted ${actor.name} to derived five-level PC Health.`);
     }
  }
 
@@ -2769,6 +2794,11 @@ export  const updates = async () => {
 
     if (newfunctions == "") {
         newfunctions += 'Issues fixed in version:<br />';
+
+        if (_compareVersion(installedVersion, '7.4.0')) {
+            newfunctions += '<li>[PC Actor] Health is now derived from Strength, Stamina, and a sheet Health Bonus.</li>';
+            newfunctions += '<li>[PC Actor] Health uses five automatic levels and light/heavy/aggravated wound cascades.</li>';
+        }
 
         if (_compareVersion(installedVersion, '7.3.0')) {
             newfunctions += '<li>[PC Actor] Willpower is now an actor-owned light/heavy wound track based on Composure + Resolve.</li>';

@@ -962,7 +962,15 @@
 			"chimericalsoak": "Chimärische Absorption",
 			"penalty": "Strafe für Verwundung",
 			"chimerical": "Chimärisch",
-			"normal": "Normal"
+			"normal": "Normal",
+			"current": "Current Health",
+			"bonus": "Health Bonus",
+			"endurance": "Endurance (Stamina)",
+			"itembonus": "Active item bonus",
+			"maximum": "Maximum Health",
+			"overflow": "Overflow wounds",
+			"light": "Light",
+			"heavy": "Heavy"
 		},
 		"advantages": {
 			"advantages": "Vorteile",
@@ -1958,7 +1966,9 @@
 				"attribute3": "Total - die Gesamtzahl der Würfel für dieses Attribut",
 				"attribute4": "Max - der höchste verfügbare Wert für dieses Attribut",
 				"healthvalue": "Wert - Anzahl der Gesundheitsboxen, die der Charakter für diese Stufe hat",
-				"healthpenalty": "Malus - Wundmalus, den der Charakter für diese Stufe hat"
+				"healthpenalty": "Malus - Wundmalus, den der Charakter für diese Stufe hat",
+				"healthformula": "Maximum Health = 3 + Strength + Endurance + Health Bonus.",
+				"healthdistribution": "Health boxes are distributed automatically, with remainders assigned from Crippled toward Bruised."
 			},
 			"items": {
 				"spheres": "Trage ein was für Sphären und Level nötig sind, um die Zauberformel zu sprechen"

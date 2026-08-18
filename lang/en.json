@@ -970,7 +970,15 @@
 			"chimericalsoak": "Chimerical soak",
 			"penalty": "Wound penalty",
 			"chimerical": "Chimerical",
-			"normal": "Normal"
+			"normal": "Normal",
+			"current": "Current Health",
+			"bonus": "Health Bonus",
+			"endurance": "Endurance (Stamina)",
+			"itembonus": "Active item bonus",
+			"maximum": "Maximum Health",
+			"overflow": "Overflow wounds",
+			"light": "Light",
+			"heavy": "Heavy"
 		},
 		"advantages": {
 			"advantages": "Advantages",
@@ -1974,7 +1982,9 @@
 				"attribute3": "Total - the total number of dice of that Attribute",
 				"attribute4": "Max - the highest available value of that Attribute",
 				"healthvalue": "Value - number health boxes character has for that level",
-				"healthpenalty": "Penalty - wound penalty character has for that level"
+				"healthpenalty": "Penalty - wound penalty character has for that level",
+				"healthformula": "Maximum Health = 3 + Strength + Endurance + Health Bonus.",
+				"healthdistribution": "Health boxes are distributed automatically, with remainders assigned from Crippled toward Bruised."
 			},
 			"items": {
 				"spheres": "Fill what Spheres and what level that are needed to cast the Rote"

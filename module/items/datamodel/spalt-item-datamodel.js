@@ -1,5 +1,5 @@
 import base_settings from "./base/item_base_settings.js";
-import health from "../../actor/datamodel/base/actor_health.js";
+import health from "./base/splat_health.js";
 
 /**
  * Data schema, attributes, and methods specific to Actor.

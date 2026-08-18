@@ -115,20 +115,6 @@ export default class SplatItemSheet extends HandlebarsApplicationMixin(WoDItemSh
         return tabs;
     }
 
-    getHealthLevels(item) {
-        const health = {};
-
-        for (const i in CONFIG.worldofdarkness.woundLevels) {
-            health[i] = {
-                label: item.system.health[i].label,
-                value: item.system.health[i].value,
-                penalty: item.system.health[i].penalty
-            };
-        }
-
-        return health;
-    }
-
     /** @override */
     async _prepareContext(options) {
         const data = await super._prepareContext();
@@ -136,7 +122,6 @@ export default class SplatItemSheet extends HandlebarsApplicationMixin(WoDItemSh
         const actor = this.item.actor;
 
         data.tabs = this.getTabs();
-        data.healthlevels = this.getHealthLevels(this.item);
         data.listData = SelectHelper.SetupItem(item);
         //data.canEdit = this.item.isOwner || game.user.isGM;
 

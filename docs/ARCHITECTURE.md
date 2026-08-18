@@ -1,6 +1,6 @@
 # World of Darkness V20 Advanced System Architecture
 
-This document describes the architecture of the repository as it exists in version 7.3.0 (Foundry VTT v14). It records current behavior, including partially migrated and compatibility paths; it is not the target rules definition. See `RULES_SPEC.md` for desired rules and `IMPLEMENTATION_STATUS.md` for the requirement-by-requirement gap analysis and roadmap.
+This document describes the architecture of the repository as it exists in version 7.4.0 (Foundry VTT v14). It records current behavior, including partially migrated and compatibility paths; it is not the target rules definition. See `RULES_SPEC.md` for desired rules and `IMPLEMENTATION_STATUS.md` for the requirement-by-requirement gap analysis and roadmap.
 
 ## 1. Executive summary
 
@@ -71,7 +71,7 @@ Relevant files:
 
 - `module/actor/datamodel/pc-actor-datamodel.js` — `PCDataModel`.
 - `module/actor/datamodel/base/actor_attributes.js` — eleven attribute records (20th- and 5th-edition alternatives coexist and visibility selects the active set).
-- `module/actor/datamodel/base/actor_health.js` — damage counters and seven named wound levels.
+- `module/actor/datamodel/base/actor_health.js` — PC Health bonus, ordered wound severities, derived penalty compatibility fields, and chimerical compatibility counters.
 - `module/actor/datamodel/base/actor_willpower.js` — actor-owned PC Willpower light/heavy damage counters.
 - `module/actor/datamodel/base/actor_settings.js` — feature flags, splat/variant/era, maximums, and soak permissions/bonuses.
 - `module/actor/datamodel/base/actor_traits.js` — aggregate health-level value/max.
@@ -83,7 +83,7 @@ Important PC schema branches:
 - `bio`: basic identity fields, dynamic `splatfields`, and HTML fields.
 - `attributes`: value, bonus, total, max, type, label, speciality, ordering, visibility, and favored state.
 - `soak`: derived normal and chimerical pools.
-- `health`: normal/chimerical damage counters plus wound-level configuration.
+- `health`: actor-owned PC bonus and ordered normal wound severities; chimerical damage retains legacy counters.
 - `willpower.damage`: persistent `light` and `heavy` wound counts. Maximum/current/full values and display boxes are derived rather than persisted.
 - `traits.health.totalhealthlevels`: derived current/max health boxes.
 - `initiative`, `conditions`, `movement`, `gear`, and `favoriterolls`.
@@ -130,7 +130,7 @@ Foundry Actor.prepareData()
 6. applies special resource rules such as path bearing, virtue limits, blood-pool generation limits, and quintessence/paradox constraints;
 7. creates list/group data consumed by sheets and rolls and may batch-update embedded items where persisted values are stale.
 
-`WoDActor._preUpdate` also clamps PC Willpower wound counts when Composure or Resolve changes so `light + heavy` cannot exceed the newly derived maximum.
+`WoDActor._preUpdate` also clamps PC Willpower wound counts when Composure or Resolve changes. In the same hook it normalizes PC Health wounds and refreshes maximum/current Health and the compatibility wound penalty whenever relevant Actor data changes.
 
 On legacy actors the same document class works directly with persistent `system.abilities`, `system.advantages`, and game-specific branches. `_preCreate` uses `CreateHelper` to seed type/era data. `_onUpdate` and `_onUpdateDescendantDocuments` coordinate recalculation, `calculateTotals`, and embedded-item changes. `_setItems` synchronizes item maximums/bonuses where actor changes affect them.
 
@@ -211,6 +211,12 @@ Migration `7.3.0` converts an existing PC Willpower Advantage's spent temporary 
 Its `PARTS` are navigation, bio, stats, powers, combat, gear, feature, effects, and settings. `_prepareContext` creates shared context; `_preparePartContext` delegates to part-specific context builders in the same file. Important prepared values include enriched HTML, lists of embedded items, grouped advantages/powers, `calculateHealth` output, permission/lock state, and select-list data.
 
 The stats context calls `getWillpowerState(actor)` and `templates/actor/parts/stats_willpower.hbs` renders the resulting health-style boxes. Each box is empty, light (`/`), or heavy (`X`); empty boxes are available Willpower. The `editWillpower` action maps to `OnWillpowerCounterChange`, while the sheet's context-menu listener calls `OnWillpowerCounterClear`; both delegate to `getWillpowerUpdate` and persist only `system.willpower.damage.light/heavy`. A left click advances a box, exhaustion converts an existing light wound to heavy, and a right click clears damage. The actor rerender then derives current/full values and rebuilds the facade.
+
+PC stats and combat contexts call `calculateHealth`, which returns the derived
+five-level Health state. `stats_health.hbs` renders its boxes and the exact
+light/heavy/aggravated markers. In Options → Combat, the former editable
+per-level values and penalties are replaced by one editable Health Bonus plus
+read-only formula inputs, maximum, and distribution.
 
 Static `DEFAULT_OPTIONS.actions` maps `data-action` events to functions imported mostly from `module/scripts/action-helpers.js` and `module/scripts/item-actions.js`. Typical flow:
 
@@ -380,22 +386,36 @@ Dependencies: evaluation depends on settings cached in `CONFIG.worldofdarkness`,
 
 ### 9.1 Health representation and display
 
-Normal damage is stored as counts in `system.health.damage.{bashing,lethal,aggravated}`. PC and Changeling-capable data also has `damage.chimerical`. Each named wound level stores base `value`, derived `total`, `penalty`, and label.
+Normal PC wounds are canonically stored as ordered severity ids in
+`system.health.wounds`; the sheet adjustment is `system.health.bonus`.
+`module/scripts/health.js::getHealthState` derives:
 
-`WoDActor._handleWoundLevelCalculations`:
+- `max = 3 + Strength.value + Stamina.value + manual bonus + active health_buff values`;
+- exactly five level groups with severe-first remainder distribution;
+- current Health, display boxes, and retained overflow;
+- the active fixed penalty from the most severe level containing heavy or aggravated damage.
 
-- sums normal and chimerical damage and uses the larger total;
-- totals all configured wound-level boxes into `traits.health.totalhealthlevels.max`;
-- derives remaining health value;
-- walks `CONFIG.worldofdarkness.woundLevels` to set current `damage.woundlevel` and `damage.woundpenalty`.
+The exact PC markers are `/`, `X`, and `Ж`. `damage.woundlevel`,
+`damage.woundpenalty`, and `traits.health.totalhealthlevels` remain derived
+compatibility outputs for existing roll and initiative consumers; they are not
+independently editable rules data.
 
-`module/scripts/health.js::calculateHealth` is a presentation helper. It converts damage counts into an ordered array of `*` (aggravated), `x` (lethal), `/` (bashing), or empty boxes and attaches a `woundPenalty` property. It has special branches for chimerical and Wraith corpus tracks.
-
-`calculateTotals` in `module/scripts/totals.js` derives health-level totals from `BonusHelper`, computes soak from Stamina/shape settings/bonuses/armor, and includes wound penalty in initiative unless pain is ignored.
+Legacy Actor types continue to store aggregate bashing/lethal/aggravated
+counts and seven configured levels. PC chimerical damage also retains its old
+counters but is presented against the derived five-level capacity; as before,
+the worse normal/chimerical track drives the shared PC penalty. Splat
+documents retain their legacy health schema for source compatibility, although
+their level counts are no longer applied to PCs.
 
 ### 9.2 Applying damage
 
-`CombatHelper.GetApplicableDamageCapacity` and `ApplyDamageWithOverflow` in `module/scripts/combat-helpers.js` implement track mutation:
+For normal PCs, `module/scripts/health.js::applyWounds` inserts light, heavy,
+or aggravated wounds, resolves least-severe overflow through recursive
+pairwise upgrades, and retains unresolved overflow. The specification example
+of seven light wounds followed by two heavy wounds resolves to four heavy and
+three light wounds.
+
+`CombatHelper.GetApplicableDamageCapacity` and `ApplyDamageWithOverflow` remain the legacy/chimerical mutation path:
 
 - fill empty boxes with the incoming type;
 - excess bashing upgrades existing bashing to lethal;
@@ -407,15 +427,18 @@ The principal automated damage call chain is:
 ```text
 DialogSoakRoll._soakRoll
   -> DiceRoller(soak container)
-  -> unsoaked = incoming - successes, capped by applicable capacity
+  -> unsoaked = incoming - successes
   -> _applyUnsoakedDamage
-     -> PC normal: actor.api.modifyHealth
+     -> PC normal: actor.api.modifyHealth -> PC wound resolver
      -> PC chimerical or legacy: CombatHelper.ApplyDamageWithOverflow directly
   -> actor.update
   -> WoDActor preparation derives wound level/penalty
 ```
 
-`PCActorAPI.modifyHealth` is also available programmatically for adding or healing PC damage. Health-box clicks in actor sheets update raw damage counters through actions in `action-helpers.js` and then rely on actor preparation for derived state.
+`PCActorAPI.modifyHealth` accepts the new severity ids and temporarily maps
+legacy soak inputs as bashing→light and lethal→heavy. Health-box clicks use
+the same canonical wound state. This adapter intentionally does not implement
+the later independent damage-nature/lethality design.
 
 Dependencies: health calculation depends on Splat-configured wound boxes, active health bonuses, chimerical flags, actor type, soak dialog input, and actor lifecycle recalculation.
 

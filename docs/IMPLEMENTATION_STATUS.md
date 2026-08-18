@@ -1,6 +1,6 @@
 # Rules Implementation Status
 
-This document compares the target rules in `RULES_SPEC.md` with the current implementation in version 7.3.0. `ARCHITECTURE.md` describes how the repository works today; this document records the gap between that architecture and the desired final system and orders the work needed to close it.
+This document compares the target rules in `RULES_SPEC.md` with the current implementation in version 7.4.0. `ARCHITECTURE.md` describes how the repository works today; this document records the gap between that architecture and the desired final system and orders the work needed to close it.
 
 Status labels:
 
@@ -11,17 +11,16 @@ Status labels:
 
 ## 1. Executive status
 
-The repository has completed the package rename, the PC Willpower redesign, Splat compatibility for that redesign, zero-pool automatic failure, enforced Test difficulty bounds, explicit Resistance, the specified botch comparison, Test margins, and the reordered chat result display. New-world defaults now select the requested 5th-edition Test profile: speciality threshold 2, speciality difficulty reduction 1, no speciality-added successes, always-exploding 10s, damage/soak botching enabled, and attack successes not added to damage dice. The main conversion is not otherwise complete. Several legacy dice settings remain configurable and can move an existing world away from this default profile. Health still uses seven configurable legacy wound levels and aggregate damage counts. Damage, weapons, and armor do not yet model the specification's independent nature/lethality, concentrated damage, or effective Protection pipeline.
+The repository has completed the package rename, the PC Willpower redesign, Splat compatibility for that redesign, the PC Health redesign, zero-pool automatic failure, enforced Test difficulty bounds, explicit Resistance, the specified botch comparison, Test margins, and the reordered chat result display. New-world defaults now select the requested 5th-edition Test profile. Legacy Actor types and PC chimerical damage retain compatibility Health paths. Damage, weapons, and armor do not yet model the specification's independent nature/lethality, concentrated damage, or effective Protection pipeline.
 
 The remaining work should be done in this dependency order:
 
 1. establish stable rule result/data contracts and tests;
 2. replace the generic Test evaluator;
-3. replace the PC Health and wound-resolution model;
-4. add damage-source, weapon, and armor fields;
-5. connect attack, Damage Test, defense, wound conversion, and chat output;
-6. migrate actors/items/Splats/compendia and decide the legacy-actor support boundary;
-7. remove or clearly scope obsolete settings and compatibility code.
+3. add damage-source, weapon, and armor fields;
+4. connect attack, Damage Test, defense, wound conversion, and chat output;
+5. migrate dependent items/compendia and decide the legacy-actor support boundary;
+6. remove or clearly scope obsolete settings and compatibility code.
 
 ## 2. Work already implemented
 
@@ -29,7 +28,7 @@ The remaining work should be done in this dependency order:
 
 **Status: Implemented, with a runtime compendium compatibility boundary.**
 
-- `system.json` uses package id `wod-advanced`, version `7.3.0`, and Foundry v14 compatibility.
+- `system.json` uses package id `wod-advanced`, version `7.4.0`, and Foundry v14 compatibility.
 - runtime paths, settings namespaces, flags, tours, source compendium UUIDs, and pack metadata use `wod-advanced`.
 - the internal object names `CONFIG.worldofdarkness` and `game.worldofdarkness` intentionally remain; these are JavaScript API names, not the package id.
 - `module/scripts/drop-helpers.js::NormalizeCompendiumUuid` converts imported `Compendium.worldofdarkness.*` references to the active system id.
@@ -118,6 +117,32 @@ The displayed pre-Resistance count is not identical to `rawSuccesses`: `rawSucce
 
 Commit `c07379e` fixed a missing closing parenthesis in the favored-roll branch of `roll-dice.js`. That syntax error demonstrated an important dependency: the PC sheet imports the roll stack through `ActionHelper`, so failure to parse the dice module can leave a title-only actor application. The fix was manually verified in Foundry v14 by reopening a PC sheet and confirming all sheet parts rendered.
 
+### 2.6 PC Health and wounds
+
+**Status: Implemented for normal PC Health; compatibility boundaries remain.**
+
+- maximum Health is derived from `3 + Strength.value + Stamina.value + healthBonus`;
+- the manual bonus is edited in Options → Combat, and active `health_buff`
+  values add to it without retaining their legacy per-level target on PCs;
+- five fixed levels are distributed evenly with remainders assigned
+  Crippled → Mauled → Wounded → Hurt → Bruised;
+- normal wounds persist as ordered `light`, `heavy`, and `aggravated` ids and
+  render as `/`, `X`, and `Ж`;
+- overflow displacement performs recursive light→heavy→aggravated pairwise
+  upgrades and retains unresolved overflow;
+- only heavy/aggravated wounds activate the fixed 0/-1/-2/-3/-5 penalty;
+- `damage.woundlevel`, `damage.woundpenalty`, and aggregate Health traits remain
+  derived compatibility outputs, so the existing roll/initiative pipeline was
+  reused rather than reimplemented;
+- soak and API callers temporarily map bashing→light and lethal→heavy pending
+  the separate Damage conversion;
+- migration 7.4.0 converts legacy PC counters/levels and preserves excess
+  wounds; legacy Actors and PC chimerical mutation retain old rules.
+
+Primary files are `module/scripts/health.js`, the PC Health data model and Actor
+lifecycle, PC sheet/actions, `module/actor/api-handler.js`, `dialog-soak.js`,
+Splat/drop compatibility, migration, localization, and `tests/health.test.mjs`.
+
 ## 3. Requirement matrix
 
 ### 3.1 Generic Dice Tests
@@ -156,15 +181,15 @@ Primary files: `module/scripts/roll-dice.js`, all builders in `module/dialogs/`,
 
 | Requirement | Status | Current implementation | Required change |
 | --- | --- | --- | --- |
-| `maxHealth = 3 + Strength + Endurance + healthBonus` | Not implemented | Maximum is the sum of Splat-configured wound-level boxes plus bonuses. The current attribute set has Stamina, not an explicit Endurance field. | Resolve the Endurance data mapping, add one authoritative max calculation, and migrate/recalculate actor tracks. |
-| Exactly five levels | Not implemented | Seven legacy levels: bruised, hurt, injured, wounded, mauled, crippled, incapacitated. | Replace the PC schema/config/context with Bruised, Hurt, Wounded, Mauled, Crippled. |
-| Even distribution, remainder severe-first | Not implemented | Splat documents store per-level values. | Implement a deterministic distribution helper derived from max; stop treating Splat counts as canonical. |
-| Penalties 0/-1/-2/-3/-5 | Partial | Levels contain penalties, but the current seven-level configuration and selection rule differ. | Define the five fixed penalties in the new health service/config. |
-| Penalty from most severe box containing heavy/aggravated; no stacking | Not implemented | Penalty is based on aggregate damage position and does not distinguish severity for activation. | Derive active penalty from resolved boxes after each mutation. |
-| Markers light `/`, heavy `X`, aggravated `Ж` | Partial | Counts use bashing/lethal/aggravated and display `/`, `x`, `*`. | Rename/model target severities and render exact target markers. |
-| Fill least to most severe | Partial | Display arrays are filled in order, but storage is aggregate counts rather than resolved boxes. | Introduce an ordered wound-track resolver or a canonical ordered box representation. |
-| `2 light -> heavy`, `2 heavy -> aggravated` | Not implemented | Overflow upgrades differ: excess bashing upgrades existing bashing one-for-one; lethal overflow is discarded. | Implement pairwise recursive combination. |
-| Replacement, displacement, recursive cascades | Not implemented | `ApplyDamageWithOverflow` operates on aggregate capacities and does not implement the specified cascade. | Replace it with a pure resolver that returns the complete final track and overflow/death state. |
+| `maxHealth = 3 + Strength + Endurance + healthBonus` | **Implemented for PC** | Endurance is explicitly mapped to base Stamina; the manual sheet bonus and active Health buffs are included. | Decide separately whether legacy Actors should adopt the target rules. |
+| Exactly five levels | **Implemented for PC** | Bruised, Hurt, Wounded, Mauled, and Crippled are derived. | Legacy Actors retain seven levels. |
+| Even distribution, remainder severe-first | **Implemented for PC** | Pure deterministic helper assigns remainders from Crippled toward Bruised. | None for PC path. |
+| Penalties 0/-1/-2/-3/-5 | **Implemented for PC** | Fixed in the PC Health service. | None for PC path. |
+| Penalty from most severe box containing heavy/aggravated; no stacking | **Implemented for PC** | Derived from resolved boxes; light wounds are ignored. | None for PC path. |
+| Markers light `/`, heavy `X`, aggravated `Ж` | **Implemented for PC** | Canonical severity ids render exact markers. | Chimerical/legacy tracks retain compatibility markers. |
+| Fill least to most severe | **Implemented for PC** | Canonically ordered wounds are projected onto derived boxes from Bruised onward. | None for PC path. |
+| `2 light -> heavy`, `2 heavy -> aggravated` | **Implemented for PC** | Overflow displacement recursively combines least-severe pairs. | Add more boundary fixtures as the Damage pipeline is converted. |
+| Replacement, displacement, recursive cascades | **Implemented for PC** | The pure resolver passes the seven-light plus two-heavy example and retains unresolved overflow. | Death/terminal overflow effects remain unspecified. |
 
 Primary files: `module/actor/datamodel/base/actor_health.js`, `module/actor/datamodel/base/actor_traits.js`, `module/actor/data/wod-actor-base.js`, `module/config.js`, `module/scripts/health.js`, `module/scripts/combat-helpers.js`, `module/scripts/totals.js`, `module/actor/api-handler.js`, PC health templates/actions, Splat schema/sheets, and migration code.
 
@@ -220,17 +245,13 @@ Primary files: `template.json` or new typed item models, `module/items/datamodel
 
 ### Phase 2 — Replace PC Health persistence and wound resolution
 
-1. Add the chosen Endurance mapping and calculate maximum Health from the formula plus `BonusHelper` health bonus.
-2. Replace seven Splat-configured PC levels with five derived level groups and severe-first remainder distribution.
-3. Choose canonical persistence:
-   - recommended: ordered box severities, because displacement is inherently positional; or
-   - compact severity counts plus a rigorously canonical resolver, if every position can be reconstructed without ambiguity.
-4. Implement a pure recursive wound resolver for insertion, displacement, pairwise upgrades, aggravated caps, healing, and overflow.
-5. Replace `CombatHelper.ApplyDamageWithOverflow` for PC callers and make `PCActorAPI.modifyHealth` use the new resolver.
-6. Derive the active penalty only from the most severe level containing heavy/aggravated damage.
-7. Replace `calculateHealth` and PC sheet actions/templates with the new resolved-box context and exact markers.
-8. Update totals, initiative, pain-ignore logic, soak callers, favorites/macros if affected, and Splat editing so old level counts are no longer treated as canonical.
-9. Add a versioned actor/Splat migration and document reversibility/data loss in `MIGRATION.md`.
+**Completed for normal PC Health in 7.4.0.** Endurance maps to Stamina;
+ordered severity ids are canonical; maximum, five levels, display boxes, and
+penalty are derived; the resolver handles recursive overflow upgrades; the PC
+API, soak adapter, sheet controls, Splat application, migration, and focused
+pure tests use the new path. Legacy Actors and PC chimerical mutation remain an
+explicit compatibility boundary. Terminal consequences for unresolved
+overflow remain pending because the specification does not define them.
 
 ### Phase 3 — Introduce damage-source and defense models
 
@@ -265,9 +286,6 @@ Primary files: `template.json` or new typed item models, `module/items/datamodel
 
 The following future changes alter persisted data and require versioned migration plus compendium/Splat conversion:
 
-- Endurance attribute choice if it is not mapped to Stamina;
-- five-level Health configuration and maximum formula;
-- canonical ordered wound state or replacement severity counts;
 - damage nature, lethality, and concentration on damage sources;
 - normalized weapon type;
 - armor Protection, applicable nature rules, and degradation state;
@@ -277,9 +295,13 @@ The following future changes alter persisted data and require versioned migratio
 
 Do not derive new canonical fields only in sheet context. They must live in typed models (or explicitly supported legacy schemas), migrate existing documents, and be regenerated in bundled Splat/compendium sources.
 
+PC Health persistence was migrated in 7.4.0. Its Endurance mapping, five-level
+derivation, ordered wound state, and compatibility boundaries are documented
+in `MIGRATION.md`.
+
 ## 6. Verification gates
 
-Current verification progress: JavaScript/localization/template parsing has been run for the recent Test/chat changes, and the title-only PC-sheet regression was reproduced and fixed in Foundry v14. Permanent pure-rule and chat-card regression tests are still absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
+Current verification progress: JavaScript/localization checks have been run for the recent Test/chat and Health changes; focused pure Health tests cover the formula, distribution, cascade example, penalties, and overflow. The title-only PC-sheet regression was reproduced and fixed in Foundry v14. Broader Test/chat-card regression coverage remains absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
 
 Each phase is complete only after these checks pass:
 
@@ -294,10 +316,8 @@ Each phase is complete only after these checks pass:
 
 ## 7. Known design decisions still required
 
-- **PC-only versus all actor types:** the new Willpower implementation is PC-only, while the desired Health/damage rules are not explicitly scoped. This must be decided before schema work.
-- **Endurance identity:** no explicit current Endurance attribute was found; the system uses Stamina. A silent mapping would make the rule ambiguous.
+- **Legacy Health scope:** Willpower and target Health are PC-only. Decide separately whether legacy Actor types should ever be migrated.
 - **Mandatory exhaustion:** code permits the general-dialog checkbox to suppress `-2`, while the specification reads as mandatory.
 - **Settings authority:** new-world defaults now match the requested Test profile, but existing saved values and the settings UI can still select conflicting behavior. Decide whether those controls are removed, migrated to fixed values, or retained only in a named legacy rules mode.
-- **Health canonical form:** ordered boxes simplify displacement and penalty selection; aggregate counts simplify storage but risk losing positional meaning.
 - **Armor degradation details:** the specification says AP affects degradation but does not define the degradation formula. That formula must be added before implementation.
 - **Overflow at maximum aggravated Health:** death/incapacitation behavior is not specified and the current helper silently limits some overflow. Define the terminal rule before replacing it.

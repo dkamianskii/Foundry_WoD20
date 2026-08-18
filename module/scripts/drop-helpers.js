@@ -729,18 +729,9 @@ export default class DropHelper {
         actorData.system.settings.abilities.defaultmaxvalue = droppedItem.system.settings.abilities.defaultmaxvalue;
         actorData.system.settings.abilities.defaultmaxvalue = droppedItem.system.settings.powers.defaultmaxvalue;
 
-        // Clear health
+        // PC Health capacity is actor-derived; Splats only select whether the
+        // separate legacy chimerical track is available.
         actorData.system.settings.usechimerical = droppedItem.system.settings.usechimerical;
-
-        const health = droppedItem.system.health;
-        let totalHealthLevels = 0;
-
-        for (const healthlevel in CONFIG.worldofdarkness.woundLevels) {
-            totalHealthLevels += parseInt(health[healthlevel].value);
-        }
-
-        actorData.system.traits.health.totalhealthlevels.value = totalHealthLevels;
-        actorData.system.traits.health.totalhealthlevels.max = totalHealthLevels;
 
         const soaklevel = droppedItem.system.settings.soak;
 
@@ -814,13 +805,16 @@ export default class DropHelper {
         };
         actorData.system.attributes = attributeDefaults;
 
-        // Reset health damage tracking
-        actorData.system.health.damage = {
-            bashing: 0,
-            lethal: 0,
-            aggravated: 0,
-            woundlevel: "",
-            woundpenalty: 0
+        // Reset actor-owned PC Health. Capacity and level distribution are
+        // derived from Strength, Stamina, and this manual bonus.
+        actorData.system.health = {
+            bonus: 0,
+            wounds: [],
+            damage: {
+                woundlevel: "",
+                woundpenalty: 0,
+                chimerical: {bashing: 0, lethal: 0, aggravated: 0}
+            }
         };
 
         actorData.system.willpower.damage = {
@@ -828,30 +822,9 @@ export default class DropHelper {
             heavy: 0
         };
 
-        // Reset health levels to default (all value: 1, total: 1)
-        const healthLevels = ["bruised", "hurt", "injured", "wounded", "mauled", "crippled", "incapacitated"];
-        const healthPenalties = [0, -1, -1, -2, -2, -5, -99];
-        const healthLabels = [
-            "wod.health.bruised",
-            "wod.health.hurt",
-            "wod.health.injured",
-            "wod.health.wounded",
-            "wod.health.mauled",
-            "wod.health.crippled",
-            "wod.health.incapacitated"
-        ];
-        for (let i = 0; i < healthLevels.length; i++) {
-            actorData.system.health[healthLevels[i]] = {
-                value: 1,
-                total: 1,
-                penalty: healthPenalties[i],
-                label: healthLabels[i]
-            };
-        }
-
         // Reset health totals
-        actorData.system.traits.health.totalhealthlevels.value = 7;
-        actorData.system.traits.health.totalhealthlevels.max = 7;
+        actorData.system.traits.health.totalhealthlevels.value = 5;
+        actorData.system.traits.health.totalhealthlevels.max = 5;
 
         // Reset soak values
         actorData.system.soak = {

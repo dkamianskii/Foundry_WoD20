@@ -66,31 +66,6 @@
 
     <div class="flex-rows splat-features-columns">
 
-        <div class="dialog-area flex-columns">
-            <div class="headlineGroup">{{localize 'wod.health.health'}}</div>
-
-            <div class="flex-rows">
-                <div style="width: 150px;">&nbsp;</div>
-                <div class="headlineNormal numberBox centerText">{{localize "wod.labels.value"}}</div>
-                <div class="headlineNormal numberBox centerText">{{localize "wod.labels.penalty"}}</div>
-            </div>
-
-            {{#each healthlevels as |health key|}}
-                <div class="flex-rows">
-                    <label for="data.system.health.{{key}}.value" class="headlineNormal settings-leftwidth settings-verticalcenter" 
-                        data-ability="true" style="width: 150px;">{{localize health.label}}</label>
-                    <input class="sheet-infoValues numberBox inputdata editable" name="system.health.{{key}}.value" type="text" value="{{health.value}}" 
-                        data-name="data.system.health.{{key}}.value" 
-                        data-dtype="Number" />
-                    {{#if (ne key "incapacitated")}}
-                        <input class="sheet-infoValues numberBox inputdata editable" name="system.health.{{key}}.penalty" type="text" value="{{health.penalty}}" 
-                            data-name="data.system.health.{{key}}.penalty"
-                            data-dtype="Number" />
-                    {{/if}}
-                </div>
-            {{/each}}      
-        </div>
-
         <div class="dialog-area">
 
             <div class="flex-rows">
