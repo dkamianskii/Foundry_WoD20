@@ -12,7 +12,7 @@
  * ## Quick index (listData keys referenced by templates)
  *
  * **Shared / generic**
- * - `DifficultyList`: Difficulty values (`CONFIG.worldofdarkness.lowestDifficulty`..10), includes “varies”.
+ * - `DifficultyList`: Difficulty values (`CONFIG.worldofdarkness.lowestDifficulty`..`CONFIG.worldofdarkness.highestDifficulty`), includes “varies”.
  * - `Era`: Game era options (values are `wod.era.*` keys from `CONFIG.worldofdarkness.era`).
  * - `Games`: Game line options for sheets/items.
  * - `Sheet`: Sheet type options (mortal/vampire/...) for splat item settings.
@@ -1224,7 +1224,7 @@ export default class SelectHelper {
 
         listData.ZeroToNine = this.GetValueList(0, 10, 0, "- " + game.i18n.localize("wod.labels.select") + " -"); 
 
-        listData.DifficultyList = this.GetValueList(CONFIG.worldofdarkness.lowestDifficulty, 10, -1, "- " + game.i18n.localize("wod.labels.donotshow") + " -"); 
+        listData.DifficultyList = this.GetValueList(CONFIG.worldofdarkness.lowestDifficulty, CONFIG.worldofdarkness.highestDifficulty + 1, -1, "- " + game.i18n.localize("wod.labels.donotshow") + " -");
 
         return listData;
     }    

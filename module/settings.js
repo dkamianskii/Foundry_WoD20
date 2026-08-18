@@ -137,10 +137,9 @@ export const systemSettings = function() {
 		hint: game.i18n.localize('wod.settings.lowestdifficultyhint'),
 		scope: "world",
 		config: false,
-		default: 2,
+		default: 3,
 		type: Number,
         choices: {
-			"2": "2",
 			"3": "3",
             "4": "4",
             "5": "5",

@@ -163,8 +163,8 @@ export class Rote {
 
             this.shownDifficulty = this.totalDifficulty;
 
-            if (this.totalDifficulty > 10) {
-                this.shownDifficulty = 10;
+            if (this.totalDifficulty > CONFIG.worldofdarkness.highestDifficulty) {
+                this.shownDifficulty = CONFIG.worldofdarkness.highestDifficulty;
             }
             else if (this.totalDifficulty < CONFIG.worldofdarkness.lowestDifficulty) {
                 this.shownDifficulty = CONFIG.worldofdarkness.lowestDifficulty;
@@ -482,10 +482,10 @@ export class DialogAreteCasting extends FormApplication {
                 extraInfo.push(`${game.i18n.localize("wod.dialog.aretecasting.spendquintessence")} (${spentPoints})`);
             }
 
-            if (this.object.totalDifficulty > 10) {
-                const extraSuccesses = this.object.totalDifficulty - 10;
+            if (this.object.totalDifficulty > CONFIG.worldofdarkness.highestDifficulty) {
+                const extraSuccesses = this.object.totalDifficulty - CONFIG.worldofdarkness.highestDifficulty;
                 extraInfo.push(`${game.i18n.localize("wod.dialog.aretecasting.increaseddifficulty")} +${extraSuccesses}`);
-                this.object.totalDifficulty = 10;
+                this.object.totalDifficulty = CONFIG.worldofdarkness.highestDifficulty;
             }
             else if (this.object.totalDifficulty < CONFIG.worldofdarkness.lowestDifficulty) {
                 this.object.totalDifficulty = CONFIG.worldofdarkness.lowestDifficulty;

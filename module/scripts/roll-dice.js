@@ -279,6 +279,7 @@ export async function DiceRoller(diceRoll) {
 
 
 	difficulty = difficulty < CONFIG.worldofdarkness.lowestDifficulty ? CONFIG.worldofdarkness.lowestDifficulty : difficulty;
+	difficulty = difficulty > CONFIG.worldofdarkness.highestDifficulty ? CONFIG.worldofdarkness.highestDifficulty : difficulty;
 
 	if (actor != undefined) {
 		if (await BonusHelper.CheckAttributeAutoBuff(actor, diceRoll.attribute)) {

@@ -124,11 +124,12 @@ Hooks.once("init", async function() {
 	}
 
 	try {
-		CONFIG.worldofdarkness.lowestDifficulty = parseInt(game.settings.get('wod-advanced', 'lowestDifficulty'));
+		CONFIG.worldofdarkness.lowestDifficulty = Math.max(3, parseInt(game.settings.get('wod-advanced', 'lowestDifficulty')));
 	}
 	catch (e) {
-		CONFIG.worldofdarkness.lowestDifficulty = 2;
+		CONFIG.worldofdarkness.lowestDifficulty = 3;
 	}
+	CONFIG.worldofdarkness.highestDifficulty = 9;
 
 	try {
 		CONFIG.worldofdarkness.specialityAddSuccess = parseInt(game.settings.get('wod-advanced', 'specialityAddSuccess'));

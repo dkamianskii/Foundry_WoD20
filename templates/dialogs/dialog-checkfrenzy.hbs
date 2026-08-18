@@ -9,7 +9,7 @@
         <div class="dialog-area">
             <div class="headline splatFont">{{localize "wod.labels.difficulty"}}</div>
             <div class="infobox centerText">
-                {{#numFromLoop config.lowestDifficulty 10}}
+                {{#numFromLoop config.lowestDifficulty config.highestDifficulty}}
                     <button id="difficulty" class="button fullSplatColor pointer dialog-difficulty-button {{#if (eq ../object.totalDifficulty this)}}active{{/if}}" value="{{this}}" data-index="{{this}}">{{this}}</button>
                 {{/numFromLoop}}
             </div>
