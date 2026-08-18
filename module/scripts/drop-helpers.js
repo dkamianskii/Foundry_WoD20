@@ -4,6 +4,20 @@ import { calculateTotals } from "./totals.js";
 
 export default class DropHelper {
 
+    static IsWillpowerAdvantage(advantage) {
+        const system = advantage?.system ?? advantage;
+        return system?.id === "willpower" || system?.slug === "willpower";
+    }
+
+    static NormalizeCompendiumUuid(uuid) {
+        if (typeof uuid !== "string") return uuid;
+
+        const legacyPrefix = "Compendium.worldofdarkness.";
+        if (!uuid.startsWith(legacyPrefix)) return uuid;
+
+        return `Compendium.${game.system.id}.${uuid.slice(legacyPrefix.length)}`;
+    }
+
     static async OnDropItem(event, data, actor) {
         if (!data.uuid) return false;
         if (!actor.isOwner) return false;
@@ -37,7 +51,7 @@ export default class DropHelper {
         }
 
         if (droppedItem.type === "Advantage") {
-            if ((actor.type === "PC") && (droppedItem.system.id === "willpower")) {
+            if ((actor.type === "PC") && this.IsWillpowerAdvantage(droppedItem)) {
                 ui.notifications.warn(game.i18n.localize("wod.advantages.willpowerbuiltin"));
                 return false;
             }
@@ -498,6 +512,7 @@ export default class DropHelper {
 
     static async DropSplatToActor(actor, droppedItem) {
         const hasSplatItem = actor.items.some(i => i.type === "Splat");
+        let idsToDelete = [];
         // TODO: Do you want to clear or merge (e.g goes from mortal to vampire)
 
         // remove all old splat items if any
@@ -516,17 +531,16 @@ export default class DropHelper {
             }
 
             const itemsToDelete = actor.items.filter(i => i.type === droppedItem.type);
-            idsToDelete = itemsToDelete.map(i => i.id);
+            idsToDelete.push(...itemsToDelete.map(i => i.id));
 
             if (idsToDelete.length > 0) {
-                await this.actor.deleteEmbeddedDocuments("Item", idsToDelete);
+                await actor.deleteEmbeddedDocuments("Item", idsToDelete);
+                idsToDelete = [];
             }
         }
 
         // First fix items on Actor.
         // Collect all items to delete in one array, then delete them all at once
-        let idsToDelete = [];
-
         // Clear abilities
         const abilitiesToDelete = actor.items.filter(i => i.type === "Ability" && i.system.value === 0);
         idsToDelete.push(...abilitiesToDelete.map(i => i.id));
@@ -536,7 +550,7 @@ export default class DropHelper {
         const advantagesToUpdate = [];
 
         for (const advantage of existingAdvantages) {
-            if (advantage.system.id === "willpower") {
+            if (this.IsWillpowerAdvantage(advantage)) {
                 idsToDelete.push(advantage.id);
                 continue;
             }
@@ -609,7 +623,7 @@ export default class DropHelper {
         const advantages = droppedItem.system.advantages;
 
         for (const obj in advantages) {
-            if (advantages[obj]?.system?.id === "willpower") {
+            if (this.IsWillpowerAdvantage(advantages[obj])) {
                 continue;
             }
 
@@ -625,9 +639,6 @@ export default class DropHelper {
 
             itemlistData.push(advantageData);
 
-            if (advantageData.system.id == "willpower") {
-                actorData.system.settings.haswillpower = true;
-            }
             if (advantageData.system.id == "gnosis") {
                 actorData.system.settings.hasgnosis = true;
             }
@@ -641,6 +652,9 @@ export default class DropHelper {
                 actorData.system.settings.hasquintessence = true;
             }
         }
+
+        // PC Willpower is part of the base Actor and is never installed from a Splat.
+        actorData.system.settings.haswillpower = true;
 
         // Import features
         const features = droppedItem.system.features;
@@ -1118,11 +1132,13 @@ export default class DropHelper {
     }
 
     static async ImportFeatures(actor, feature) {
+        const featureUuid = this.NormalizeCompendiumUuid(feature.uuid);
+
         // Check if feature already exists on actor (by itemuuid to avoid duplicates)
-        if (feature.uuid) {
+        if (featureUuid) {
             const existingFeature = actor.items.find(i =>
                 i.type === "Trait" &&
-                i.system.itemuuid === feature.uuid
+                this.NormalizeCompendiumUuid(i.system.itemuuid) === featureUuid
             );
 
             if (existingFeature) {
@@ -1139,7 +1155,7 @@ export default class DropHelper {
 
             const item = await this.GetCompendiumItem(packid, feature.uuid);
 
-            if (item !== undefined) {
+            if (item !== false) {
                 const loadedData = foundry.utils.duplicate(item);
                 mergedData =this.PopulateFeature(loadedData, feature);
             }
@@ -1170,10 +1186,12 @@ export default class DropHelper {
             return this.ImportFeatures(actor, power);
         }
 
-        if (power.uuid) {
+        const powerUuid = this.NormalizeCompendiumUuid(power.uuid);
+
+        if (powerUuid) {
             const existingFeature = actor.items.find(i =>
                 i.type === power.type &&
-                i.system.settings?.itemuuid === power.uuid
+                this.NormalizeCompendiumUuid(i.system.settings?.itemuuid) === powerUuid
             );
 
             if (existingFeature) {
@@ -1427,7 +1445,7 @@ export default class DropHelper {
         loadedData.system.settings.isvisible = true;
         loadedData.system.settings.isremovable = false;
 
-        loadedData.system.settings.itemuuid = ability.uuid;
+        loadedData.system.settings.itemuuid = this.NormalizeCompendiumUuid(ability.uuid);
         loadedData.system.settings.version = game.system.version;
 
         return loadedData;
@@ -1442,7 +1460,7 @@ export default class DropHelper {
         //     loadedData.system.settings.isvisible = false;
         // }
 
-        loadedData.system.settings.itemuuid = advantage.uuid;
+        loadedData.system.settings.itemuuid = this.NormalizeCompendiumUuid(advantage.uuid);
         loadedData.system.settings.version = game.system.version;
         loadedData.system.settings.order = advantage.system.settings.order;
 
@@ -1453,7 +1471,7 @@ export default class DropHelper {
         loadedData.system.iscreated = true;
         loadedData.system.isvisible = true;
 
-        loadedData.system.itemuuid = feature.uuid;
+        loadedData.system.itemuuid = this.NormalizeCompendiumUuid(feature.uuid);
         loadedData.system.version = game.system.version;
         loadedData.system.order = feature.system.order;
 
@@ -1468,7 +1486,7 @@ export default class DropHelper {
         loadedData.system.settings.iscreated = true;
         loadedData.system.settings.isvisible = true;
 
-        loadedData.system.settings.itemuuid = power.uuid;
+        loadedData.system.settings.itemuuid = this.NormalizeCompendiumUuid(power.uuid);
         loadedData.system.settings.version = game.system.version;
         loadedData.system.settings.order = power.system.settings?.order ?? power.system.order;
 
@@ -1476,10 +1494,19 @@ export default class DropHelper {
     }
 
     static async GetCompendiumItem(compendiumid, uuid) {
-        const compendium = game.packs.get(compendiumid);
+        const normalizedUuid = this.NormalizeCompendiumUuid(uuid);
+        const normalizedCompendiumId = normalizedUuid
+            ?.split("Compendium.")[1]
+            ?.split(".Item")[0];
+        const compendium = game.packs.get(normalizedCompendiumId) ?? game.packs.get(compendiumid);
+
+        if (!compendium) {
+            console.warn(`WoD | Installing Splat | Compendium ${normalizedCompendiumId ?? compendiumid} not found.`);
+            return false;
+        }
 
         const items = await compendium.getDocuments();
-        const foundItems = items.filter((item) => (item?.uuid === uuid));
+        const foundItems = items.filter((item) => (item?.uuid === normalizedUuid));
 
         if (foundItems.length == 1) {
             return foundItems[0];
