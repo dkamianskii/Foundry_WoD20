@@ -83,12 +83,26 @@ Important PC schema branches:
 - `bio`: basic identity fields, dynamic `splatfields`, and HTML fields.
 - `attributes`: value, bonus, total, max, type, label, speciality, ordering, visibility, and favored state.
 - `soak`: derived normal and chimerical pools.
-- `health`: actor-owned PC bonus and ordered normal wound severities; chimerical damage retains legacy counters.
+- `health.bonus`: a persistent non-negative integer edited in Options → Combat.
+- `health.wounds`: the canonical ordered normal-PC wound array; every entry is
+  `light`, `heavy`, or `aggravated`. Array position is box position and removal
+  compacts later wounds toward the start of the track.
+- `health.damage.woundlevel` / `.woundpenalty`: derived compatibility outputs;
+  `health.damage.chimerical` retains legacy bashing/lethal/aggravated counters.
 - `willpower.damage`: persistent `light` and `heavy` wound counts. Maximum/current/full values and display boxes are derived rather than persisted.
 - `traits.health.totalhealthlevels`: derived current/max health boxes.
 - `initiative`, `conditions`, `movement`, `gear`, and `favoriterolls`.
 
-`PCDataModel.migrateData` backfills chimerical soak/damage objects and the PC Willpower damage object. It does not define persistent `abilities` or `advantages`: `WoDActor._prepareCharacterData` creates those runtime projections from embedded items and installs the transient Willpower compatibility facade.
+`PCDataModel.migrateData` backfills chimerical soak and the PC Willpower damage
+object. PC Health conversion is delegated to
+`module/scripts/health.js::migratePCHealthSource`. That helper converts only a
+source which actually contains legacy Health counters or seven-level fields.
+This presence check is important because Foundry may pass partial update data
+through model migration: a wound-only update must not synthesize `bonus: 0` or
+replace omitted wounds. It does not define persistent `abilities` or
+`advantages`: `WoDActor._prepareCharacterData` creates those runtime
+projections from embedded items and installs the transient Willpower
+compatibility facade.
 
 ### 3.3 Legacy actor templates
 
@@ -130,7 +144,7 @@ Foundry Actor.prepareData()
 6. applies special resource rules such as path bearing, virtue limits, blood-pool generation limits, and quintessence/paradox constraints;
 7. creates list/group data consumed by sheets and rolls and may batch-update embedded items where persisted values are stale.
 
-`WoDActor._preUpdate` also clamps PC Willpower wound counts when Composure or Resolve changes. In the same hook it normalizes PC Health wounds and refreshes maximum/current Health and the compatibility wound penalty whenever relevant Actor data changes.
+`WoDActor._preUpdate` also clamps PC Willpower wound counts when Composure or Resolve changes. In the same hook it normalizes PC Health wounds and refreshes maximum/current Health and the compatibility wound penalty whenever relevant Actor data changes. `_onUpdateDescendantDocuments` performs the same derived-Health refresh when activation or editing of an embedded `health_buff` changes maximum Health.
 
 On legacy actors the same document class works directly with persistent `system.abilities`, `system.advantages`, and game-specific branches. `_preCreate` uses `CreateHelper` to seed type/era data. `_onUpdate` and `_onUpdateDescendantDocuments` coordinate recalculation, `calculateTotals`, and embedded-item changes. `_setItems` synchronizes item maximums/bonuses where actor changes affect them.
 
@@ -217,6 +231,21 @@ five-level Health state. `stats_health.hbs` renders its boxes and the exact
 light/heavy/aggravated markers. In Options → Combat, the former editable
 per-level values and penalties are replaced by one editable Health Bonus plus
 read-only formula inputs, maximum, and distribution.
+
+Normal-PC box interaction is severity-based rather than arbitrary positional
+editing. `OnSquareCounterChange` delegates to `cycleHealthBox`:
+
+- clicking any empty box appends one light wound at the first empty position;
+- clicking a light box promotes the first light wound in track order to heavy;
+- clicking a heavy box promotes the first heavy wound in track order to aggravated;
+- clicking an aggravated box removes that wound and compacts later wounds;
+- right-clicking any occupied box removes that exact box through `setHealthBox`
+  and likewise compacts the track.
+
+The normal-PC marker glyphs are black `/`, `X`, and a bold uppercase `Ж`; the
+aggravated glyph uses an explicit Arial-family rendering and larger size so
+its three crossing strokes remain legible. Legacy and chimerical counters keep
+their older interaction path.
 
 Static `DEFAULT_OPTIONS.actions` maps `data-action` events to functions imported mostly from `module/scripts/action-helpers.js` and `module/scripts/item-actions.js`. Typical flow:
 
@@ -395,10 +424,15 @@ Normal PC wounds are canonically stored as ordered severity ids in
 - current Health, display boxes, and retained overflow;
 - the active fixed penalty from the most severe level containing heavy or aggravated damage.
 
-The exact PC markers are `/`, `X`, and `Ж`. `damage.woundlevel`,
+The exact PC markers are black `/`, `X`, and bold uppercase `Ж`. `damage.woundlevel`,
 `damage.woundpenalty`, and `traits.health.totalhealthlevels` remain derived
 compatibility outputs for existing roll and initiative consumers; they are not
 independently editable rules data.
+
+The manual bonus is persisted independently of wounds. Partial wound updates
+do not include or default this field; `migratePCHealthSource` deliberately
+leaves omitted fields untouched. Active `health_buff` item values are summed
+separately and are not written into the manual bonus.
 
 Legacy Actor types continue to store aggregate bashing/lethal/aggravated
 counts and seven configured levels. PC chimerical damage also retains its old
@@ -437,10 +471,18 @@ DialogSoakRoll._soakRoll
 
 `PCActorAPI.modifyHealth` accepts the new severity ids and temporarily maps
 legacy soak inputs as bashing→light and lethal→heavy. Health-box clicks use
-the same canonical wound state. This adapter intentionally does not implement
-the later independent damage-nature/lethality design.
+the same canonical wound array but use `cycleHealthBox` for manual interaction:
+empty adds light, light promotes the first light, heavy promotes the first
+heavy, and aggravated removes/compacts. Right-click removes the exact selected
+wound. This prevents users from placing heavy or aggravated wounds arbitrarily
+on the track. The adapter intentionally does not implement the later
+independent damage-nature/lethality design.
 
-Dependencies: health calculation depends on Splat-configured wound boxes, active health bonuses, chimerical flags, actor type, soak dialog input, and actor lifecycle recalculation.
+Dependencies: PC Health calculation depends on base Strength and Stamina, the
+persistent manual bonus, active Health bonuses, chimerical flags, actor type,
+soak dialog input, and actor lifecycle recalculation. Splat-configured legacy
+level counts are retained only for source compatibility and do not determine
+normal-PC Health capacity or distribution.
 
 ## 10. Roll penalties
 
@@ -723,7 +765,12 @@ The highest-coupling modules are `WoDActor`, `ActionHelper`, `BonusHelper`, `mod
 3. **Separate ids from display labels.** Existing code frequently falls back from slug to id to lowercased name and sometimes compares localization keys. A derivative should establish stable identifiers.
 4. **Centralize modifiers if changing core rules.** Wound penalties are relatively centralized, but bonus dice, difficulty changes, fixed values, armor penalties, specialities, and form effects are distributed among `BonusHelper`, totals, and dialogs.
 5. **Treat dialogs as rule code.** They do much more than collect input: they resolve traits, apply bonuses, enforce speciality rules, add attack successes, and choose resource behavior.
-6. **Keep damage resolution distinct from display.** `CombatHelper` mutates damage counts; actor preparation derives wound state; `calculateHealth` creates display boxes. Changing health mechanics normally touches all three.
+6. **Keep damage resolution, manual track interaction, and display distinct.**
+   Normal PC damage enters `applyWounds` through `PCActorAPI`; manual clicks use
+   `cycleHealthBox`/`setHealthBox`; `getHealthState` creates derived levels and
+   display boxes. Legacy/chimerical damage still uses `CombatHelper`. Changing
+   Health mechanics must account for both paths without reintroducing arbitrary
+   positional severity editing.
 7. **Review setting caching.** Many settings are copied into `CONFIG.worldofdarkness` during `init`. Add explicit `onChange` behavior or read settings at use time if live reconfiguration matters.
 8. **Reduce template-helper domain logic cautiously.** Many existing templates depend on helpers that query items and generate HTML. Moving that logic into context preparation is desirable only if all affected AppV1 and AppV2 templates are accounted for.
 9. **Preserve chat data contracts while replacing dice rules.** Dialogs and cards expect `DiceRollContainer` fields and `multipleresult` entries. A new evaluator can be introduced behind that boundary, or the boundary can be redesigned together with every caller.

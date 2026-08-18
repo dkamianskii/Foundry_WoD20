@@ -127,7 +127,15 @@ Commit `c07379e` fixed a missing closing parenthesis in the favored-roll branch 
 - five fixed levels are distributed evenly with remainders assigned
   Crippled → Mauled → Wounded → Hurt → Bruised;
 - normal wounds persist as ordered `light`, `heavy`, and `aggravated` ids and
-  render as `/`, `X`, and `Ж`;
+  render as black `/`, `X`, and a bold uppercase `Ж`;
+- manual sheet interaction is compact and severity-ordered: empty clicks append
+  light at the first empty box, light/heavy clicks promote the first wound of
+  that severity, and aggravated or right-click removal shifts later wounds;
+- heavy and aggravated wounds therefore cannot be placed arbitrarily by
+  clicking a later box;
+- partial wound updates no longer reset the manual Health Bonus: data-model
+  migration converts only payloads containing actual legacy Health fields and
+  leaves omitted fields untouched;
 - overflow displacement performs recursive light→heavy→aggravated pairwise
   upgrades and retains unresolved overflow;
 - only heavy/aggravated wounds activate the fixed 0/-1/-2/-3/-5 penalty;
@@ -188,6 +196,8 @@ Primary files: `module/scripts/roll-dice.js`, all builders in `module/dialogs/`,
 | Penalty from most severe box containing heavy/aggravated; no stacking | **Implemented for PC** | Derived from resolved boxes; light wounds are ignored. | None for PC path. |
 | Markers light `/`, heavy `X`, aggravated `Ж` | **Implemented for PC** | Canonical severity ids render exact markers. | Chimerical/legacy tracks retain compatibility markers. |
 | Fill least to most severe | **Implemented for PC** | Canonically ordered wounds are projected onto derived boxes from Bruised onward. | None for PC path. |
+| Manual box interaction preserves track order | **Implemented for PC** | Empty adds the first light wound; light/heavy clicks promote the first matching severity; aggravated and right-click removal compact the array. | Chimerical/legacy tracks retain their compatibility controls. |
+| Health Bonus survives wound updates | **Implemented for PC** | Partial data-model migration never supplies defaults for omitted Health fields; wound-only updates preserve `system.health.bonus`. | None for PC path. |
 | `2 light -> heavy`, `2 heavy -> aggravated` | **Implemented for PC** | Overflow displacement recursively combines least-severe pairs. | Add more boundary fixtures as the Damage pipeline is converted. |
 | Replacement, displacement, recursive cascades | **Implemented for PC** | The pure resolver passes the seven-light plus two-heavy example and retains unresolved overflow. | Death/terminal overflow effects remain unspecified. |
 
@@ -249,9 +259,12 @@ Primary files: `template.json` or new typed item models, `module/items/datamodel
 ordered severity ids are canonical; maximum, five levels, display boxes, and
 penalty are derived; the resolver handles recursive overflow upgrades; the PC
 API, soak adapter, sheet controls, Splat application, migration, and focused
-pure tests use the new path. Legacy Actors and PC chimerical mutation remain an
-explicit compatibility boundary. Terminal consequences for unresolved
-overflow remain pending because the specification does not define them.
+pure tests use the new path. Follow-up fixes make manual clicks promote the
+first matching severity, compact on removal, render a legible black uppercase
+aggravated marker, and preserve the manual bonus across partial wound updates.
+Legacy Actors and PC chimerical mutation remain an explicit compatibility
+boundary. Terminal consequences for unresolved overflow remain pending because
+the specification does not define them.
 
 ### Phase 3 — Introduce damage-source and defense models
 
@@ -301,7 +314,7 @@ in `MIGRATION.md`.
 
 ## 6. Verification gates
 
-Current verification progress: JavaScript/localization checks have been run for the recent Test/chat and Health changes; focused pure Health tests cover the formula, distribution, cascade example, penalties, and overflow. The title-only PC-sheet regression was reproduced and fixed in Foundry v14. Broader Test/chat-card regression coverage remains absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
+Current verification progress: JavaScript/localization checks have been run for the recent Test/chat and Health changes. The focused Health suite currently has 16 passing tests covering the formula, distribution, cascade example, penalties, overflow, severity-ordered sheet promotions, left/right removal compaction, and preservation of the Health Bonus during partial wound updates. The title-only PC-sheet regression was reproduced and fixed in Foundry v14. Broader Test/chat-card regression coverage remains absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
 
 Each phase is complete only after these checks pass:
 
@@ -320,4 +333,6 @@ Each phase is complete only after these checks pass:
 - **Mandatory exhaustion:** code permits the general-dialog checkbox to suppress `-2`, while the specification reads as mandatory.
 - **Settings authority:** new-world defaults now match the requested Test profile, but existing saved values and the settings UI can still select conflicting behavior. Decide whether those controls are removed, migrated to fixed values, or retained only in a named legacy rules mode.
 - **Armor degradation details:** the specification says AP affects degradation but does not define the degradation formula. That formula must be added before implementation.
-- **Overflow at maximum aggravated Health:** death/incapacitation behavior is not specified and the current helper silently limits some overflow. Define the terminal rule before replacing it.
+- **Overflow at maximum aggravated Health:** unresolved overflow is retained in
+  canonical PC wound data, but death/incapacitation behavior is not specified.
+  Define the terminal consequence before adding it.
