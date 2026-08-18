@@ -36,7 +36,7 @@ export const systemSettings = function() {
 		hint: game.i18n.localize('wod.settings.specialitylevelhint'),
 		scope: "world",
 		config: false,
-		default: 4,
+		default: 2,
 		type: Number,
         choices: {
 			1 : "1",
@@ -52,7 +52,7 @@ export const systemSettings = function() {
 		hint: game.i18n.localize('wod.settings.attributesettingshint'),
 		scope: "world",
 		config: false,
-		default: "20th",
+		default: "5th",
 		type: String,
 		choices: {
 			"20th": "20th edition",
@@ -104,7 +104,7 @@ export const systemSettings = function() {
 		hint: game.i18n.localize('wod.settings.successesdamagehint'),
 		scope: "world",
 		config: false,
-		default: true,
+		default: false,
 		type: Boolean,
 	});
 
@@ -112,7 +112,7 @@ export const systemSettings = function() {
 		name: game.i18n.localize('wod.settings.useOnesDamage'),
 		scope: "world",
 		config: false,
-		default: false,
+		default: true,
 		type: Boolean,
 	});
 
@@ -128,7 +128,7 @@ export const systemSettings = function() {
 		name: game.i18n.localize('wod.settings.useOnesSoak'),
 		scope: "world",
 		config: false,
-		default: false,
+		default: true,
 		type: Boolean,
 	});
 
@@ -153,7 +153,7 @@ export const systemSettings = function() {
 		hint: game.i18n.localize('wod.settings.specialityaddsuccesshint'),
 		scope: "world",
 		config: false,
-		default: 2,
+		default: 0,
 		type: Number,
         choices: {
             "0": game.i18n.localize('wod.settings.nonotuse'),
@@ -177,7 +177,7 @@ export const systemSettings = function() {
 		hint: game.i18n.localize('wod.settings.specialityreducediffhint'),
 		scope: "world",
 		config: false,
-		default: 0,
+		default: 1,
 		type: Number,
         choices: {
             "0": game.i18n.localize('wod.settings.nonotuse'),
@@ -207,7 +207,7 @@ export const systemSettings = function() {
 		hint: game.i18n.localize('wod.settings.explodingdicehint'),
 		scope: "world",
 		config: false,
-		default: false,
+		default: "always",
 		type: String,
         choices: {
 			"never": game.i18n.localize('wod.settings.nonotuse'),
