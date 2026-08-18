@@ -8,7 +8,7 @@ A test rolls a number of d10 equal to the final dice pool after all modifiers.
 
 `final_dice_pool = base_dice_pool + bonuses - penalties`
 
-The minimum final dice pool is 1.
+The minimum final dice pool is 0. If penalties reduce the final dice pool to 0, no dice are rolled and the Test automatically fails.
 
 ### Difficulty
 

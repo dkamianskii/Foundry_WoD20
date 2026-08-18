@@ -1993,6 +1993,7 @@
 			"successes": "Successes",
 			"botch": "Botch",
 			"fail": "Fail",
+			"zeropoolfailure": "Dice pool reduced to zero: automatic failure.",
 			"success": "Success",
 			"rollingdice": "Rolling dice",
 			"totalvalue": "Total value",
@@ -2025,6 +2026,7 @@
 			"numbersuccesses": "Prior number of successes",
 			"neededsuccesses": "Number of successes required",
 			"usewoundpenalty": "Use wound penalty",
+			"useexhaustedpenalty": "Use exhausted penalty",
 			"dicepool": "Dice pool",
 			"nonelisted": "None listed",
 			"aretecasting": {

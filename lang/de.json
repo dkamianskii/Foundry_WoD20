@@ -1977,6 +1977,7 @@
 			"successes": "Erfolge",
 			"botch": "Patzer",
 			"fail": "Misserfolg",
+			"zeropoolfailure": "Der Würfelpool wurde auf null reduziert: automatischer Fehlschlag.",
 			"success": "Erfolg",
 			"rollingdice": "Würfelwurf",
 			"totalvalue": "Gesamtwert",
@@ -2009,6 +2010,7 @@
 			"numbersuccesses": "Anzahl der bisherigen Erfolge",
 			"neededsuccesses": "Erforderliche Anzahl von Erfolgen",
 			"usewoundpenalty": "Wundabzug verwenden",
+			"useexhaustedpenalty": "Erschöpfungsmalus verwenden",
 			"dicepool": "Würfelpool",
 			"nonelisted": "Keine aufgeführt",
 			"aretecasting": {

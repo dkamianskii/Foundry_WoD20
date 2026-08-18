@@ -1977,6 +1977,7 @@
 			"successes": "✅ Sucessos",
 			"botch": "Falha Crítica! 💥",
 			"fail": "Falha! 🔥",
+			"zeropoolfailure": "A parada de dados foi reduzida a zero: falha automática.",
 			"success": "Sucesso! 🌟",
 			"rollingdice": "Rolando dado",
 			"totalvalue": "Valor total",
@@ -2009,6 +2010,7 @@
 			"numbersuccesses": "Sucessos anteriores:",
 			"neededsuccesses": "Número de sucessos necessários",
 			"usewoundpenalty": "Usar penalidade de ferida",
+			"useexhaustedpenalty": "Usar penalidade de exaustão",
 			"dicepool": "Parada de Dados",
 			"nonelisted": "Nenhuma listada",
 			"aretecasting": {

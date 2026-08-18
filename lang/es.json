@@ -1977,6 +1977,7 @@
 			"successes": "Éxitos",
 			"botch": "Fracaso",
 			"fail": "Fallo",
+			"zeropoolfailure": "La reserva de dados se redujo a cero: fallo automático.",
 			"success": "Éxito",
 			"rollingdice": "Tirada",
 			"totalvalue": "Valor total",
@@ -2009,6 +2010,7 @@
 			"numbersuccesses": "Anterior cantidad de éxitos",
 			"neededsuccesses": "Cantidad de éxitos requerida",
 			"usewoundpenalty": "Usar penalizador de heridas",
+			"useexhaustedpenalty": "Usar penalizador por agotamiento",
 			"dicepool": "Reserva de dados",
 			"nonelisted": "Ninguno listado",
 			"aretecasting": {

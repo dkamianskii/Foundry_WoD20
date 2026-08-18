@@ -88,6 +88,7 @@ export class DiceRollContainer {
 		this.numDices = 0;
 		this.numSpecialDices = 0;
 		this.woundpenalty = 0;
+		this.exhaustionpenalty = null;
 		this.difficulty	= 6;
 		this.action = "";
 		this.targetlist = [];
@@ -305,7 +306,11 @@ export async function DiceRoller(diceRoll) {
 		}
 	}
 
-	if ((actor?.type === "PC") && getWillpowerState(actor).exhausted) {
+	const explicitExhaustionPenalty = Number.parseInt(diceRoll.exhaustionpenalty, 10);
+	if (Number.isFinite(explicitExhaustionPenalty)) {
+		exhaustionPenalty = explicitExhaustionPenalty;
+	}
+	else if ((actor?.type === "PC") && getWillpowerState(actor).exhausted) {
 		exhaustionPenalty = -2;
 	}
 
@@ -339,10 +344,8 @@ export async function DiceRoller(diceRoll) {
 		let numberDices = (parseInt(target.numDices) || 0)
 			+ (parseInt(diceRoll.woundpenalty) || 0)
 			+ exhaustionPenalty;
-
-		if (numberDices < 1) {
-			numberDices = 1;
-		}
+		const zeroPoolFailure = numberDices <= 0;
+		numberDices = Math.max(0, numberDices);
 
 		while (numberDices > rolledDices) {
 			let chosenDiceColor = _diceColor;
@@ -412,24 +415,31 @@ export async function DiceRoller(diceRoll) {
 			});
 		}
 
-		if ((actor?.type !== "PC") && (usewillpower && !CONFIG.worldofdarkness.willpowerBonusDice) && (success < 1)) {
-			success = 1;
-		}
-		else if (success < 0) {
+		if (zeroPoolFailure) {
 			success = 0;
-		}
-
-		if (success > 0) {
-			rollResult = "success";
-		}
-		else if ((CONFIG.worldofdarkness.usehandleOnes) && (rolledOne) && (!rolledAnySuccesses) && (canBotch)) {
-			rollResult = "botch";
-		}
-		else if ((!CONFIG.worldofdarkness.usehandleOnes) && (rolledOne) && (canBotch)) {
-			rollResult = "botch";
+			rolledAnySuccesses = false;
+			rollResult = "fail";
 		}
 		else {
-			rollResult = "fail";
+			if ((actor?.type !== "PC") && (usewillpower && !CONFIG.worldofdarkness.willpowerBonusDice) && (success < 1)) {
+				success = 1;
+			}
+			else if (success < 0) {
+				success = 0;
+			}
+
+			if (success > 0) {
+				rollResult = "success";
+			}
+			else if ((CONFIG.worldofdarkness.usehandleOnes) && (rolledOne) && (!rolledAnySuccesses) && (canBotch)) {
+				rollResult = "botch";
+			}
+			else if ((!CONFIG.worldofdarkness.usehandleOnes) && (rolledOne) && (canBotch)) {
+				rollResult = "botch";
+			}
+			else {
+				rollResult = "fail";
+			}
 		}
 
 		// if setting of speciality not allow botch is in effect it is a fail instead
@@ -440,6 +450,7 @@ export async function DiceRoller(diceRoll) {
 		diceResult.successes = `${game.i18n.localize("wod.dice.successes")}: ${success}`;
 		diceResult.rolledAnySuccesses = rolledAnySuccesses;
 		diceResult.rollResult = rollResult;
+		diceResult.zeroPoolFailure = zeroPoolFailure;
 
 		allDiceResult.push(diceResult);
 	}

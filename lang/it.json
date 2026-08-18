@@ -1977,6 +1977,7 @@
 			"successes": "Successi",
 			"botch": "Fallimento Critico",
 			"fail": "Fallimento",
+			"zeropoolfailure": "La riserva di dadi è stata ridotta a zero: fallimento automatico.",
 			"success": "Successo",
 			"rollingdice": "Tiro di dadi",
 			"totalvalue": "Totale",
@@ -2009,6 +2010,7 @@
 			"numbersuccesses": "Successi precedenti",
 			"neededsuccesses": "Successi richiesti",
 			"usewoundpenalty": "Usa malus ferita",
+			"useexhaustedpenalty": "Usa penalità da esaurimento",
 			"dicepool": "Riserva di dadi",
 			"nonelisted": "Nessuna",
 			"aretecasting": {

@@ -35,6 +35,9 @@
         {{#each data.multipleresult as |result key|}}
             <div class="tray-roll-area">
                 <div class="tray-success-area">
+					{{#if result.zeroPoolFailure}}
+						<div><span class="danger">{{localize "wod.dice.zeropoolfailure"}}</span></div>
+					{{/if}}
                     {{#if (eq result.rolledAnySuccesses false)}}                    
                         <div>
                             {{#if (eq result.rollResult "fail")}}<span class="danger">{{localize "wod.dice.fail"}}</span>{{/if}}
@@ -107,6 +110,9 @@
         {{#each data.multipleresult as |result key|}}
             <div class="tray-roll-area">
                 <div class="tray-success-area">
+					{{#if result.zeroPoolFailure}}
+						<div><span class="danger">{{localize "wod.dice.zeropoolfailure"}}</span></div>
+					{{/if}}
                     {{#if (eq result.rolledAnySuccesses false)}}                    
                         <div>
                             {{#if (eq result.rollResult "fail")}}<span class="danger">{{localize "wod.dice.fail"}}</span>{{/if}}
@@ -160,6 +166,9 @@
         {{#each data.multipleresult as |result key|}}
             <div class="tray-roll-area">
                 <div class="tray-success-area">
+					{{#if result.zeroPoolFailure}}
+						<div><span class="danger">{{localize "wod.dice.zeropoolfailure"}}</span></div>
+					{{/if}}
                     {{#if (eq result.rolledAnySuccesses false)}}                    
                         <div>
                             {{#if (eq result.rollResult "fail")}}<span class="danger">{{localize "wod.dice.fail"}}</span>{{/if}}

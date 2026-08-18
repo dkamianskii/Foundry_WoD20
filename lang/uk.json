@@ -1977,6 +1977,7 @@
 			"successes": "Успіхи",
 			"botch": "Провал",
 			"fail": "Невдача",
+			"zeropoolfailure": "Пул кубиків зменшено до нуля: автоматична невдача.",
 			"success": "Успіх",
 			"rollingdice": "Кидання кубиків",
 			"totalvalue": "Загальне значення",
@@ -2009,6 +2010,7 @@
 			"numbersuccesses": "Попередня кількість успіхів",
 			"neededsuccesses": "Необхідна кількість успіхів",
 			"usewoundpenalty": "Використовувати штраф поранення",
+			"useexhaustedpenalty": "Застосувати штраф виснаження",
 			"dicepool": "Пул кубиків",
 			"nonelisted": "Нічого не вказано",
 			"aretecasting": {

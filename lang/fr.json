@@ -1977,6 +1977,7 @@
 			"successes": "Succès",
 			"botch": "Botch",
 			"fail": "Échec",
+			"zeropoolfailure": "La réserve de dés est réduite à zéro : échec automatique.",
 			"success": "Succès",
 			"rollingdice": "Jet de dés",
 			"totalvalue": "Total value",
@@ -2009,6 +2010,7 @@
 			"numbersuccesses": "Nombre antérieur de succès",
 			"neededsuccesses": "Nombre de succès requis",
 			"usewoundpenalty": "Utiliser pénalité de blessure",
+			"useexhaustedpenalty": "Utiliser la pénalité d'épuisement",
 			"dicepool": "Réserve de dés",
 			"nonelisted": "Rien de listé",
 			"aretecasting": {
