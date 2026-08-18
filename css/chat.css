@@ -129,6 +129,10 @@ font-family: 'svg';
 .wod20-roll .tray-roll-area .tray-success-area {
     flex-shrink: 0;
 }
+.wod20-roll .tray-roll-area .tray-test-result {
+    font-size: 1.25em;
+    font-weight: 700;
+}
 .wod20-roll .tray-roll-area .tray-success-area + div {
     display: flex;
     flex-wrap: wrap;
