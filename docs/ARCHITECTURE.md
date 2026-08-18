@@ -249,6 +249,7 @@ Legacy roll flow begins at `.vrollable` or `.macroBtn` listeners in `activateLis
 - Both sheet generations depend heavily on `CONFIG.worldofdarkness` maps and translation keys.
 - PC context depends on transient projections created by `WoDActor._prepareCharacterData`.
 - PC Willpower context and actions depend on `module/scripts/willpower.js`; templates must not recreate or drop an Advantage item for it.
+- The PC sheet imports `ActionHelper`, which imports the shared roll stack. A syntax/module-load failure in `module/scripts/roll-dice.js` can therefore prevent PC sheet parts from initializing and leave only Foundry's application frame/title visible. Treat a title-only PC sheet as a likely upstream import error and check the browser console before debugging the sheet templates.
 - Legacy templates directly address `actor.system.abilities`, `advantages`, and game branches.
 - `module/hooks.js` applies language, splat, font, and dark-mode CSS classes after rendering.
 - `BonusHelper`, `SelectHelper`, `DropHelper`, `ItemHelper`, and `ActionHelper` act as service/controller modules; the sheets themselves remain large orchestration classes.
@@ -316,7 +317,7 @@ sheet click
 - `DialogSoakRoll`, `DialogCheckFrenzy`, and `DialogShapeChange` for specialized mechanics;
 - direct containers for initiative, paradox, fetish activation, and remaining active.
 
-The PC API bypasses dialogs for `rollAttribute`, `rollAbility`, and `rollAdvantage`, but still constructs the same `DiceRollContainer` and calls `DiceRoller`. Feature, weapon, and power API methods intentionally route back through `ActionHelper.RollDialog`.
+The PC API bypasses dialogs for `rollAttribute`, `rollAbility`, and `rollAdvantage`, but still constructs the same `DiceRollContainer` and calls `DiceRoller`. All three direct methods accept `options.resistance`, normalize it to a non-negative integer, and default it to 0. Feature, weapon, and power API methods intentionally route back through `ActionHelper.RollDialog`.
 
 ### 7.2 Pool construction
 
@@ -329,9 +330,10 @@ Dialogs are responsible for:
 3. applying `BonusHelper` pool and difficulty modifiers;
 4. identifying speciality and optionally reducing difficulty;
 5. adding wound penalties unless the action ignores them;
-6. for the general Test dialog, exposing a checked-by-default “Use exhausted penalty (-2)” control when the PC is exhausted and writing an explicit `-2` or `0` to the container;
-7. adding attack successes to damage where configured;
-8. setting `origin` (`general`, `power`, `attack`, `damage`, `soak`, or `initiative`) so the evaluator can apply origin-specific rules.
+6. for the general Test dialog, exposing a fillable Resistance field beside the other Test inputs, initialized to 0 and normalized to a non-negative integer;
+7. for that dialog, exposing a checked-by-default “Use exhausted penalty (-2)” control when the PC is exhausted and writing an explicit `-2` or `0` to the container;
+8. adding attack successes to damage where configured;
+9. setting `origin` (`general`, `power`, `attack`, `damage`, `soak`, or `initiative`) so the evaluator can apply origin-specific rules.
 
 Weapon attack is a two-stage chain: `DialogWeaponV2._rollAttack` builds and evaluates the attack; if it succeeds and damage is rollable it opens/continues in damage state with `extraSuccesses` (usually successes minus one). `_rollDamage` builds target-specific pools and calls the same evaluator.
 
@@ -341,7 +343,7 @@ All ordinary pools are evaluated by `DiceRoller` in `module/scripts/roll-dice.js
 
 Evaluation sequence:
 
-1. clamp difficulty to `CONFIG.worldofdarkness.lowestDifficulty`;
+1. clamp difficulty to `CONFIG.worldofdarkness.lowestDifficulty` and `CONFIG.worldofdarkness.highestDifficulty`; the runtime hard floor is 3 and the ceiling is 9;
 2. add automatic successes from active bonuses;
 3. attempt to spend Willpower and apply its configured effect;
 4. disable botching for damage/soak when their “ones” settings are off;
@@ -351,9 +353,9 @@ Evaluation sequence:
 8. compute `numberDices = target.numDices + woundpenalty + exhaustionpenalty`, clamped to zero;
 9. when that value is zero, create no Foundry `Roll` objects, force zero successes and a failure result, and mark `diceResult.zeroPoolFailure`;
 10. otherwise evaluate a separate `Roll("1d10")` for each die and collect each face/color;
-11. count raw successful dice and natural 1s separately, apply 10/speciality extra successes, and reroll exploding 10s by extending the loop;
-12. add natural 1s to explicit Resistance, subtract total Resistance once, and clamp net successes to zero;
-13. classify result as success, fail, or botch, applying the `rolledOnes > rawSuccesses` predicate and existing botch-prevention gates;
+11. count successful die faces in `rawSuccesses` and natural 1s in `rolledOnes`, while separately accumulating automatic and configurable 10/speciality successes into the running success total;
+12. snapshot that running total as `successesBeforeResistance`, add natural 1s to explicit Resistance, subtract total Resistance once, and clamp net successes to zero;
+13. classify result as success, failure, or botch; a botch occurs only when botching is allowed and `rolledOnes > rawSuccesses`, while Willpower and origin-specific gates can prevent it and speciality settings can downgrade it to failure;
 14. calculate per-target margin of failure and additional successes, applying speciality botch protection;
 15. add informational lines (difficulty, speciality, wound penalty, exhaustion penalty, Willpower, automatic successes, soak remainder, and Demon evocation Torment outcome);
 16. render and create the chat message, then return the last target's numeric success count.
@@ -364,7 +366,9 @@ Important implications:
 - `rolls: allDices` is attached to the chat message so Foundry and modules such as Dice So Nice can still see roll objects.
 - A zero final pool is an automatic failure even if the request also contains automatic successes; the chat card renders a localized zero-pool explanation in standard, attack, and damage layouts.
 - Multi-target results are displayed together, but the returned `success` variable is the final target's value.
-- Each displayed target result renders successes before Resistance subtraction, nonzero total Resistance, the final outcome, and then either margin of failure or additional successes, in that order.
+- `rawSuccesses`, `successesBeforeResistance`, and final `success` are distinct values. Raw successes count successful faces for botch/margin rules; the pre-Resistance value also includes automatic and configured extra successes; final success is the clamped value after Resistance and remaining legacy adjustments.
+- Natural 1s always add to total Resistance. `useOnesDamage` and `useOnesSoak` control whether those origins may botch; disabling botch does not stop their 1s from contributing Resistance.
+- Each displayed target result renders pre-Resistance successes, nonzero total Resistance, the final outcome, and then either margin of failure or additional successes, in that order. The outcome uses a dedicated `tray-test-result` style (`1.25em`, weight `700`) so Botch, Failure, and Success are more prominent than surrounding text.
 - Favored attribute/ability flags currently add informational chat metadata only; they do not exempt natural 1s from Resistance.
 - Demon Lore Torment compares successful die faces with permanent Torment after the normal roll.
 
@@ -578,6 +582,29 @@ Dependencies: initialization order is significant because document preparation, 
 | Graphics | `useSplatFonts`, `useLinkPlatform` | Render hooks and sheet context |
 | Migration/internal | `worldVersion`, `patch*`, `readmessage01` | Migration and release messaging |
 
+### 14.1 Current defaults and enforced bounds
+
+The following are registration defaults for a newly created world. Existing worlds retain their saved setting values unless a migration or administrator changes them.
+
+| Setting/behavior | Current default or bound | Runtime effect |
+| --- | --- | --- |
+| `specialityLevel` | `2` | An ability is eligible for its speciality at two dots. |
+| `attributeSettings` | `"5th"` | Uses the fifth-edition attribute grouping/selection path. |
+| `successesToDamageRolls` | `false` | Attack successes are not added to damage dice by default; the legacy option still exists. |
+| `useOnesDamage` | `true` | Damage Tests may botch by default. Natural 1s still add Resistance regardless of this toggle. |
+| `useOnesSoak` | `true` | Soak Tests may botch by default. Natural 1s still add Resistance regardless of this toggle. |
+| `theRollofOne` | `1` (legacy registration) | Still cached for compatibility, but `DiceRoller` no longer subtracts this value from successes; each 1 instead adds one Resistance. |
+| `specialityAddSuccess` | `0` | The legacy speciality-extra-success rule is disabled by default. |
+| `specialityReduceDiff` | `1` | An enabled applicable speciality lowers difficulty by 1 by default. |
+| `specialityAllowBotch` | `true` | Speciality Tests may botch by default; when false, a computed botch is downgraded to failure. |
+| `tenAddSuccess` | `0` | No extra configured successes are added to a 10 beyond its normal success by default. |
+| `explodingDice` | `"always"` | Every rolled 10 schedules another d10 by default; explosion dice can explode recursively. |
+| `lowestDifficulty` | default `3`, choices `3`–`6` | The saved world value selects the active minimum, but initialization clamps it to at least 3. |
+| `highestDifficulty` | fixed runtime value `9` | This is not a world setting. Evaluators and shared selectors use 9 as the upper bound. |
+| General Test Resistance | `0` | The dialog and PC roll API accept non-negative explicit Resistance; each natural 1 adds another point. |
+
+`DiceRoller` enforces both active bounds even if a caller supplies a value outside them. Shared difficulty selectors enumerate the active minimum through 9, and Arete casting uses the same maximum when converting excess difficulty into required successes.
+
 The menu classes (`Rules`, `Dices`, `Era`, `Combat`, `Demon`, `Hunter`, `Vampire`, `Werewolf`, `Permissions`, and `Graphics`) extend `FormApplication`, filter Foundry's setting registry into a template context, and save changed values with `game.settings.set`. Their templates are in `templates/dialogs/dialog-settings-*.hbs`.
 
 ## 15. Localization
@@ -620,6 +647,16 @@ DiceRoller / InitiativeRoll
 The template renders selected informational/system fields with triple braces because descriptions and several rule annotations are HTML. Any derivative that accepts less-trusted content should review this trust boundary.
 
 For a zero final dice pool, `DiceRoller` emits no roll objects and puts `zeroPoolFailure` on the result. The standard, attack, and damage branches of `roll-template.hbs` display `wod.dice.zeropoolfailure`; all seven language catalogs define that key. Exhaustion controls use `wod.dialog.useexhaustedpenalty`.
+
+For standard, attack, and damage results, each target block currently renders in this exact order:
+
+1. localized Successes using `successesBeforeResistance`;
+2. localized total Resistance, omitted when it is zero;
+3. localized final outcome (Botch, Failure, or Success), enlarged and bold through `.tray-test-result` in `css/chat.css`;
+4. additional successes for success, otherwise margin of failure;
+5. zero-pool explanation when applicable, followed by the rolled dice display.
+
+Informational header fields (`action`, title, `info`, actor conditions, and `systemtext`) remain above the per-target result blocks. Resistance/result labels are localized in every catalog; English uses “Failure” for `wod.dice.fail`.
 
 Dependencies: chat generation requires localization, actor condition state, the SVG Handlebars helpers/partials, Foundry roll objects, and the data contract built by the evaluator or send helper.
 

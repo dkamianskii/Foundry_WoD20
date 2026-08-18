@@ -11,7 +11,7 @@ Status labels:
 
 ## 1. Executive status
 
-The repository has completed the package rename, the PC Willpower redesign, Splat compatibility for that redesign, zero-pool automatic failure, and the specified botch comparison. The main conversion is not otherwise complete. Dice evaluation still implements configurable WoD20-style ones, tens, and specialities around that botch comparison. Health still uses seven configurable legacy wound levels and aggregate damage counts. Damage, weapons, and armor do not yet model the specification's independent nature/lethality, concentrated damage, or effective Protection pipeline.
+The repository has completed the package rename, the PC Willpower redesign, Splat compatibility for that redesign, zero-pool automatic failure, enforced Test difficulty bounds, explicit Resistance, the specified botch comparison, Test margins, and the reordered chat result display. New-world defaults now select the requested 5th-edition Test profile: speciality threshold 2, speciality difficulty reduction 1, no speciality-added successes, always-exploding 10s, damage/soak botching enabled, and attack successes not added to damage dice. The main conversion is not otherwise complete. Several legacy dice settings remain configurable and can move an existing world away from this default profile. Health still uses seven configurable legacy wound levels and aggregate damage counts. Damage, weapons, and armor do not yet model the specification's independent nature/lethality, concentrated damage, or effective Protection pipeline.
 
 The remaining work should be done in this dependency order:
 
@@ -99,6 +99,25 @@ Compatibility and migration:
 
 Affected files are `module/scripts/roll-dice.js`, `module/dialogs/dialog-generalroll.js`, `module/actor/api-handler.js`, the general-roll and chat templates, and all localization catalogs. Resistance is request data only and requires no persisted-data migration. Specialized dialogs currently use the shared default of 0 because they do not expose their own Resistance input. Configurable legacy ten/speciality success behavior remains and can still change the successes present before Resistance.
 
+### 2.5 Default Test profile, bounds, and result presentation
+
+**Status: Implemented as new-world defaults and shared runtime bounds; legacy settings remain configurable.**
+
+- new worlds default to speciality eligibility at 2 dots and fifth-edition attributes;
+- attack successes do not add damage dice by default;
+- damage and soak Tests allow botches by default;
+- speciality-added successes default to disabled, while an applicable speciality lowers difficulty by 1;
+- exploding 10s default to `always` and can recursively schedule further dice;
+- the world minimum difficulty defaults to 3 and cannot initialize below 3; administrators may select an active minimum from 3 through 6;
+- the runtime maximum is fixed at 9, and `DiceRoller`, shared selectors, dialog selectors, and Arete casting use that ceiling;
+- the chat card shows the running success total captured immediately before Resistance, then nonzero total Resistance, then the final outcome, followed by the appropriate margin field and remaining result details;
+- Botch, Failure, and Success use `.tray-test-result` at `1.25em` and font weight `700` in every standard, attack, and damage result branch;
+- the English failure label is “Failure”; Resistance, margins, and result labels exist in all seven localization catalogs.
+
+The displayed pre-Resistance count is not identical to `rawSuccesses`: `rawSuccesses` counts successful die faces for botch and margin calculations, while the displayed running total can also include Willpower/bonus successes and configured 10/speciality additions. Natural 1s always increase total Resistance. The damage/soak ones toggles only control whether those origins can botch.
+
+Commit `c07379e` fixed a missing closing parenthesis in the favored-roll branch of `roll-dice.js`. That syntax error demonstrated an important dependency: the PC sheet imports the roll stack through `ActionHelper`, so failure to parse the dice module can leave a title-only actor application. The fix was manually verified in Foundry v14 by reopening a PC sheet and confirming all sheet parts rendered.
+
 ## 3. Requirement matrix
 
 ### 3.1 Generic Dice Tests
@@ -107,16 +126,16 @@ Affected files are `module/scripts/roll-dice.js`, `module/dialogs/dialog-general
 | --- | --- | --- | --- |
 | Final pool is base + bonuses - penalties | Partial | Dialogs assemble pools and `DiceRoller` adds wound/exhaustion penalties, but modifiers are distributed across dialogs and `BonusHelper`. | Define one normalized Test request/modifier contract and make all dialog/API callers use it. |
 | Minimum pool 0; zero dice means automatic failure | **Implemented** | `DiceRoller` skips all rolls and sets `zeroPoolFailure`. | Add permanent automated coverage for general, attack, damage, multi-target, and automatic-success cases. |
-| Difficulty range 3–9, default 6 | **Implemented** | The evaluator clamps to 3–9, shared selectors use the same bounds, and the default Test difficulty is 6. Legacy saved minimum settings below 3 are clamped during initialization. | Add permanent automated boundary coverage and eventually retire the legacy minimum setting. |
-| Each die at or above difficulty is one raw success | Partial | Threshold counting exists, but extra-ten and ones settings mutate the same running success value. | Track `rawSuccesses` independently before resistance. |
+| Difficulty range 3–9, default 6 | **Implemented** | The evaluator clamps to the active world minimum and fixed maximum 9; initialization prevents a minimum below 3, shared selectors use the same bounds, and the default Test difficulty is 6. The legacy minimum setting may intentionally raise the active floor to 4–6. | Add permanent automated boundary coverage and decide whether target rules should retain a configurable raised floor. |
+| Each die at or above difficulty is one raw success | **Implemented with legacy additions** | `rawSuccesses` independently counts successful die faces. A separate running total includes automatic successes and configured 10/speciality additions before Resistance. | Add pure tests and decide whether the remaining configurable additions belong in the target rules mode. |
 | Resistance defaults to 0 and subtracts raw successes | **Implemented** | `DiceRollContainer` has a default-zero Resistance field; the general Test dialog and PC API accept it, and `DiceRoller` subtracts total Resistance before clamping. | Expose the input in specialized Test dialogs if those workflows require nonzero explicit Resistance. |
-| Each natural 1 increases resistance by 1 | **Implemented** | Every natural 1, including results from explosion dice, adds one to total Resistance independently of botch prevention. | Remove or formally deprecate the now-obsolete configurable ones-subtraction setting. |
-| Each natural 10 succeeds and explodes recursively | Partial | Explosions and extra successes exist but are controlled by `explodingDice`, speciality, and `tenAddSuccess`. | Make every 10 worth its normal success and enqueue one die recursively; prevent settings from changing the target rule. |
-| `net = max(0, raw - resistance)` | **Implemented** | The evaluator retains rolled raw-success counts for botch calculation, subtracts total Resistance once, clamps net successes to zero, and exposes total Resistance in each result. | Add a structured public result contract rather than returning only the final target's numeric net successes. |
-| Botch iff rolled ones > raw successes, before clamp | **Implemented** | `DiceRoller` separately counts per-target natural 1s and raw successful dice, then evaluates the predicate before ordinary success/failure classification. Existing Willpower, origin, and speciality rules can explicitly prevent or downgrade a botch. | Add permanent automated coverage for exploding dice, automatic successes, multi-target rolls, and each botch-prevention gate. |
+| Each natural 1 increases resistance by 1 | **Implemented** | Every natural 1, including results from explosion dice, adds one to total Resistance independently of botch prevention. `theRollofOne` is still registered/cached but no longer subtracts successes in `DiceRoller`. | Remove or formally deprecate the obsolete ones-subtraction setting. |
+| Each natural 10 succeeds and explodes recursively | Partial | Every 10 counts as a raw successful face. The new-world default is recursive `always` explosion, but `explodingDice`, speciality, and `tenAddSuccess` remain configurable. | Lock or scope the remaining settings if the target rule must be invariant in every world. |
+| `net = max(0, raw_successes - resistance)` | **Implemented with success-source nuance** | The evaluator subtracts total Resistance once from the running `successesBeforeResistance` total and clamps to zero. That total can include automatic/configured extra successes; the code's successful-face `rawSuccesses` remains separate for botch and margin calculations. | Clarify whether the specification's `raw_successes` includes automatic/configured success sources, then encode both counters in a structured public result contract. |
+| Botch iff rolled ones > raw successes, before clamp | **Implemented with explicit gates** | `DiceRoller` separately counts per-target natural 1s and raw successful dice. It botches only when `canBotch` is true and ones exceed raw successes; spent Willpower prevents botch, disabled damage/soak botching prevents it for those origins, and speciality protection can downgrade botch to failure. | Add permanent automated coverage for exploding dice, automatic successes, multi-target rolls, and each botch-prevention gate. |
 | Failure and margin of failure | **Implemented** | Per-target results calculate and render `marginOfFailure = max(0, resistance - rawSuccesses)` for failed and botched Tests. | Add automated chat-card and numerical boundary coverage. |
 | Success and additional successes | Partial | Per-target results calculate and render `additionalSuccesses = max(0, netSuccesses - 1)`, but weapon code still recomputes successes minus one from the numeric return value. | Migrate weapon and other downstream callers to a structured Test result. |
-| Specialization reduces difficulty by 1 before clamp | Partial | Dialogs apply setting-controlled speciality effects inconsistently; default reduction may be zero. | Represent applicable/enabled specialization on the request, apply exactly `-1` in the evaluator, then clamp to 3–9. |
+| Specialization reduces difficulty by 1 before clamp | Partial | The new-world default is `specialityReduceDiff = 1`, but dialogs apply the setting before the shared evaluator and existing worlds may configure 0–3. | Represent applicable/enabled specialization on the request and apply exactly `-1` centrally if the target rule must be invariant. |
 
 Primary files: `module/scripts/roll-dice.js`, all builders in `module/dialogs/`, `module/actor/api-handler.js`, `module/scripts/action-helpers.js`, `module/settings.js`, `wod.js`, `templates/dialogs/roll-template.hbs`, and `lang/*.json`.
 
@@ -189,15 +208,15 @@ Primary files: `template.json` or new typed item models, `module/items/datamodel
 
 ### Phase 1 — Replace the Test evaluator
 
-1. Refactor `DiceRollContainer` or introduce a new request object containing base pool, typed modifiers, difficulty, resistance, specialization, automatic successes, botch prevention, targets, and origin metadata.
-2. Move final-pool and 3–9 difficulty clamping into one evaluator; dialogs should report inputs, not enforce core arithmetic independently.
-3. Evaluate dice with recursive tens while separately counting dice, ones, and raw successes.
-4. Calculate resistance, pre-clamp botch, net successes, margin of failure, and additional successes exactly once.
-5. Preserve zero-pool precedence: no dice, no explosions, zero net successes, automatic failure.
-6. Adapt Willpower spending to the new request/result without regressing its persisted wound transaction.
-7. Update every dialog, the PC API, initiative/special actions as applicable, and multi-target callers.
-8. Update chat cards/localization to show the new result fields and retain Foundry `Roll` objects for actual rolled dice.
-9. Deprecate, migrate, or scope conflicting settings (`theRollofOne`, ten/explosion switches, speciality success/botch settings, configurable minimum difficulty).
+1. **Partial:** `DiceRollContainer` now carries Resistance and explicit exhaustion state, but there is no serializable structured `TestRequest`/`TestResult` contract and the function still returns only a number.
+2. **Partial:** the shared evaluator enforces the active minimum and maximum 9, but dialogs still assemble modifiers and speciality difficulty changes independently.
+3. **Partial:** dice, ones, and raw successful faces are counted separately and explosions recurse by extending the loop; however, explosion/10 behavior remains setting-controlled.
+4. **Implemented in the current evaluator:** total Resistance, botch comparison, clamped net successes, margin of failure, and additional successes are calculated per target.
+5. **Implemented:** a zero final pool rolls no dice, produces no explosions, and is an automatic failure even when automatic successes exist.
+6. **Implemented for PC actors:** spending persists the Willpower wound update, adds one automatic success, and prevents botch; legacy actors retain their old resource path.
+7. **Partial:** the general dialog and direct PC attribute/ability/advantage API accept Resistance; specialized dialogs inherit zero and downstream weapon code still consumes a numeric return.
+8. **Implemented for existing card branches:** standard, attack, and damage cards show the ordered result fields and retain Foundry `Roll` objects.
+9. **Not completed:** conflicting settings remain registered. Their new-world defaults now match the requested profile, but existing worlds may retain different values.
 
 ### Phase 2 — Replace PC Health persistence and wound resolution
 
@@ -260,6 +279,8 @@ Do not derive new canonical fields only in sheet context. They must live in type
 
 ## 6. Verification gates
 
+Current verification progress: JavaScript/localization/template parsing has been run for the recent Test/chat changes, and the title-only PC-sheet regression was reproduced and fixed in Foundry v14. Permanent pure-rule and chat-card regression tests are still absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
+
 Each phase is complete only after these checks pass:
 
 1. JavaScript syntax and every localization JSON file parse successfully.
@@ -276,7 +297,7 @@ Each phase is complete only after these checks pass:
 - **PC-only versus all actor types:** the new Willpower implementation is PC-only, while the desired Health/damage rules are not explicitly scoped. This must be decided before schema work.
 - **Endurance identity:** no explicit current Endurance attribute was found; the system uses Stamina. A silent mapping would make the rule ambiguous.
 - **Mandatory exhaustion:** code permits the general-dialog checkbox to suppress `-2`, while the specification reads as mandatory.
-- **Settings authority:** many current dice settings conflict with fixed target rules. Decide whether they are removed, migrated to fixed values, or retained only in a named legacy rules mode.
+- **Settings authority:** new-world defaults now match the requested Test profile, but existing saved values and the settings UI can still select conflicting behavior. Decide whether those controls are removed, migrated to fixed values, or retained only in a named legacy rules mode.
 - **Health canonical form:** ordered boxes simplify displacement and penalty selection; aggregate counts simplify storage but risk losing positional meaning.
 - **Armor degradation details:** the specification says AP affects degradation but does not define the degradation formula. That formula must be added before implementation.
 - **Overflow at maximum aggravated Health:** death/incapacitation behavior is not specified and the current helper silently limits some overflow. Define the terminal rule before replacing it.
