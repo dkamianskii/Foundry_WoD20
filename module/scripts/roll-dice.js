@@ -397,7 +397,7 @@ export async function DiceRoller(diceRoll) {
 
 					// Preserve the informational marker for favored Exalted rolls.
 					if ((actor !== undefined) && ((actor.system.attributes[diceRoll.attribute]?.isfavorited) || (actor.system.attributes[diceRoll.ability]?.isfavorited) &&
-							(actor.system.abilities[diceRoll.attribute]?.isfavorited) || (actor.system.abilities[diceRoll.ability]?.isfavorited)) {
+							(actor.system.abilities[diceRoll.attribute]?.isfavorited) || (actor.system.abilities[diceRoll.ability]?.isfavorited))) {
 						isfavorited = true;
 					}
 				}
