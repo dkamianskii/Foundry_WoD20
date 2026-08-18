@@ -3,7 +3,7 @@ import settings from "./base/actor_settings.js";
 import traits from "./base/actor_traits.js";
 import health from "./base/actor_health.js";
 import willpower from "./base/actor_willpower.js";
-import { migrateLegacyHealth } from "../../scripts/health.js";
+import { migratePCHealthSource } from "../../scripts/health.js";
 
 export default class PCDataModel extends foundry.abstract.DataModel {
     static defineSchema() {
@@ -134,28 +134,7 @@ export default class PCDataModel extends foundry.abstract.DataModel {
         if (source?.soak && source.soak.chimerical === undefined) {
             source.soak.chimerical = { bashing: 0, lethal: 0, aggravated: 0 };
         }
-        if (source?.health?.damage && source.health.damage.chimerical === undefined) {
-            source.health.damage.chimerical = { bashing: 0, lethal: 0, aggravated: 0 };
-        }
-        source.health ??= {};
-        source.health.damage ??= {};
-        source.health.damage.chimerical ??= { bashing: 0, lethal: 0, aggravated: 0 };
-
-        if (!Array.isArray(source.health.wounds)) {
-            const migratedHealth = migrateLegacyHealth(source);
-            source.health.wounds = migratedHealth.wounds;
-            source.health.bonus = migratedHealth.bonus;
-        }
-        else if (source.health.bonus === undefined) {
-            source.health.bonus = 0;
-        }
-
-        delete source.health.damage.bashing;
-        delete source.health.damage.lethal;
-        delete source.health.damage.aggravated;
-        for (const level of ["bruised", "hurt", "injured", "wounded", "mauled", "crippled", "incapacitated"]) {
-            delete source.health[level];
-        }
+        migratePCHealthSource(source);
         if (source?.willpower === undefined) {
             source.willpower = { damage: { light: 0, heavy: 0 } };
         }

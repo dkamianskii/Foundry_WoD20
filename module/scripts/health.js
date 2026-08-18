@@ -114,6 +114,40 @@ export function migrateLegacyHealth(source) {
     };
 }
 
+/**
+ * Migrate Health fields only when the supplied source actually contains the
+ * legacy PC representation. Foundry can pass partial update sources through
+ * DataModel migration, so absent fields must never be filled here.
+ */
+export function migratePCHealthSource(source) {
+    const health = source?.health;
+    if (!health) return source;
+
+    const damage = health.damage;
+    const levels = ["bruised", "hurt", "injured", "wounded", "mauled", "crippled", "incapacitated"];
+    const hasLegacyDamage = damage && ["bashing", "lethal", "aggravated"].some(type => damage[type] !== undefined);
+    const hasLegacyLevels = levels.some(level => health[level] !== undefined);
+
+    if (hasLegacyDamage || hasLegacyLevels) {
+        const migratedHealth = migrateLegacyHealth(source);
+        if (!Array.isArray(health.wounds)) health.wounds = migratedHealth.wounds;
+        if (health.bonus === undefined) health.bonus = migratedHealth.bonus;
+
+        if (damage?.chimerical === undefined) {
+            damage.chimerical = {bashing: 0, lethal: 0, aggravated: 0};
+        }
+    }
+
+    if (damage) {
+        delete damage.bashing;
+        delete damage.lethal;
+        delete damage.aggravated;
+    }
+    for (const level of levels) delete health[level];
+
+    return source;
+}
+
 export function getActiveHealthBonus(actor) {
     let bonus = 0;
     for (const item of actor?.items ?? []) {

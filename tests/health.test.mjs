@@ -7,7 +7,8 @@ import {
     distributeHealthLevels,
     getActorHealthState,
     getHealthState,
-    migrateLegacyHealth
+    migrateLegacyHealth,
+    migratePCHealthSource
 } from "../module/scripts/health.js";
 
 test("maximum Health uses Strength, Stamina-as-Endurance, and bonus", () => {
@@ -96,6 +97,15 @@ test("legacy PC Health migration preserves configured capacity and wound severit
         bonus: 1,
         wounds: ["aggravated", "heavy", "light", "light"]
     });
+});
+
+test("a partial wound update does not synthesize or reset the Health bonus", () => {
+    const update = {health: {wounds: ["light"]}};
+
+    migratePCHealthSource(update);
+
+    assert.deepEqual(update.health.wounds, ["light"]);
+    assert.equal(Object.hasOwn(update.health, "bonus"), false);
 });
 
 test("a worse chimerical track still drives the shared PC penalty", () => {

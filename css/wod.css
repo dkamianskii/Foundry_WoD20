@@ -3096,6 +3096,7 @@ input.sheet-infoWidth {
   text-align: center;
   line-height: 12px;
   font-weight: 700;
+  color: #000;
 }
 
 .wod20 .resource-counter .pc-health-box[data-state="light"]::after {
