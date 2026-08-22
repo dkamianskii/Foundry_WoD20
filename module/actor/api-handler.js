@@ -5,6 +5,7 @@ import BonusHelper from "../scripts/bonus-helpers.js";
 import CombatHelper from "../scripts/combat-helpers.js";
 import { createWillpowerAdvantageFacade, getWillpowerState } from "../scripts/willpower.js";
 import { applyWounds, getActorHealthState, getHealthState, mapLegacyDamageType, removeWounds } from "../scripts/health.js";
+import { getAbilitySpecialityState } from "../scripts/speciality.js";
 
 /**
  * PC Actor API Handler
@@ -232,8 +233,9 @@ export default class PCActorAPI {
         diceText.push(`${abilityName} (${abilityValue})`);
 
         // Check for speciality
-        const hasSpeciality = ability.system.value >= 4 && ability.system.speciality;
-        const specialityText = hasSpeciality ? ability.system.speciality : "";
+        const speciality = getAbilitySpecialityState(ability);
+        const hasSpeciality = speciality.hasSpeciality;
+        const specialityText = hasSpeciality ? speciality.text : "";
 
         // Create dice roll container
         const diceRoll = new DiceRollContainer(this.actor);

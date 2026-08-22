@@ -1907,6 +1907,18 @@ export  const updates = async () => {
             update = false;
         }
     }
+
+    if (_compareVersion(actor.system.settings.version, "7.5.0")) {
+        const updateData = { "system.settings.version": migrationVersion };
+        const attributes = actor._source?.system?.attributes ?? actor.system.attributes ?? {};
+
+        for (const key of Object.keys(attributes)) {
+            updateData[`system.attributes.${key}.-=speciality`] = null;
+        }
+
+        await actor.update(updateData);
+        console.log(`WoD Migration | Removed obsolete Attribute specialities from ${actor.name}.`);
+    }
 }
 
 /**
@@ -2557,6 +2569,18 @@ export  const updates = async () => {
         await actor.update(updateData);
         console.log(`WoD Migration | Converted ${actor.name} to derived five-level PC Health.`);
     }
+
+    if (_compareVersion(actorVersion, "7.5.0")) {
+        const updateData = { "system.settings.version": migrationVersion };
+        const attributes = actor._source?.system?.attributes ?? actor.system.attributes ?? {};
+
+        for (const key of Object.keys(attributes)) {
+            updateData[`system.attributes.${key}.-=speciality`] = null;
+        }
+
+        await actor.update(updateData);
+        console.log(`WoD Migration | Removed obsolete Attribute specialities from ${actor.name}.`);
+    }
  }
 
   /**
@@ -2797,6 +2821,11 @@ export  const updates = async () => {
 
     if (newfunctions == "") {
         newfunctions += 'Issues fixed in version:<br />';
+
+        if (_compareVersion(installedVersion, '7.5.0')) {
+            newfunctions += '<li>Specialities are now Ability-only and require two dots plus filled speciality text.</li>';
+            newfunctions += '<li>Ability speciality indicators now use grey/green eligibility and a green filled-speciality mark.</li>';
+        }
 
         if (_compareVersion(installedVersion, '7.4.0')) {
             newfunctions += '<li>[PC Actor] Health is now derived from Strength, Stamina, and a sheet Health Bonus.</li>';

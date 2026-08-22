@@ -11,7 +11,6 @@ export class Attribute {
     constructor(item) {
         this.typeform = "attribute";
         this.name = item.label;
-        this.speciality = item.speciality;
         this.id = item.id;
     }
 }
@@ -198,12 +197,6 @@ export class DialogAttribute extends FormApplication {
     }
 
     async _save(event) {
-        this.object.speciality = document.getElementById("speciality").value;
-
-        const actorData = foundry.utils.duplicate(this.actor);
-        actorData.system.attributes[this.object.id].speciality = this.object.speciality;
-        actorData.system.settings.isupdated = false;
-        await this.actor.update(actorData);
         this.close();
     }
 }
@@ -269,7 +262,7 @@ export class DialogAbility extends FormApplication {
     async _save(event) {
         if (this.object.issecondary) {
             this.object.label = document.getElementById("label").value;
-            this.object.speciality = document.getElementById("speciality").value;
+            this.object.speciality = document.getElementById("speciality")?.value ?? "";
         }
         else {
             this.object.altlabel = document.getElementById("altlabel").value;

@@ -3,6 +3,7 @@ import { DiceRollContainer } from "../scripts/roll-dice.js";
 
 import CombatHelper from "../scripts/combat-helpers.js";
 import BonusHelper from "../scripts/bonus-helpers.js";
+import { getAbilitySpecialityState } from "../scripts/speciality.js";
 
 export class BasePower {
     constructor(item) {
@@ -309,6 +310,8 @@ export class DialogPower extends FormApplication {
 
         data.actorData = this.actor.system;
         data.config = CONFIG.worldofdarkness;
+        data.object.hasSpeciality = false;
+        data.object.specialityText = "";
 
         if (this.actor.type == "PC") {
             //data.config.powerAbilities = [];
@@ -322,8 +325,6 @@ export class DialogPower extends FormApplication {
         else {
             data.config.powerAbilities = this.actor.system.listdata.powerAbilities;
         }
-
-        const actortype = this._getActorType();
 
         // Handle dice1 (attribute/primary dice)
         if ((this.actor.type == "PC") && (data.object.dice1 == "path")) {
@@ -344,7 +345,7 @@ export class DialogPower extends FormApplication {
         else if ((this.actor.type == "PC") && this.actor.api && data.object.dice1 && data.object.dice1 !== "") {
             const abilityItem = this.actor.api.getAbility(data.object.dice1);
             if (abilityItem) {
-                this._handleDice1AbilityPC(data, actortype, abilitySpeciality);
+                this._handleDice1AbilityPC(data, abilitySpeciality);
             }
             else {
                 const advantage = this.actor.api.getAdvantage(data.object.dice1);
@@ -354,7 +355,7 @@ export class DialogPower extends FormApplication {
             }
         }
         else if ((this.actor.system?.abilities != undefined) && (this.actor.system.abilities[data.object.dice1]?.value != undefined)) {
-            this._handleDice1AbilityLegacy(data, actortype, attributeSpeciality);
+            this._handleDice1AbilityLegacy(data, attributeSpeciality);
         }
         else if (this.actor.system.advantages[data.object.dice1]?.roll != undefined) {
             this._handleDice1AdvantageLegacy(data);
@@ -383,7 +384,7 @@ export class DialogPower extends FormApplication {
             else if ((this.actor.type == "PC") && this.actor.api && data.object.dice2 && data.object.dice2 !== "") {
                 const abilityItem = this.actor.api.getAbility(data.object.dice2);
                 if (abilityItem) {
-                    this._handleDice2AbilityPC(data, actortype, abilitySpeciality);
+                    this._handleDice2AbilityPC(data, abilitySpeciality);
                 }
                 else {
                     const advantage = this.actor.api.getAdvantage(data.object.dice2);
@@ -393,7 +394,7 @@ export class DialogPower extends FormApplication {
                 }
             }
             else if ((this.actor.system?.abilities != undefined) && (this.actor.system.abilities[data.object.dice2]?.value != undefined)) {
-                this._handleDice2AbilityLegacy(data, actortype, abilitySpeciality);
+                this._handleDice2AbilityLegacy(data, abilitySpeciality);
             }
             else if ((this.actor.type == "PC") && (this.actor.system?.advantages != undefined) && (this.actor.system.advantages[data.object.dice2]?.system?.group === "virtue") && (this.actor.system.advantages[data.object.dice2]?.system?.roll != undefined)) {
                 this._handleDice2VirtuePC(data);
@@ -413,24 +414,6 @@ export class DialogPower extends FormApplication {
         await this._applyAbilityBuffs(data);
 
         return data;
-    }
-
-    /**
-     * Get actor type for speciality checks
-     * @returns {string} Actor type (vampire, mage, etc.)
-     */
-    _getActorType() {
-        let actortype = this.actor.type.toLowerCase();
-
-        if (this.actor?.system?.settings?.splat !== undefined) {
-            actortype = this.actor.system.settings.splat;
-        }
-
-        if (CONFIG.worldofdarkness.alwaysspeciality[actortype] == undefined) {
-            actortype = CONFIG.worldofdarkness.sheettype.vampire.toLowerCase();
-        }
-
-        return actortype;
     }
 
     /**
@@ -478,10 +461,9 @@ export class DialogPower extends FormApplication {
             this.object.attributeValue = parseInt(item.system.value);
             this.object.attributeName = item.system.label;
 
-            if (parseInt(item.system.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
-                data.object.hasSpeciality = true;
-                abilitySpeciality.value = item.system.speciality;
-            }
+            const speciality = getAbilitySpecialityState(item);
+            if (speciality.hasSpeciality) data.object.hasSpeciality = true;
+            abilitySpeciality.value = speciality.hasSpeciality ? speciality.text : "";
         }
     }
 
@@ -513,11 +495,6 @@ export class DialogPower extends FormApplication {
         data.object.attributeValue = parseInt(this.actor.system.attributes[data.object.dice1].total);
         data.object.attributeName = game.i18n.localize(this.actor.system.attributes[data.object.dice1].label);
 
-        if (parseInt(this.actor.system.attributes[data.object.dice1].value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
-            data.object.hasSpeciality = true;
-            attributeSpeciality.value = this.actor.system.attributes[data.object.dice1].speciality;
-        }
-
         if (await BonusHelper.CheckAttributeDiceBuff(this.actor, data.object.dice1)) {
             let bonus = await BonusHelper.GetAttributeDiceBuff(this.actor, data.object.dice1);
             data.object.attributeValue += parseInt(bonus);
@@ -527,10 +504,9 @@ export class DialogPower extends FormApplication {
     /**
      * Handle dice1 when it's an Ability (PC actors)
      * @param {Object} data - Dialog data object
-     * @param {string} actortype - Actor type
      * @param {string} abilitySpeciality - Reference to ability speciality string
      */
-    _handleDice1AbilityPC(data, actortype, abilitySpeciality) {
+    _handleDice1AbilityPC(data, abilitySpeciality) {
         if (!data.object.dice1 || data.object.dice1 === "" || !this.actor.api) {
             return;
         }
@@ -542,20 +518,17 @@ export class DialogPower extends FormApplication {
         data.object.abilityValue = parseInt(abilityItem.system.value);
         data.object.abilityName = game.i18n.localize(abilityItem.system.label);
 
-        if ((parseInt(abilityItem.system.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) ||
-            (CONFIG.worldofdarkness.alwaysspeciality[actortype].includes(abilityItem.system.id))) {
-            data.object.hasSpeciality = true;
-            abilitySpeciality.value = abilityItem.system.speciality;
-        }
+        const speciality = getAbilitySpecialityState(abilityItem);
+        if (speciality.hasSpeciality) data.object.hasSpeciality = true;
+        abilitySpeciality.value = speciality.hasSpeciality ? speciality.text : "";
     }
 
     /**
      * Handle dice1 when it's an Ability (Legacy actors)
      * @param {Object} data - Dialog data object
-     * @param {string} actortype - Actor type
      * @param {string} attributeSpeciality - Reference to attribute speciality string
      */
-    _handleDice1AbilityLegacy(data, actortype, attributeSpeciality) {
+    _handleDice1AbilityLegacy(data, attributeSpeciality) {
         data.object.attributeValue = parseInt(this.actor.system.abilities[data.object.dice1].value);
 
         if (this.actor.system.abilities[data.object.dice1] == undefined) {
@@ -567,12 +540,9 @@ export class DialogPower extends FormApplication {
                 this.actor.system.abilities[data.object.dice1].altlabel;
         }
 
-        const hasSpeciality = CONFIG.worldofdarkness.alwaysspeciality[actortype].includes(this.actor.system.abilities[data.object.dice1]._id);
-
-        if ((parseInt(this.actor.system.abilities[data.object.dice1].value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) || (hasSpeciality)) {
-            data.object.hasSpeciality = true;
-            attributeSpeciality.value = this.actor.system.abilities[data.object.dice1].speciality;
-        }
+        const speciality = getAbilitySpecialityState(this.actor.system.abilities[data.object.dice1]);
+        if (speciality.hasSpeciality) data.object.hasSpeciality = true;
+        attributeSpeciality.value = speciality.hasSpeciality ? speciality.text : "";
     }
 
     /**
@@ -650,10 +620,9 @@ export class DialogPower extends FormApplication {
             this.object.abilityValue = parseInt(item.system.value);
             this.object.abilityName = item.system.label;
 
-            if (parseInt(item.system.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
-                data.object.hasSpeciality = true;
-                abilitySpeciality.value = item.system.speciality;
-            }
+            const speciality = getAbilitySpecialityState(item);
+            if (speciality.hasSpeciality) data.object.hasSpeciality = true;
+            abilitySpeciality.value = speciality.hasSpeciality ? speciality.text : "";
         }
     }
 
@@ -687,11 +656,6 @@ export class DialogPower extends FormApplication {
         data.object.abilityValue = parseInt(this.actor.system.attributes[data.object.dice2].total);
         data.object.abilityName = game.i18n.localize(this.actor.system.attributes[data.object.dice2].label);
 
-        if (parseInt(this.actor.system.attributes[data.object.dice2].value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
-            data.object.hasSpeciality = true;
-            abilitySpeciality.value = this.actor.system.attributes[data.object.dice2].speciality;
-        }
-
         if (await BonusHelper.CheckAttributeDiceBuff(this.actor, data.object.dice2)) {
             let bonus = await BonusHelper.GetAttributeDiceBuff(this.actor, data.object.dice2);
             data.object.abilityValue += parseInt(bonus);
@@ -701,10 +665,9 @@ export class DialogPower extends FormApplication {
     /**
      * Handle dice2 when it's an Ability (PC actors)
      * @param {Object} data - Dialog data object
-     * @param {string} actortype - Actor type
      * @param {string} abilitySpeciality - Reference to ability speciality string
      */
-    _handleDice2AbilityPC(data, actortype, abilitySpeciality) {
+    _handleDice2AbilityPC(data, abilitySpeciality) {
         if (!data.object.dice2 || data.object.dice2 === "" || !this.actor.api) {
             return;
         }
@@ -716,20 +679,17 @@ export class DialogPower extends FormApplication {
         data.object.abilityValue = parseInt(abilityItem.system.value);
         data.object.abilityName = game.i18n.localize(abilityItem.system.label);
 
-        if ((parseInt(abilityItem.system.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) ||
-            (CONFIG.worldofdarkness.alwaysspeciality[actortype].includes(abilityItem.system.id))) {
-            data.object.hasSpeciality = true;
-            abilitySpeciality.value = abilityItem.system.speciality;
-        }
+        const speciality = getAbilitySpecialityState(abilityItem);
+        if (speciality.hasSpeciality) data.object.hasSpeciality = true;
+        abilitySpeciality.value = speciality.hasSpeciality ? speciality.text : "";
     }
 
     /**
      * Handle dice2 when it's an Ability (Legacy actors)
      * @param {Object} data - Dialog data object
-     * @param {string} actortype - Actor type
      * @param {string} abilitySpeciality - Reference to ability speciality string
      */
-    _handleDice2AbilityLegacy(data, actortype, abilitySpeciality) {
+    _handleDice2AbilityLegacy(data, abilitySpeciality) {
         data.object.abilityValue = parseInt(this.actor.system.abilities[data.object.dice2].value);
 
         if (this.actor.system.abilities[data.object.dice2] == undefined) {
@@ -741,12 +701,9 @@ export class DialogPower extends FormApplication {
                 this.actor.system.abilities[data.object.dice2].altlabel;
         }
 
-        const hasSpeciality = CONFIG.worldofdarkness.alwaysspeciality[actortype].includes(this.actor.system.abilities[data.object.dice2]._id);
-
-        if ((parseInt(this.actor.system.abilities[data.object.dice2].value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) || (hasSpeciality)) {
-            data.object.hasSpeciality = true;
-            abilitySpeciality.value = this.actor.system.abilities[data.object.dice2].speciality;
-        }
+        const speciality = getAbilitySpecialityState(this.actor.system.abilities[data.object.dice2]);
+        if (speciality.hasSpeciality) data.object.hasSpeciality = true;
+        abilitySpeciality.value = speciality.hasSpeciality ? speciality.text : "";
     }
 
     /**

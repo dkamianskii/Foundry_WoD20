@@ -1,6 +1,6 @@
 # World of Darkness V20 Advanced System Architecture
 
-This document describes the architecture of the repository as it exists in version 7.4.0 (Foundry VTT v14). It records current behavior, including partially migrated and compatibility paths; it is not the target rules definition. See `RULES_SPEC.md` for desired rules and `IMPLEMENTATION_STATUS.md` for the requirement-by-requirement gap analysis and roadmap.
+This document describes the architecture of the repository as it exists in version 7.5.0 (Foundry VTT v14). It records current behavior, including partially migrated and compatibility paths; it is not the target rules definition. See `RULES_SPEC.md` for desired rules and `IMPLEMENTATION_STATUS.md` for the requirement-by-requirement gap analysis and roadmap.
 
 ## 1. Executive summary
 
@@ -81,7 +81,7 @@ Important PC schema branches:
 
 - `settings`: creation/update flags, splat/game/variant/era, feature flags (`haswillpower`, `hasgifts`, `hasspheres`, etc.), attribute/ability/power maximums, and per-damage-type soak configuration.
 - `bio`: basic identity fields, dynamic `splatfields`, and HTML fields.
-- `attributes`: value, bonus, total, max, type, label, speciality, ordering, visibility, and favored state.
+- `attributes`: value, bonus, total, max, type, label, ordering, visibility, and favored state. Attributes do not store specialities.
 - `soak`: derived normal and chimerical pools.
 - `health.bonus`: a persistent non-negative integer edited in Options → Combat.
 - `health.wounds`: the canonical ordered normal-PC wound array; every entry is
@@ -362,7 +362,7 @@ Dialogs are responsible for:
 1. resolving PC item projections versus legacy actor fields;
 2. selecting attribute, ability, advantage, custom ability, sphere/realm, or weapon ratings;
 3. applying `BonusHelper` pool and difficulty modifiers;
-4. identifying speciality and optionally reducing difficulty;
+4. identifying a filled speciality on an Ability with at least 2 dots and optionally reducing difficulty; Attributes never contribute specialities;
 5. adding wound penalties unless the action ignores them;
 6. for the general Test dialog, exposing a fillable Resistance field beside the other Test inputs, initialized to 0 and normalized to a non-negative integer;
 7. exposing independent checked-by-default Health and Willpower wound-penalty toggles in the general Test dialog when their effective penalties are nonzero;
@@ -653,7 +653,7 @@ The following are registration defaults for a newly created world. Existing worl
 
 | Setting/behavior | Current default or bound | Runtime effect |
 | --- | --- | --- |
-| `specialityLevel` | `2` | An ability is eligible for its speciality at two dots. |
+| `specialityLevel` | `2` | Retained for speciality-bearing non-Ability traits; Ability eligibility is fixed at two dots. |
 | `attributeSettings` | `"5th"` | Uses the fifth-edition attribute grouping/selection path. |
 | `successesToDamageRolls` | `false` | Attack successes are not added to damage dice by default; the legacy option still exists. |
 | `useOnesDamage` | `true` | Damage Tests may botch by default. Natural 1s still add Resistance regardless of this toggle. |

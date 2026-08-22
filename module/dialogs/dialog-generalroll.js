@@ -3,9 +3,9 @@ import { DiceRollContainer } from "../scripts/roll-dice.js";
 import { rollUsesAttribute } from "../scripts/roll-penalties.js";
 import CombatHelper from "../scripts/combat-helpers.js";
 import BonusHelper from "../scripts/bonus-helpers.js";
-import Functions from "../functions.js";
 import { getWillpowerState } from "../scripts/willpower.js";
 import { getActorHealthState } from "../scripts/health.js";
+import { getAbilitySpecialityState } from "../scripts/speciality.js";
 
 export class GeneralRoll {
     constructor(key, type, actor) {
@@ -107,9 +107,7 @@ export class DialogGeneralRoll extends FormApplication {
         const attributeKey = data.object.attributeKey;
         const abilityKey = data.object.abilityKey;
 
-        let attributeSpeciality = "";
         let abilitySpeciality = "";
-        let specialityText = "";
 
 		if (!this.isFreeRole) {
 			data.actorData = this.actor.system;
@@ -167,12 +165,6 @@ export class DialogGeneralRoll extends FormApplication {
         data.config = CONFIG.worldofdarkness;
         data.object.hasSpeciality = false;
         data.object.specialityText = "";
-        let specialityLevel = 4;
-
-        if ((CONFIG.worldofdarkness.specialityLevel != undefined) && (Functions.isNumber(CONFIG.worldofdarkness.specialityLevel))) {
-            specialityLevel = parseInt(CONFIG.worldofdarkness.specialityLevel);
-        }
-
         if ((this.object.type == "attribute") && (data.object.difficulty == 6)) {
             if (await BonusHelper.CheckAttributeBonus(this.actor, this.object.attributeKey)) {
                 let bonus = await BonusHelper.GetAttributeBonus(this.actor, this.object.attributeKey);
@@ -233,11 +225,6 @@ export class DialogGeneralRoll extends FormApplication {
                 }
                 else {
                     data.object.attributeValue = parseInt(data.actorData.attributes[attributeKey].total);
-
-                    if (parseInt(data.actorData.attributes[attributeKey].value) >= specialityLevel) {
-                        data.object.hasSpeciality = true;
-                        attributeSpeciality = data.actorData.attributes[attributeKey].speciality;
-                    }
 
                     if (await BonusHelper.CheckAttributeDiceBuff(this.actor, attributeKey)) {
                         let bonus = await BonusHelper.GetAttributeDiceBuff(this.actor, attributeKey);
@@ -302,36 +289,13 @@ export class DialogGeneralRoll extends FormApplication {
                 data.object.abilityName = (!ability.issecondary) ? game.i18n.localize(ability.label) : ability.label;
                 data.object.name = data.object.abilityName;
 
-                let actortype = this.actor.type.toLowerCase();
-
-                if (this.actor?.system?.settings?.splat !== undefined) {
-                    actortype = this.actor.system.settings.splat;
-                }
-
-                if (CONFIG.worldofdarkness.alwaysspeciality[actortype] == undefined) {
-                    actortype = CONFIG.worldofdarkness.sheettype.vampire.toLowerCase();
-                }
-
-                if ((parseInt(ability.value) >= specialityLevel) || (CONFIG.worldofdarkness.alwaysspeciality[actortype].includes(ability._id))) {
-                    data.object.hasSpeciality = true;
-                    abilitySpeciality = ability.speciality;
-                }
+                const speciality = getAbilitySpecialityState(ability);
+                data.object.hasSpeciality = speciality.hasSpeciality;
+                abilitySpeciality = speciality.hasSpeciality ? speciality.text : "";
             }
         }
 
-        if (data.object.hasSpeciality) {
-            if ((attributeSpeciality != "") && (abilitySpeciality != "")) {
-                specialityText = attributeSpeciality + ", " + abilitySpeciality;
-            }
-            else if (attributeSpeciality != "") {
-                specialityText = attributeSpeciality;
-            }
-            else if (abilitySpeciality != "") {
-                specialityText = abilitySpeciality;
-            }
-        }
-
-        data.object.specialityText = specialityText;
+        data.object.specialityText = data.object.hasSpeciality ? abilitySpeciality : "";
 
         return data;
     }

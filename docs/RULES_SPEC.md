@@ -74,6 +74,10 @@ All successes above 1 are called additional successes:
 
 When an applicable specialization is enabled, test difficulty is reduced by 1 before minimum/maximum difficulty handling.
 
+Only Abilities have specializations. Attributes do not have specializations.
+
+An Ability may take a specialization at 2 dots. A specialization is applicable only when the Ability has at least 2 dots and its specialization text is non-empty. Tests without both requirements do not offer specialization use.
+
 ---
 
 ## Willpower

@@ -15,7 +15,7 @@
 				<span class="floating-label">{{localize "wod.labels.ability.sheetname"}}</span>
 		</div>
 
-		{{#if hasActor}}
+		{{#if (and hasActor (canTakeSpeciality item))}}
 
 			<div class="infobox bioInformationArea floating-label-group">
 				<input class="sheet-infoValues editable" name="system.speciality" type="text" value="{{item.system.speciality}}" data-dtype="String" autocomplete="off" autofocus required />
@@ -40,12 +40,6 @@
 			<select class="sheet-infoValues editable" name="system.type" data-source="setvalue" data-dtype="String">
 				{{selectOptions listData.AbilityType selected=item.system.type localize=false}}
 			</select>
-		</div>
-
-		<div class="infobox">
-			<label class="headlineBio splatFont" for="data.system.settings.alwaysspeciality" style="width: 55%;">{{localize "wod.labels.ability.alwaysspeciality"}}</label>
-			<input name="system.settings.alwaysspeciality" type="checkbox" {{isChecked item.system.settings.alwaysspeciality}}></input>
-			<div class="information-area">{{localize "wod.labels.ability.alwaysspecialityhint"}}</div>
 		</div>
 
 		<div class="infobox">

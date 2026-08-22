@@ -34,23 +34,7 @@
 							<span class="{{#if (gt attribute.max 5)}}supernaturalAttribute{{/if}} resource-value-step" data-type="{{../../config.sheettype.mortal}}" data-index="{{this}}"></span>							
 						{{/numLoop}}
 						
-						{{#if (gte attribute.value 4)}}
-							{{#if (eq ../locked false)}}
-								<div class="pullRight speciality-attribute-icon {{#if (and (eq attribute.speciality '') (gte attribute.value 4))}}item-warning{{/if}}">
-									<a class="item-edit" title="{{localize 'wod.labels.edit.speciality'}}" data-type="Attribute" data-item-id="{{key}}"><i class="fa-solid fa-pen-to-square"></i></a>
-								</div>
-							{{else}}
-								<div class="pullRight speciality-attribute-icon">
-									<i class="fa-solid fa-circle-exclamation {{#if (eq attribute.speciality '')}}item-warning{{else}}item-notice{{/if}}" title="{{attribute.speciality}}"></i>
-								</div>
-							{{/if}}
-						{{else}}
-							<div class="pullRight speciality-attribute-empty-icon">
-								&nbsp;
-							</div>
-						{{/if}}	
-
-					</div>				
+					</div>
 				</div>				
 			{{/if}}
 
@@ -58,4 +42,4 @@
 		
 		{{/each}}	
 	</div> 
-</div>	
+</div>

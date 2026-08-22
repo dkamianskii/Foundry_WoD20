@@ -1,6 +1,6 @@
 # Rules Implementation Status
 
-This document compares the target rules in `RULES_SPEC.md` with the current implementation in version 7.4.0. `ARCHITECTURE.md` describes how the repository works today; this document records the gap between that architecture and the desired final system and orders the work needed to close it.
+This document compares the target rules in `RULES_SPEC.md` with the current implementation in version 7.5.0. `ARCHITECTURE.md` describes how the repository works today; this document records the gap between that architecture and the desired final system and orders the work needed to close it.
 
 Status labels:
 
@@ -159,6 +159,27 @@ Commit `c07379e` fixed a missing closing parenthesis in the favored-roll branch 
 Primary files are `module/scripts/health.js`, the PC Health data model and Actor
 lifecycle, PC sheet/actions, `module/actor/api-handler.js`, `dialog-soak.js`,
 Splat/drop compatibility, migration, localization, and `tests/health.test.mjs`.
+
+### 2.7 Ability-only specialities
+
+**Status: Implemented for PC and legacy Actor Test dialogs.**
+
+- Attributes no longer define, edit, display, or contribute specialities.
+- Abilities become eligible to take a speciality at 2 dots. Their edit-note
+  indicator is green at 2 or more dots and grey below 2 dots.
+- A filled, eligible Ability speciality adds a separate green exclamation
+  indicator; the former yellow warning states are no longer used.
+- General, item, trait, power, weapon, and direct PC Ability Tests treat a
+  speciality as usable only when the Ability has at least 2 dots and contains
+  non-blank speciality text. Otherwise the speciality checkbox is absent.
+- Migration 7.5.0 removes persisted Attribute speciality fields. Ability
+  speciality text is preserved; `alwaysspeciality` is retained only as unused
+  source compatibility data.
+
+Primary files are `module/scripts/speciality.js`, Attribute/Ability schemas and
+sheet templates, all Test dialog builders, the PC Actor API, migration code,
+CSS, and `tests/speciality.test.mjs`. Manual Foundry v14 verification remains
+required for unlocked/locked PC and legacy sheets and every affected dialog.
 
 ## 3. Requirement matrix
 
@@ -322,7 +343,7 @@ in `MIGRATION.md`.
 
 ## 6. Verification gates
 
-Current verification progress: JavaScript checks pass for the changed Health, Willpower, roll, dialog, Actor, data-model, and migration modules. The focused rules suite has 28 passing tests covering both formulas, Attribute-only wound-penalty eligibility, shared and severity-specific penalties, Ignore Pain inputs, aggravated promotion, full-track spend rejection, successful spend, and presence-sensitive partial-update migration. Health and Willpower preprocessing is independently gated so changing one track does not write to or reset the other. Broader Test/chat-card regression coverage remains absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
+Current verification progress: JavaScript checks pass for the changed Health, Willpower, speciality, roll, dialog, Actor, data-model, and migration modules. The focused rules suite has 31 passing tests covering both formulas, Attribute-only wound-penalty eligibility, shared and severity-specific penalties, Ignore Pain inputs, aggravated promotion, full-track spend rejection, successful spend, presence-sensitive partial-update migration, and the two-dot/non-blank Ability speciality boundary. Health and Willpower preprocessing is independently gated so changing one track does not write to or reset the other. Broader Test/chat-card regression coverage remains absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
 
 Each phase is complete only after these checks pass:
 

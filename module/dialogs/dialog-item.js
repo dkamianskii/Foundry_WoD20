@@ -1,6 +1,7 @@
 import { DiceRoller } from "../scripts/roll-dice.js";
 import { DiceRollContainer } from "../scripts/roll-dice.js";
 import CombatHelper from "../scripts/combat-helpers.js";
+import { getAbilitySpecialityState } from "../scripts/speciality.js";
 
 export class Magicitem {
     constructor(item) {
@@ -62,6 +63,8 @@ export class DialogItem extends FormApplication {
 
         data.actorData = this.actor.system;
         data.config = CONFIG.worldofdarkness;
+        data.object.hasSpeciality = false;
+        data.object.specialityText = "";
 
         if ((this.actor.type != CONFIG.worldofdarkness.sheettype.changingbreed) && (this.actor.type != CONFIG.worldofdarkness.splat.changingbreed)) {
             data.object.sheettype = this.actor.type.toLowerCase() + "Dialog";
@@ -70,29 +73,11 @@ export class DialogItem extends FormApplication {
             data.object.sheettype = "werewolfDialog";
         }
 
-        let actortype = this.actor.type.toLowerCase();
-
-        if (this.actor?.system?.settings?.splat !== undefined) {
-            actortype = this.actor.system.settings.splat;
-        }
-
-        if (CONFIG.worldofdarkness.alwaysspeciality[actortype] == undefined) {
-            actortype = CONFIG.worldofdarkness.sheettype.vampire.toLowerCase();
-        }
-
         // is dice1 an Attributes
         if ((this.actor.system?.attributes != undefined) && (this.actor.system.attributes[data.object.dice1]?.value != undefined)) {
             data.object.attributeValue = parseInt(this.actor.system.attributes[data.object.dice1].total);
             data.object.attributeName = game.i18n.localize(this.actor.system.attributes[data.object.dice1].label);
 
-            if (parseInt(this.actor.system.attributes[data.object.dice1].value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
-                data.object.hasSpeciality = true;
-
-                if (data.object.specialityText != "") {
-                    data.object.specialityText += ", ";
-                }
-                data.object.specialityText += this.actor.system.attributes[data.object.dice1].speciality;
-            }
         }
         // is dice1 an Advantage
         else if ((this.actor.type == "PC") && this.actor.api) {
@@ -138,25 +123,18 @@ export class DialogItem extends FormApplication {
                 data.object.abilityValue = parseInt(abilityItem.system.value);
                 data.object.abilityName = game.i18n.localize(abilityItem.system.label);
 
-                if ((parseInt(abilityItem.system.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) ||
-                    (CONFIG.worldofdarkness.alwaysspeciality[actortype].includes(abilityItem.system.id))) {
-                    data.object.hasSpeciality = true;
-                    data.object.specialityText += abilityItem.system.speciality;
-                }
+                const speciality = getAbilitySpecialityState(abilityItem);
+                data.object.hasSpeciality = speciality.hasSpeciality;
+                data.object.specialityText = speciality.hasSpeciality ? speciality.text : "";
             }
         }
         else if ((this.actor.system?.abilities != undefined) && (this.actor.system.abilities[data.object.dice2]?.value != undefined)) {
             data.object.abilityValue = parseInt(this.actor.system.abilities[data.object.dice2].value);
             data.object.abilityName = game.i18n.localize(this.actor.system.abilities[data.object.dice2].label);
 
-            if ((parseInt(this.actor.system.abilities[data.object.dice2].value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) || (CONFIG.worldofdarkness.alwaysspeciality[actortype].includes(this.actor.system.abilities[data.object.dice2]._id))) {
-                data.object.hasSpeciality = true;
-
-                if (data.object.specialityText != "") {
-                    data.object.specialityText += ", ";
-                }
-                data.object.specialityText += this.actor.system.abilities[data.object.dice2].speciality;
-            }
+            const speciality = getAbilitySpecialityState(this.actor.system.abilities[data.object.dice2]);
+            data.object.hasSpeciality = speciality.hasSpeciality;
+            data.object.specialityText = speciality.hasSpeciality ? speciality.text : "";
         }
         // virtues
         else if ((this.actor.system.advantages.virtues != undefined) && (this.actor.system.advantages.virtues[data.object.dice2]?.roll != undefined)) {

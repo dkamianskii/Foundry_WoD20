@@ -3,6 +3,7 @@ import CombatHelper from "../scripts/combat-helpers.js";
 import BonusHelper from "../scripts/bonus-helpers.js";
 import { DiceRoller } from "../scripts/roll-dice.js";
 import { DiceRollContainer } from "../scripts/roll-dice.js";
+import { getAbilitySpecialityState } from "../scripts/speciality.js";
 
 /**
  * Build view model from item and state. Defensive reads for item.system.attack, item.system.damage, item.system.mode.
@@ -304,6 +305,8 @@ export class DialogWeaponV2 extends HandlebarsApplicationMixin(ApplicationV2) {
         data.config = CONFIG.worldofdarkness;
         data.state = this.weaponState;
         data.object = this.object;
+        data.object.hasSpeciality = false;
+        data.object.specialityText = "";
 
         if (this.actor.type === "PC") {
             data.actorData.type = this.actor.system.settings.game;
@@ -356,12 +359,6 @@ export class DialogWeaponV2 extends HandlebarsApplicationMixin(ApplicationV2) {
                     : "werewolfDialog";
         }
 
-        let actortype = (this.actor.type || "").toLowerCase();
-
-        if (this.actor?.system?.settings?.splat) actortype = this.actor.system.settings.splat;
-        if (!CONFIG.worldofdarkness.alwaysspeciality?.[actortype]) actortype = CONFIG.worldofdarkness.sheettype?.vampire?.toLowerCase() || "vampire";
-
-        let attributeSpeciality = "";
         let abilitySpeciality = "";
 
         if (this.actor.system?.attributes && data.actorData.attributes?.[data.object.dice1]?.value != null) {
@@ -370,13 +367,6 @@ export class DialogWeaponV2 extends HandlebarsApplicationMixin(ApplicationV2) {
                 data.actorData.attributes[data.object.dice1].label || "",
             );
 
-            if (
-                parseInt(data.actorData.attributes[data.object.dice1].value) >=
-                parseInt(CONFIG.worldofdarkness.specialityLevel)
-            ) {
-                data.object.hasSpeciality = true;
-                attributeSpeciality = data.actorData.attributes[data.object.dice1].speciality || "";
-            }
         }
         else if (data.actorData[data.object.dice1]?.roll != null) {
             data.object.attributeValue = parseInt(data.actorData[data.object.dice1].roll) || 0;
@@ -390,13 +380,9 @@ export class DialogWeaponV2 extends HandlebarsApplicationMixin(ApplicationV2) {
                 data.object.abilityValue = parseInt(abilityItem.system.value) || 0;
                 data.object.abilityName = game.i18n.localize(abilityItem.system.label || "");
 
-                if (
-                    parseInt(abilityItem.system.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel) ||
-                    CONFIG.worldofdarkness.alwaysspeciality?.[actortype]?.includes(abilityItem.system.id)
-                ) {
-                    data.object.hasSpeciality = true;
-                    abilitySpeciality = abilityItem.system.speciality || "";
-                }
+                const speciality = getAbilitySpecialityState(abilityItem);
+                data.object.hasSpeciality = speciality.hasSpeciality;
+                abilitySpeciality = speciality.hasSpeciality ? speciality.text : "";
             }
             else if (data.object.dice2 === "custom" && data.object.secondaryabilityid) {
                 const secItem = await this.actor.getEmbeddedDocument("Item", data.object.secondaryabilityid);
@@ -405,10 +391,9 @@ export class DialogWeaponV2 extends HandlebarsApplicationMixin(ApplicationV2) {
                     data.object.abilityValue = parseInt(secItem.system.value) || 0;
                     data.object.abilityName = secItem.system.label || "";
 
-                    if (parseInt(secItem.system.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
-                        data.object.hasSpeciality = true;
-                        abilitySpeciality = secItem.system.speciality || "";
-                    }
+                    const speciality = getAbilitySpecialityState(secItem);
+                    data.object.hasSpeciality = speciality.hasSpeciality;
+                    abilitySpeciality = speciality.hasSpeciality ? speciality.text : "";
                 }
             }
         }
@@ -422,16 +407,9 @@ export class DialogWeaponV2 extends HandlebarsApplicationMixin(ApplicationV2) {
                     ? game.i18n.localize(data.actorData.abilities[data.object.dice2].label || "")
                     : data.actorData.abilities[data.object.dice2].altlabel || "";
 
-            if (
-                parseInt(data.actorData.abilities[data.object.dice2].value) >=
-                    parseInt(CONFIG.worldofdarkness.specialityLevel) ||
-                CONFIG.worldofdarkness.alwaysspeciality?.[actortype]?.includes(
-                    data.actorData.abilities[data.object.dice2]._id,
-                )
-            ) {
-                data.object.hasSpeciality = true;
-                abilitySpeciality = data.actorData.abilities[data.object.dice2].speciality || "";
-            }
+            const speciality = getAbilitySpecialityState(data.actorData.abilities[data.object.dice2]);
+            data.object.hasSpeciality = speciality.hasSpeciality;
+            abilitySpeciality = speciality.hasSpeciality ? speciality.text : "";
         }
         else if (data.object.dice2 === "custom" && data.object.secondaryabilityid) {
             const secItem = await this.actor.getEmbeddedDocument("Item", data.object.secondaryabilityid);
@@ -440,16 +418,13 @@ export class DialogWeaponV2 extends HandlebarsApplicationMixin(ApplicationV2) {
                 data.object.abilityValue = parseInt(secItem.system.value) || 0;
                 data.object.abilityName = secItem.system.label || "";
 
-                if (parseInt(secItem.system.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
-                    data.object.hasSpeciality = true;
-                    abilitySpeciality = secItem.system.speciality || "";
-                }
+                const speciality = getAbilitySpecialityState(secItem);
+                data.object.hasSpeciality = speciality.hasSpeciality;
+                abilitySpeciality = speciality.hasSpeciality ? speciality.text : "";
             }
         }
 
-        if (data.object.hasSpeciality) {
-            data.object.specialityText = [attributeSpeciality, abilitySpeciality].filter(Boolean).join(", ");
-        }
+        data.object.specialityText = data.object.hasSpeciality ? abilitySpeciality : "";
 
         if (await BonusHelper.CheckAttributeDiceBuff(this.actor, data.object.dice1)) {
             const bonus = await BonusHelper.GetAttributeDiceBuff(this.actor, data.object.dice1);

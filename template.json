@@ -643,7 +643,6 @@
 						"max": 5,
 						"type": "physical",
 						"label": "wod.attributes.strength",
-						"speciality": "",
 						"isvisible": true,
 						"isfavorited": false
 					},
@@ -654,7 +653,6 @@
 						"max": 5,
 						"type": "physical",
 						"label": "wod.attributes.dexterity",
-						"speciality": "",
 						"isvisible": true,
 						"isfavorited": false
 					},
@@ -665,7 +663,6 @@
 						"max": 5,
 						"type": "physical",
 						"label": "wod.attributes.stamina",
-						"speciality": "",
 						"isvisible": true,
 						"isfavorited": false
 					},
@@ -676,7 +673,6 @@
 						"max": 5,
 						"type": "social",
 						"label": "wod.attributes.charisma",
-						"speciality": "",
 						"isvisible": true,
 						"isfavorited": false
 					},
@@ -687,7 +683,6 @@
 						"max": 5,
 						"type": "social",
 						"label": "wod.attributes.manipulation",
-						"speciality": "",
 						"isvisible": true,
 						"isfavorited": false
 					},
@@ -698,7 +693,6 @@
 						"max": 5,
 						"type": "social",
 						"label": "wod.attributes.appearance",
-						"speciality": "",
 						"isvisible": true,
 						"isfavorited": false
 					},
@@ -709,7 +703,6 @@
 						"max": 5,
 						"type": "social",
 						"label": "wod.attributes.composure",
-						"speciality": "",
 						"isvisible": false,
 						"isfavorited": false
 					},
@@ -720,7 +713,6 @@
 						"max": 5,
 						"type": "mental",
 						"label": "wod.attributes.perception",
-						"speciality": "",
 						"isvisible": true,
 						"isfavorited": false
 					},
@@ -731,7 +723,6 @@
 						"max": 5,
 						"type": "mental",
 						"label": "wod.attributes.intelligence",
-						"speciality": "",
 						"isvisible": true,
 						"isfavorited": false
 					},		
@@ -742,7 +733,6 @@
 						"max": 5,
 						"type": "mental",
 						"label": "wod.attributes.wits",
-						"speciality": "",
 						"isvisible": true,
 						"isfavorited": false
 					},					
@@ -753,7 +743,6 @@
 						"max": 5,
 						"type": "mental",
 						"label": "wod.attributes.resolve",
-						"speciality": "",
 						"isvisible": false,
 						"isfavorited": false
 					}

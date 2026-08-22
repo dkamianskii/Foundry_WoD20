@@ -791,17 +791,17 @@ export default class DropHelper {
 
         // Reset all attributes to default (value: 1, bonus: 0, total: 1, max: 5)
         const attributeDefaults = {
-            strength: { value: 1, bonus: 0, total: 1, max: 5, type: "physical", label: "wod.attributes.strength", speciality: "", sort: 1, isvisible: true, isfavorited: false },
-            dexterity: { value: 1, bonus: 0, total: 1, max: 5, type: "physical", label: "wod.attributes.dexterity", speciality: "", sort: 2, isvisible: true, isfavorited: false },
-            stamina: { value: 1, bonus: 0, total: 1, max: 5, type: "physical", label: "wod.attributes.stamina", speciality: "", sort: 3, isvisible: true, isfavorited: false },
-            charisma: { value: 1, bonus: 0, total: 1, max: 5, type: "social", label: "wod.attributes.charisma", speciality: "", sort: 4, isvisible: true, isfavorited: false },
-            manipulation: { value: 1, bonus: 0, total: 1, max: 5, type: "social", label: "wod.attributes.manipulation", speciality: "", sort: 5, isvisible: true, isfavorited: false },
-            appearance: { value: 1, bonus: 0, total: 1, max: 5, type: "social", label: "wod.attributes.appearance", speciality: "", sort: 6, isvisible: true, isfavorited: false },
-            composure: { value: 1, bonus: 0, total: 1, max: 5, type: "social", label: "wod.attributes.composure", speciality: "", sort: 7, isvisible: false, isfavorited: false },
-            perception: { value: 1, bonus: 0, total: 1, max: 5, type: "mental", label: "wod.attributes.perception", speciality: "", sort: 8, isvisible: true, isfavorited: false },
-            intelligence: { value: 1, bonus: 0, total: 1, max: 5, type: "mental", label: "wod.attributes.intelligence", speciality: "", sort: 9, isvisible: true, isfavorited: false },
-            wits: { value: 1, bonus: 0, total: 1, max: 5, type: "mental", label: "wod.attributes.wits", speciality: "", sort: 10, isvisible: true, isfavorited: false },
-            resolve: { value: 1, bonus: 0, total: 1, max: 5, type: "mental", label: "wod.attributes.resolve", speciality: "", sort: 11, isvisible: false, isfavorited: false }
+            strength: { value: 1, bonus: 0, total: 1, max: 5, type: "physical", label: "wod.attributes.strength", sort: 1, isvisible: true, isfavorited: false },
+            dexterity: { value: 1, bonus: 0, total: 1, max: 5, type: "physical", label: "wod.attributes.dexterity", sort: 2, isvisible: true, isfavorited: false },
+            stamina: { value: 1, bonus: 0, total: 1, max: 5, type: "physical", label: "wod.attributes.stamina", sort: 3, isvisible: true, isfavorited: false },
+            charisma: { value: 1, bonus: 0, total: 1, max: 5, type: "social", label: "wod.attributes.charisma", sort: 4, isvisible: true, isfavorited: false },
+            manipulation: { value: 1, bonus: 0, total: 1, max: 5, type: "social", label: "wod.attributes.manipulation", sort: 5, isvisible: true, isfavorited: false },
+            appearance: { value: 1, bonus: 0, total: 1, max: 5, type: "social", label: "wod.attributes.appearance", sort: 6, isvisible: true, isfavorited: false },
+            composure: { value: 1, bonus: 0, total: 1, max: 5, type: "social", label: "wod.attributes.composure", sort: 7, isvisible: false, isfavorited: false },
+            perception: { value: 1, bonus: 0, total: 1, max: 5, type: "mental", label: "wod.attributes.perception", sort: 8, isvisible: true, isfavorited: false },
+            intelligence: { value: 1, bonus: 0, total: 1, max: 5, type: "mental", label: "wod.attributes.intelligence", sort: 9, isvisible: true, isfavorited: false },
+            wits: { value: 1, bonus: 0, total: 1, max: 5, type: "mental", label: "wod.attributes.wits", sort: 10, isvisible: true, isfavorited: false },
+            resolve: { value: 1, bonus: 0, total: 1, max: 5, type: "mental", label: "wod.attributes.resolve", sort: 11, isvisible: false, isfavorited: false }
         };
         actorData.system.attributes = attributeDefaults;
 

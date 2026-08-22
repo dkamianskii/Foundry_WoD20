@@ -1,5 +1,17 @@
 # Data migrations
 
+## 7.5.0 — Ability-only specialities
+
+Attributes no longer store or apply specialities. Migration removes the
+obsolete `system.attributes.<attribute>.speciality` field from PC and legacy
+Actors. This intentionally discards existing Attribute speciality text.
+
+Ability speciality data remains unchanged. An Ability speciality is usable
+only when the Ability has at least 2 dots and contains non-blank speciality
+text. The obsolete per-Ability `alwaysspeciality` compatibility field may
+remain in existing Item source data, but it is no longer exposed or consulted
+for Test eligibility.
+
 ## Unreleased — Mirrored PC Health and Willpower tracks
 
 Maximum PC Health now derives from `2 + Strength + Stamina + health bonus`.

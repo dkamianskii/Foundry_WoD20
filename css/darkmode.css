@@ -188,6 +188,10 @@
   color: rgb(223, 147, 6);
 }
 
+.wod20.wod-theme-dark .item-speciality-unavailable {
+  color: rgb(150, 150, 150);
+}
+
 .wod20.wod-theme-dark .item-delete,
 .wod20.wod-theme-dark .fa-toggle-off {
   color: rgb(166, 0, 0);

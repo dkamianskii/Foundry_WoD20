@@ -43,22 +43,6 @@
 							statKey=key
 							dotType=../config.splat.mortal}}
 
-						{{#if (gte attribute.value 4)}}
-							{{#if (not ../locked)}}
-								<div class="{{#if (gt attribute.max 8)}}pullLeft{{else}}pullRight{{/if}} speciality-attribute-icon {{#if (and (eq attribute.speciality '') (gte attribute.value 4))}}item-warning{{/if}}{{#if (ne attribute.speciality '')}}item-notice{{/if}}" data-action="editAttribute">
-									<a class="item-edit" title="{{localize 'wod.labels.edit.speciality'}}" data-type="Attribute" data-action="itemEdit" data-itemid="{{key}}"><i class="fa-solid fa-pen-to-square"></i></a>
-								</div>
-							{{else}}
-								<div class="{{#if (gt attribute.max 8)}}pullLeft{{else}}pullRight{{/if}} speciality-attribute-icon" data-type="Attribute" data-action="itemEdit">
-									<i class="fa-solid fa-circle-exclamation {{#if (eq attribute.speciality '')}}item-warning{{else}}item-notice{{/if}}" title="{{attribute.speciality}}"></i>
-								</div>
-							{{/if}}
-						{{else}}
-							<div class="{{#if (gt attribute.max 8)}}pullLeft{{else}}pullRight{{/if}} speciality-attribute-empty-icon">
-								&nbsp;
-							</div>
-						{{/if}}
-
 					</div>
 				</div>
 			{{/if}}

@@ -57,6 +57,14 @@
   color: rgb(183, 121, 5)
 }
 
+.wod20 .item-speciality-unavailable {
+  color: rgb(128, 128, 128);
+}
+
+.wod20 .speciality-ability-icon .item-edit {
+  color: inherit;
+}
+
 .wod20 .item-delete,
 .wod20 .fa-toggle-off {
   color: rgb(167, 2, 2);

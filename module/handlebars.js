@@ -1,6 +1,10 @@
 import BonusHelper from "./scripts/bonus-helpers.js";
 import ItemHelper from "./scripts/item-helpers.js";
 import Functions from "./functions.js";
+import {
+	canAbilityTakeSpeciality,
+	hasUsableAbilitySpeciality
+} from "./scripts/speciality.js";
 
 function getMeaningfulBonuses(bonuslist) {
 	return BonusHelper.asBonuslist(bonuslist).filter(bonus => bonus?.type);
@@ -1200,74 +1204,21 @@ export const registerHandlebarsHelpers = function () {
 		return value;
 	});
 
-	// Check if an ability should show the speciality icon (application_v1)
+	// Check whether an ability has a speciality that can be used in a Test.
 	Handlebars.registerHelper("hasSpeciality" , function (ability, type) {
-		// opens in dialog to edit speciality
-		if (ability.typeform == "attribute") {
-			return true;
+		if (ability?.typeform === "attribute") return false;
+		if (ability?.typeform === "sphere") {
+			return parseInt(ability.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel);
 		}
+		return hasUsableAbilitySpeciality(ability);
+	});
 
-		let hasSpeciality = false;
-		let id = ability._id;
-		let specialityLevel = 4;
-
-		if (ability.id != undefined) {
-			id = ability.id;
-		}
-
-		if ((CONFIG.worldofdarkness.specialityLevel != undefined) && (Functions.isNumber(CONFIG.worldofdarkness.specialityLevel))) {
-			specialityLevel = parseInt(CONFIG.worldofdarkness.specialityLevel);
-		}
-
-		if (ability?.type === "Ability") {
-			if (ability.system.value >= specialityLevel) {
-				hasSpeciality = true;
-			}
-			else if (ability.system.value >= 1) {
-				hasSpeciality = ability.system.settings.alwaysspeciality;
-			}
-		}
-		// legacy
-		else {
-			if (ability.value >= specialityLevel) {
-				hasSpeciality = true;
-			}
-			else if (ability.value >= 1) {
-				type = type.toLowerCase();
-
-				if (CONFIG.worldofdarkness.alwaysspeciality[type] == undefined) {
-					type = "vampire";
-				}
-
-				hasSpeciality = CONFIG.worldofdarkness.alwaysspeciality[type].includes(id); 							
-			}
-		}
-				
-
-		return hasSpeciality;
+	Handlebars.registerHelper("canTakeSpeciality", function (ability) {
+		return canAbilityTakeSpeciality(ability);
 	});
 
 	Handlebars.registerHelper("getSpecialityIcon" , function (ability) {
-		let specialityLevel = 4;
-
-		if ((CONFIG.worldofdarkness.specialityLevel != undefined) && (Functions.isNumber(CONFIG.worldofdarkness.specialityLevel))) {
-			specialityLevel = parseInt(CONFIG.worldofdarkness.specialityLevel);
-		}
-
-		if ((ability.system.settings.alwaysspeciality) && (ability.system.speciality !== "") && (ability.system.value >= 1)) {
-			return 'item-notice';
-		}
-		if ((ability.system.settings.alwaysspeciality) && (ability.system.speciality === "") && (ability.system.value >= 1)) {
-			return 'item-warning';
-		}
-		if ((ability.system.value >= specialityLevel) && (ability.system.speciality !== "")) {
-			return 'item-notice';
-		}
-		if ((ability.system.value >= specialityLevel) && (ability.system.speciality === "")) {
-			return 'item-warning';
-		}
-
-		return "";
+		return canAbilityTakeSpeciality(ability) ? "item-notice" : "item-speciality-unavailable";
 	});
 
 	/**
