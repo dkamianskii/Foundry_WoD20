@@ -165,13 +165,18 @@ Splat/drop compatibility, migration, localization, and `tests/health.test.mjs`.
 **Status: Implemented for PC and legacy Actor Test dialogs.**
 
 - Attributes no longer define, edit, display, or contribute specialities.
-- Abilities become eligible to take a speciality at 2 dots. Their edit-note
-  indicator is green at 2 or more dots and grey below 2 dots.
-- A filled, eligible Ability speciality adds a separate green exclamation
-  indicator; the former yellow warning states are no longer used.
+- Abilities become eligible to take a speciality at 2 dots. While the sheet is
+  editable, their edit-note indicator is green at 2 or more dots and grey below
+  2 dots.
+- While the sheet is locked, a filled, eligible Ability speciality replaces the
+  edit-note indicator with a green exclamation in the same position. The two
+  indicators never render together, and the former yellow warning states are no
+  longer used.
 - General, item, trait, power, weapon, and direct PC Ability Tests treat a
   speciality as usable only when the Ability has at least 2 dots and contains
   non-blank speciality text. Otherwise the speciality checkbox is absent.
+- Selecting or changing the Attribute in the general Test dialog preserves the
+  currently selected difficulty.
 - Migration 7.5.0 removes persisted Attribute speciality fields. Ability
   speciality text is preserved; `alwaysspeciality` is retained only as unused
   source compatibility data.

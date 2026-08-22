@@ -440,12 +440,6 @@ export class DialogGeneralRoll extends FormApplication {
         }
 
         this.object.attributeKey = element.value;
-        this.object.difficulty = 6;
-
-        if (await BonusHelper.CheckAttributeBonus(this.actor, this.object.attributeKey)) {
-            let bonus = await BonusHelper.GetAttributeBonus(this.actor, this.object.attributeKey);
-            this.object.difficulty += parseInt(bonus);
-        }
 
         if (CONFIG.worldofdarkness.attributeSettings == "20th") {
             this.object.attributeName = game.i18n.localize(CONFIG.worldofdarkness.attributes20[key]);
