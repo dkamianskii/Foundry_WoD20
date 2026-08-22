@@ -349,7 +349,7 @@ export class DialogPower extends FormApplication {
             else {
                 const advantage = this.actor.api.getAdvantage(data.object.dice1);
                 if (advantage && advantage.system?.roll != undefined) {
-                    this._handleDice1AdvantagePC(data, attributeSpeciality);
+                    this._handleDice1AdvantagePC(data);
                 }
             }
         }
@@ -357,7 +357,7 @@ export class DialogPower extends FormApplication {
             this._handleDice1AbilityLegacy(data, actortype, attributeSpeciality);
         }
         else if (this.actor.system.advantages[data.object.dice1]?.roll != undefined) {
-            this._handleDice1AdvantageLegacy(data, attributeSpeciality);
+            this._handleDice1AdvantageLegacy(data);
         }
         else if ((this.actor.type == "PC") && (this.actor.system?.advantages != undefined) && (this.actor.system.advantages[data.object.dice1]?.system?.group === "virtue") && (this.actor.system.advantages[data.object.dice1]?.system?.roll != undefined)) {
             this._handleDice1VirtuePC(data);
@@ -578,59 +578,23 @@ export class DialogPower extends FormApplication {
     /**
      * Handle dice1 when it's an Advantage (PC actors)
      * @param {Object} data - Dialog data object
-     * @param {string} attributeSpeciality - Reference to attribute speciality string
      */
-    _handleDice1AdvantagePC(data, attributeSpeciality) {
+    _handleDice1AdvantagePC(data) {
         const advantage = this.actor.api?.getAdvantage(data.object.dice1);
         if (!advantage) {
             return;
         }
         data.object.attributeValue = parseInt(advantage.system.roll ?? 0);
         data.object.attributeName = game.i18n.localize(advantage.system.label);
-
-        // Handle willpower speciality for 5th edition
-        if ((advantage.system.label == "wod.advantages.willpower") &&
-            (CONFIG.worldofdarkness.attributeSettings == "5th")) {
-            this._handleWillpowerSpeciality(data, attributeSpeciality);
-        }
     }
 
     /**
      * Handle dice1 when it's an Advantage (Legacy actors)
      * @param {Object} data - Dialog data object
-     * @param {string} attributeSpeciality - Reference to attribute speciality string
      */
-    _handleDice1AdvantageLegacy(data, attributeSpeciality) {
+    _handleDice1AdvantageLegacy(data) {
         data.object.attributeValue = parseInt(this.actor.system.advantages[data.object.dice1].roll);
         data.object.attributeName = game.i18n.localize(this.actor.system.advantages[data.object.dice1].label);
-
-        // Handle willpower speciality for 5th edition
-        if ((this.actor.system.advantages[data.object.dice1].label == "wod.advantages.willpower") &&
-            (CONFIG.worldofdarkness.attributeSettings == "5th")) {
-            this._handleWillpowerSpeciality(data, attributeSpeciality);
-        }
-    }
-
-    /**
-     * Handle willpower speciality (composure + resolve)
-     * @param {Object} data - Dialog data object
-     * @param {string} attributeSpeciality - Reference to attribute speciality string
-     */
-    _handleWillpowerSpeciality(data, attributeSpeciality) {
-        if (parseInt(this.actor.system.attributes?.composure.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
-            data.object.hasSpeciality = true;
-            if (attributeSpeciality.value != "") {
-                attributeSpeciality.value += ", ";
-            }
-            attributeSpeciality.value += this.actor.system.attributes.composure.speciality;
-        }
-        if (parseInt(this.actor.system.attributes?.resolve.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
-            data.object.hasSpeciality = true;
-            if (attributeSpeciality.value != "") {
-                attributeSpeciality.value += ", ";
-            }
-            attributeSpeciality.value += this.actor.system.attributes.resolve.speciality;
-        }
     }
 
     /**

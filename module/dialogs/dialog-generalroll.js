@@ -195,18 +195,6 @@ export class DialogGeneralRoll extends FormApplication {
                         data.object.attributeValue = data.object.useFullWillpower ? willpower.full : willpower.current;
                         data.object.name = data.object.attributeName;
                         data.object.isWillpowerRoll = true;
-
-                        if (CONFIG.worldofdarkness.attributeSettings === "5th") {
-                            if (parseInt(data.actorData.attributes?.composure.value) >= specialityLevel) {
-                                data.object.hasSpeciality = true;
-                                attributeSpeciality = data.actorData.attributes.composure.speciality;
-                            }
-                            if ((parseInt(data.actorData.attributes?.resolve.value) >= specialityLevel) && data.actorData.attributes?.resolve.speciality) {
-                                data.object.hasSpeciality = true;
-                                if (attributeSpeciality) attributeSpeciality += ", ";
-                                attributeSpeciality += data.actorData.attributes.resolve.speciality;
-                            }
-                        }
                     }
                     else if ((this.actor.type !== "PC") && ((attributeKey == "conscience") || (attributeKey == "selfcontrol") || (attributeKey == "courage"))) {
                         data.object.attributeName = game.i18n.localize(data.actorData.advantages.virtues[attributeKey].label);
@@ -227,21 +215,6 @@ export class DialogGeneralRoll extends FormApplication {
 
                             data.object.attributeValue = parseInt(advantage.roll);
                             data.object.name = data.object.attributeName;
-                        }
-
-                        if (parseInt(data.actorData.attributes?.composure.value) >= specialityLevel) {
-                            data.object.hasSpeciality = true;
-                            attributeSpeciality = data.actorData.attributes.composure.speciality;
-                        }
-
-                        if ((parseInt(data.actorData.attributes?.resolve.value) >= specialityLevel) && (data.actorData.attributes?.resolve.speciality != "")) {
-                            data.object.hasSpeciality = true;
-
-                            if (attributeSpeciality != "") {
-                                attributeSpeciality += ", ";
-                            }
-
-                            attributeSpeciality += data.actorData.attributes.resolve.speciality;
                         }
                     }
                     else {

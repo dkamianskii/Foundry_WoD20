@@ -191,6 +191,7 @@ Primary files: `module/scripts/roll-dice.js`, all builders in `module/dialogs/`,
 | Spend grants one automatic success and prevents botch | **Implemented** | PC branch in `DiceRoller`. | Revalidate after the evaluator rewrite, especially zero-pool precedence. |
 | Health-style 0/-1/-2/-3/-5 penalty | **Implemented** | Heavy/aggravated Willpower in the most severe occupied level sets a non-stacking penalty on Attribute-based Tests; pools without Attributes are exempt from both wound tracks. | None for PC path. |
 | Current and full Willpower rolls | **Implemented** | General roll dialog selects current/full; full ignores light and heavy wounds, leaving only aggravated wounds to reduce its pool. | Ensure every future roll entry point uses the same selector contract. |
+| Willpower speciality | **Implemented: unavailable** | Current/Full Willpower never offers or applies a speciality. Other dialogs do not derive one from Composure/Resolve; an independently selected Ability may still supply its own speciality. | None. |
 | Base PC always has Willpower; Splats do not reinstall it | **Implemented** | PC schema plus Splat/direct-drop filtering. | Rebuild affected compendia to eliminate obsolete Willpower content when convenient. |
 | Legacy actor conversion | Legacy compatibility | Non-PC actors still use permanent/temporary Willpower. | Decide whether legacy actors remain supported, are migrated to PC, or receive the new schema separately. |
 

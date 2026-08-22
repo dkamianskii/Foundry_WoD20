@@ -510,7 +510,7 @@ Other penalties/bonuses are not unified into a single modifier pipeline. Dialogs
 - PC compatibility view: `createWillpowerAdvantageFacade` places a transient Advantage-shaped object at `actor.system.advantages.willpower` during actor preparation so existing readers and roll dispatch can obtain `system.roll`. This object is never canonical and must not be updated as an embedded item.
 - Legacy actors: persistent `actor.system.advantages.willpower` remains in use and follows the original permanent/temporary logic.
 
-For a PC Willpower roll, the default pool is `current`; selecting “Use full Willpower” in `DialogGeneralRoll` uses `full`, so light and heavy wounds are ignored and only aggravated wounds reduce the pool. Ordinary Advantage and legacy Willpower rolls retain `WoDItem._handleAdvantagesCalculations` and the `advantageRolls` settings behavior.
+For a PC Willpower roll, the default pool is `current`; selecting “Use full Willpower” in `DialogGeneralRoll` uses `full`, so light and heavy wounds are ignored and only aggravated wounds reduce the pool. Willpower itself never provides a speciality: the General dialog offers no speciality for Current or Full Willpower, and Item, Trait, Power, and Weapon dialogs do not translate Willpower into Composure/Resolve specialities. An independently selected Ability may still provide its own speciality. Ordinary Advantage and legacy Willpower rolls retain `WoDItem._handleAdvantagesCalculations` and the `advantageRolls` settings behavior.
 
 ### 11.2 Spending Willpower in rolls
 

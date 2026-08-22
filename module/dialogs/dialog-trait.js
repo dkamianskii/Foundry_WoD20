@@ -134,51 +134,11 @@ export class DialogRoll extends FormApplication {
             if (advantage && advantage.system?.roll != undefined) {
                 data.object.attributeValue = parseInt(advantage.system.roll);
                 data.object.attributeName = game.i18n.localize(advantage.system.label);
-
-                // om willpower
-                if ((advantage.system.label == "wod.advantages.willpower") && (CONFIG.worldofdarkness.attributeSettings == "5th")) {
-                    if (parseInt(this.actor.system.attributes?.composure.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
-                        data.object.hasSpeciality = true;
-
-                        if (data.object.specialityText != "") {
-                            data.object.specialityText += ", ";
-                        }
-                        data.object.specialityText += this.actor.system.attributes.composure.speciality;
-                    }
-                    if (parseInt(this.actor.system.attributes?.resolve.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
-                        data.object.hasSpeciality = true;
-
-                        if (data.object.specialityText != "") {
-                            data.object.specialityText += ", ";
-                        }
-                        data.object.specialityText += this.actor.system.attributes.resolve.speciality;
-                    }
-                }
             }
         }
         else if ((this.actor.system?.advantages[data.object.dice1] != undefined) && (this.actor.system.advantages[data.object.dice1]?.roll != undefined)) {
             data.object.attributeValue = parseInt(this.actor.system.advantages[data.object.dice1].roll);
             data.object.attributeName = game.i18n.localize(this.actor.system.advantages[data.object.dice1].label);
-
-            // om willpower
-            if ((this.actor.system.advantages[data.object.dice1].label == "wod.advantages.willpower") && (CONFIG.worldofdarkness.attributeSettings == "5th")) {
-                if (parseInt(this.actor.system.attributes?.composure.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
-                    data.object.hasSpeciality = true;
-
-                    if (data.object.specialityText != "") {
-                        data.object.specialityText += ", ";
-                    }
-                    data.object.specialityText += this.actor.system.attributes.composure.speciality;
-                }
-                if (parseInt(this.actor.system.attributes?.resolve.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
-                    data.object.hasSpeciality = true;
-
-                    if (data.object.specialityText != "") {
-                        data.object.specialityText += ", ";
-                    }
-                    data.object.specialityText += this.actor.system.attributes.resolve.speciality;
-                }
-            }
         }
         // virtues
         else if ((this.actor.system?.advantages.virtues != undefined) && (this.actor.system.advantages.virtues[data.object.dice1]?.roll != undefined)) {

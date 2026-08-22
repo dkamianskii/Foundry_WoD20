@@ -125,6 +125,8 @@ A Current Willpower Test rolls:
 
 `current_willpower` dice.
 
+Willpower does not have a speciality. Current and Full Willpower Tests never offer or apply a speciality.
+
 ### Full Willpower Roll
 
 Full Willpower ignores light and heavy Willpower wounds but not aggravated wounds:

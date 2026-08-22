@@ -235,24 +235,6 @@ export class DialogWeapon extends FormApplication {
         else if (data.actorData[data.object.dice1]?.roll != undefined) {
             data.object.attributeValue = parseInt(data.actorData[data.object.dice1].roll);
             data.object.attributeName = game.i18n.localize(data.actorData[data.object.dice1].label);
-
-            // om willpower
-            if ((this.actor.system[data.object.dice1].label == "wod.advantages.willpower") && (CONFIG.worldofdarkness.attributeSettings == "5th")) {
-                if (parseInt(data.actorData.attributes?.composure.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) {
-                    data.object.hasSpeciality = true;
-                    attributeSpeciality = data.actorData.attributes.composure.speciality;
-                }
-
-                if ((parseInt(data.actorData.attributes?.resolve.value) >= parseInt(CONFIG.worldofdarkness.specialityLevel)) && (data.actorData.attributes?.resolve.speciality != "")) {
-                    data.object.hasSpeciality = true;
-
-                    if (attributeSpeciality != "") {
-                        attributeSpeciality += ", ";
-                    }
-
-                    attributeSpeciality += data.actorData.attributes.resolve.speciality;
-                }
-            }
         }
 
         if (this.actor.type == "PC") {
