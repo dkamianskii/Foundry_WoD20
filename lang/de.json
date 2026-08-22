@@ -985,7 +985,7 @@
 			"willpowertrackhint": "Linksklick erhöht eine Willenskraftwunde; Rechtsklick entfernt sie.",
 			"exhaustedwillpowerpenalty": "Erschöpfte Willenskraft",
 			"imbalance": "Ungleichgewicht",
-			"willpowerchange": "Die Willenskraft basiert auf Fassung + Entschlossenheit in der Systemeinstellung und kann nicht verändert werden!",
+			"willpowerchange": "Die Willenskraft basiert auf 2 + Fassung + Entschlossenheit und kann nicht verändert werden!",
 			"willpowerbuiltin": "Willenskraft ist in SC-Akteure integriert und kann nicht als Vorteil hinzugefügt werden.",
 			"noadvantages": "No advantage selected",
 			"path": {

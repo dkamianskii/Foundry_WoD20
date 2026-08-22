@@ -40,9 +40,9 @@ The remaining work should be done in this dependency order:
 
 Persistent data and derivation:
 
-- `module/actor/datamodel/base/actor_willpower.js` defines `system.willpower.damage.light/heavy`.
+- `module/actor/datamodel/base/actor_willpower.js` defines `system.willpower.damage.light/heavy/aggravated`.
 - `module/actor/datamodel/pc-actor-datamodel.js` includes and backfills the schema.
-- `module/scripts/willpower.js::getWillpowerState` derives maximum, current, full, exhausted state, and display boxes from Composure, Resolve, and wound counts.
+- `module/scripts/willpower.js::getWillpowerState` derives the `2 + Composure + Resolve` maximum, current/full pools, five levels, active penalty, spend availability, and display boxes.
 - `WoDActor._preUpdate` clamps the track if Composure or Resolve changes.
 
 Sheet and click flow:
@@ -54,16 +54,16 @@ PCActorSheet stats context
   -> editWillpower / context-menu action
   -> OnWillpowerCounterChange / OnWillpowerCounterClear
   -> getWillpowerUpdate
-  -> actor.update(system.willpower.damage.light/heavy)
+  -> actor.update(system.willpower.damage.light/heavy/aggravated)
 ```
 
 Roll and spend flow:
 
 - Willpower is rollable through the normal roll dispatcher.
 - `module/dialogs/dialog-generalroll.js` can choose current or full Willpower.
-- current equals empty boxes; full ignores light but not heavy wounds.
-- `DiceRoller` calls `spendWillpower` for a PC, adds a light wound or upgrades light to heavy when exhausted, grants one automatic success, and prevents botch.
-- an all-heavy track cannot be spent further.
+- current equals empty boxes; full ignores light but not heavy or aggravated wounds.
+- `DiceRoller` calls `spendWillpower` for a PC, adds a light wound when an empty box exists, grants one automatic success, and prevents botch.
+- any full track, including an all-light track, cannot be spent further.
 
 Compatibility and migration:
 
@@ -72,19 +72,26 @@ Compatibility and migration:
 - `DropHelper` skips Willpower Advantages during Splat installation and direct drops, so templates use the base PC track.
 - migration `7.3.0` in `module/migration.js` converts spent temporary Willpower to light wounds and removes the obsolete PC Willpower Advantage. Details are in `MIGRATION.md`.
 
-### 2.3 Exhaustion and zero-pool Tests
+### 2.3 Willpower wound penalties and zero-pool Tests
 
-**Status: Implemented, with one intentional UI override noted below.**
+**Status: Implemented.**
 
-- `DiceRollContainer.exhaustionpenalty` distinguishes automatic derivation (`null`) from explicit `0` or `-2`.
-- `DiceRoller` automatically applies `-2` to exhausted PC Tests when the caller does not explicitly choose a value.
-- `DialogGeneralRoll` shows a checked-by-default “Use exhausted penalty (-2)” checkbox for an exhausted PC and writes `-2` or `0` to the request.
-- wound and exhaustion penalties are additive.
+- `DiceRollContainer.willpowerpenalty` distinguishes automatic derivation (`null`) from an explicit value.
+- `DiceRoller` automatically applies the PC's five-level Willpower wound penalty to every Test.
+- the former exhaustion checkbox and fixed `-2` rule have been removed.
+- Health and Willpower wound penalties are additive.
 - a final pool at or below zero is clamped to zero, creates no `Roll` objects, returns failure with zero successes, and sets `zeroPoolFailure`, even if automatic successes were also requested.
 - `templates/dialogs/roll-template.hbs` explains the automatic failure for standard, attack, and damage cards.
-- all seven catalogs contain `wod.dice.zeropoolfailure` and `wod.dialog.useexhaustedpenalty`.
+- all seven catalogs contain `wod.dice.zeropoolfailure`.
 
-`RULES_SPEC.md` states that exhaustion applies `-2` to all Tests. The general-dialog checkbox permits a user to suppress it. This is the currently requested UI behavior, but it is a deliberate exception/override to keep documented if the specification is intended to be mandatory.
+Willpower wound penalty derivation is centralized, so dialogs and direct API callers share it.
+
+Affected files are the Health/Willpower services and typed model, Actor lifecycle,
+shared dice evaluator, general roll dialog, PC tracker templates and CSS, Splat
+reset/migration paths, localization catalogs, and focused Health/Willpower tests.
+The persisted-data addition and PC-only compatibility boundary are documented
+in `MIGRATION.md`; manual Foundry v14 sheet, roll-card, and migrated-actor checks
+remain required.
 
 ### 2.4 Resistance and Test margins
 
@@ -121,13 +128,13 @@ Commit `c07379e` fixed a missing closing parenthesis in the favored-roll branch 
 
 **Status: Implemented for normal PC Health; compatibility boundaries remain.**
 
-- maximum Health is derived from `3 + Strength.value + Stamina.value + healthBonus`;
+- maximum Health is derived from `2 + Strength.value + Stamina.value + healthBonus`;
 - the manual bonus is edited in Options → Combat, and active `health_buff`
   values add to it without retaining their legacy per-level target on PCs;
 - five fixed levels are distributed evenly with remainders assigned
   Crippled → Mauled → Wounded → Hurt → Bruised;
 - normal wounds persist as ordered `light`, `heavy`, and `aggravated` ids and
-  render as black `/`, `X`, and a bold uppercase `Ж`;
+  render with the original diagonal square-box CSS marks;
 - manual sheet interaction is compact and severity-ordered: empty clicks append
   light at the first empty box, light/heavy clicks promote the first wound of
   that severity, and aggravated or right-click removal shifts later wounds;
@@ -157,7 +164,7 @@ Splat/drop compatibility, migration, localization, and `tests/health.test.mjs`.
 
 | Requirement | Status | Current implementation | Required change |
 | --- | --- | --- | --- |
-| Final pool is base + bonuses - penalties | Partial | Dialogs assemble pools and `DiceRoller` adds wound/exhaustion penalties, but modifiers are distributed across dialogs and `BonusHelper`. | Define one normalized Test request/modifier contract and make all dialog/API callers use it. |
+| Final pool is base + bonuses - penalties | Partial | Dialogs assemble pools and `DiceRoller` adds Health and Willpower wound penalties, but modifiers are distributed across dialogs and `BonusHelper`. | Define one normalized Test request/modifier contract and make all dialog/API callers use it. |
 | Minimum pool 0; zero dice means automatic failure | **Implemented** | `DiceRoller` skips all rolls and sets `zeroPoolFailure`. | Add permanent automated coverage for general, attack, damage, multi-target, and automatic-success cases. |
 | Difficulty range 3–9, default 6 | **Implemented** | The evaluator clamps to the active world minimum and fixed maximum 9; initialization prevents a minimum below 3, shared selectors use the same bounds, and the default Test difficulty is 6. The legacy minimum setting may intentionally raise the active floor to 4–6. | Add permanent automated boundary coverage and decide whether target rules should retain a configurable raised floor. |
 | Each die at or above difficulty is one raw success | **Implemented with legacy additions** | `rawSuccesses` independently counts successful die faces. A separate running total includes automatic successes and configured 10/speciality additions before Resistance. | Add pure tests and decide whether the remaining configurable additions belong in the target rules mode. |
@@ -176,11 +183,11 @@ Primary files: `module/scripts/roll-dice.js`, all builders in `module/dialogs/`,
 
 | Requirement | Status | Current implementation | Required change |
 | --- | --- | --- | --- |
-| Maximum is Composure + Resolve | **Implemented** | Derived from attribute `value` fields. | Decide whether future derived attribute bonuses should affect maximum; the current rule uses base values. |
-| Empty/light/heavy wound boxes | **Implemented** | Actor-owned counts render health-style boxes. | Add focused tests for click transitions and maximum shrink/growth. |
-| Spend adds light; exhausted spend upgrades light to heavy | **Implemented** | `spendWillpower` uses `getWillpowerUpdate`. | None for PC path. |
+| Maximum is 2 + Composure + Resolve | **Implemented** | Derived from base attribute `value` fields. | Decide whether future derived attribute bonuses should affect maximum. |
+| Empty/light/heavy/aggravated wound boxes | **Implemented** | Actor-owned counts render the same five levels and CSS marks as Health. | Add Foundry interaction coverage for maximum shrink/growth. |
+| Spend adds light only when an empty box exists | **Implemented** | `spendWillpower` rejects every full track, including all-light tracks. | None for PC path. |
 | Spend grants one automatic success and prevents botch | **Implemented** | PC branch in `DiceRoller`. | Revalidate after the evaluator rewrite, especially zero-pool precedence. |
-| Exhaustion is `-2` until an empty box exists | **Implemented with override** | Automatic in the evaluator; general dialog may explicitly disable it. | Confirm whether the checkbox is a debugging/user override or whether the spec should state it is optional. |
+| Health-style 0/-1/-2/-3/-5 penalty | **Implemented** | Heavy/aggravated Willpower in the most severe occupied level sets a non-stacking penalty applied to all Tests. | None for PC path. |
 | Current and full Willpower rolls | **Implemented** | General roll dialog selects current/full. | Ensure every future roll entry point uses the same selector contract. |
 | Base PC always has Willpower; Splats do not reinstall it | **Implemented** | PC schema plus Splat/direct-drop filtering. | Rebuild affected compendia to eliminate obsolete Willpower content when convenient. |
 | Legacy actor conversion | Legacy compatibility | Non-PC actors still use permanent/temporary Willpower. | Decide whether legacy actors remain supported, are migrated to PC, or receive the new schema separately. |
@@ -189,12 +196,12 @@ Primary files: `module/scripts/roll-dice.js`, all builders in `module/dialogs/`,
 
 | Requirement | Status | Current implementation | Required change |
 | --- | --- | --- | --- |
-| `maxHealth = 3 + Strength + Endurance + healthBonus` | **Implemented for PC** | Endurance is explicitly mapped to base Stamina; the manual sheet bonus and active Health buffs are included. | Decide separately whether legacy Actors should adopt the target rules. |
+| `maxHealth = 2 + Strength + Stamina + healthBonus` | **Implemented for PC** | The manual sheet bonus and active Health buffs are included. | Decide separately whether legacy Actors should adopt the target rules. |
 | Exactly five levels | **Implemented for PC** | Bruised, Hurt, Wounded, Mauled, and Crippled are derived. | Legacy Actors retain seven levels. |
 | Even distribution, remainder severe-first | **Implemented for PC** | Pure deterministic helper assigns remainders from Crippled toward Bruised. | None for PC path. |
 | Penalties 0/-1/-2/-3/-5 | **Implemented for PC** | Fixed in the PC Health service. | None for PC path. |
 | Penalty from most severe box containing heavy/aggravated; no stacking | **Implemented for PC** | Derived from resolved boxes; light wounds are ignored. | None for PC path. |
-| Markers light `/`, heavy `X`, aggravated `Ж` | **Implemented for PC** | Canonical severity ids render exact markers. | Chimerical/legacy tracks retain compatibility markers. |
+| Markers light `/`, heavy `X`, aggravated three-stroke | **Implemented for PC** | CSS gradients keep diagonals square-aligned and add a centered vertical aggravated stroke. | Chimerical/legacy tracks retain compatibility markers. |
 | Fill least to most severe | **Implemented for PC** | Canonically ordered wounds are projected onto derived boxes from Bruised onward. | None for PC path. |
 | Manual box interaction preserves track order | **Implemented for PC** | Empty adds the first light wound; light/heavy clicks promote the first matching severity; aggravated and right-click removal compact the array. | Chimerical/legacy tracks retain their compatibility controls. |
 | Health Bonus survives wound updates | **Implemented for PC** | Partial data-model migration never supplies defaults for omitted Health fields; wound-only updates preserve `system.health.bonus`. | None for PC path. |
@@ -236,14 +243,12 @@ Primary files: `template.json` or new typed item models, `module/items/datamodel
 ### Phase 0 — Freeze contracts and add regression fixtures
 
 1. Decide whether the final game targets only `PC` or must reproduce every new rule on legacy actor types. This controls every schema and migration below.
-2. Resolve “Endurance”: map it to current Stamina or add a new attribute. Record the decision in `RULES_SPEC.md` before persisting data.
-3. Decide whether exhausted penalty suppression is an intentional rule option. Align `RULES_SPEC.md`, the checkbox label, and evaluator behavior.
-4. Define serializable contracts for `TestRequest`, `TestResult`, `DamageSource`, `DamageResolution`, and resolved health boxes. Keep UI/display strings out of core rule objects.
-5. Add pure-unit fixtures for every numerical example and boundary in the specification, plus current Willpower and zero-pool regressions. Mock Foundry only at the document/chat boundary.
+2. Define serializable contracts for `TestRequest`, `TestResult`, `DamageSource`, `DamageResolution`, and resolved health boxes. Keep UI/display strings out of core rule objects.
+3. Add pure-unit fixtures for every numerical example and boundary in the specification, plus current Willpower and zero-pool regressions. Mock Foundry only at the document/chat boundary.
 
 ### Phase 1 — Replace the Test evaluator
 
-1. **Partial:** `DiceRollContainer` now carries Resistance and explicit exhaustion state, but there is no serializable structured `TestRequest`/`TestResult` contract and the function still returns only a number.
+1. **Partial:** `DiceRollContainer` now carries Resistance and a Willpower wound penalty, but there is no serializable structured `TestRequest`/`TestResult` contract and the function still returns only a number.
 2. **Partial:** the shared evaluator enforces the active minimum and maximum 9, but dialogs still assemble modifiers and speciality difficulty changes independently.
 3. **Partial:** dice, ones, and raw successful faces are counted separately and explosions recurse by extending the loop; however, explosion/10 behavior remains setting-controlled.
 4. **Implemented in the current evaluator:** total Resistance, botch comparison, clamped net successes, margin of failure, and additional successes are calculated per target.
@@ -255,7 +260,7 @@ Primary files: `template.json` or new typed item models, `module/items/datamodel
 
 ### Phase 2 — Replace PC Health persistence and wound resolution
 
-**Completed for normal PC Health in 7.4.0.** Endurance maps to Stamina;
+**Completed for normal PC Health in 7.4.0 and updated to the current formula.** The formula uses Stamina;
 ordered severity ids are canonical; maximum, five levels, display boxes, and
 penalty are derived; the resolver handles recursive overflow upgrades; the PC
 API, soak adapter, sheet controls, Splat application, migration, and focused
@@ -308,13 +313,13 @@ The following future changes alter persisted data and require versioned migratio
 
 Do not derive new canonical fields only in sheet context. They must live in typed models (or explicitly supported legacy schemas), migrate existing documents, and be regenerated in bundled Splat/compendium sources.
 
-PC Health persistence was migrated in 7.4.0. Its Endurance mapping, five-level
+PC Health persistence was migrated in 7.4.0. Its Stamina formula, five-level
 derivation, ordered wound state, and compatibility boundaries are documented
 in `MIGRATION.md`.
 
 ## 6. Verification gates
 
-Current verification progress: JavaScript/localization checks have been run for the recent Test/chat and Health changes. The focused Health suite currently has 16 passing tests covering the formula, distribution, cascade example, penalties, overflow, severity-ordered sheet promotions, left/right removal compaction, and preservation of the Health Bonus during partial wound updates. The title-only PC-sheet regression was reproduced and fixed in Foundry v14. Broader Test/chat-card regression coverage remains absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
+Current verification progress: JavaScript checks pass for the changed Health, Willpower, roll, dialog, Actor, data-model, and migration modules. The focused rules suite has 21 passing tests: 16 Health cases plus 5 Willpower cases covering the new formula, shared distribution/penalties, aggravated promotion, full-track spend rejection, and successful spend. Broader Test/chat-card regression coverage remains absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
 
 Each phase is complete only after these checks pass:
 
@@ -330,7 +335,6 @@ Each phase is complete only after these checks pass:
 ## 7. Known design decisions still required
 
 - **Legacy Health scope:** Willpower and target Health are PC-only. Decide separately whether legacy Actor types should ever be migrated.
-- **Mandatory exhaustion:** code permits the general-dialog checkbox to suppress `-2`, while the specification reads as mandatory.
 - **Settings authority:** new-world defaults now match the requested Test profile, but existing saved values and the settings UI can still select conflicting behavior. Decide whether those controls are removed, migrated to fixed values, or retained only in a named legacy rules mode.
 - **Armor degradation details:** the specification says AP affects degradation but does not define the degradation formula. That formula must be added before implementation.
 - **Overflow at maximum aggravated Health:** unresolved overflow is retained in

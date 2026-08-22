@@ -72,7 +72,7 @@ Relevant files:
 - `module/actor/datamodel/pc-actor-datamodel.js` — `PCDataModel`.
 - `module/actor/datamodel/base/actor_attributes.js` — eleven attribute records (20th- and 5th-edition alternatives coexist and visibility selects the active set).
 - `module/actor/datamodel/base/actor_health.js` — PC Health bonus, ordered wound severities, derived penalty compatibility fields, and chimerical compatibility counters.
-- `module/actor/datamodel/base/actor_willpower.js` — actor-owned PC Willpower light/heavy damage counters.
+- `module/actor/datamodel/base/actor_willpower.js` — actor-owned PC Willpower light/heavy/aggravated damage counters.
 - `module/actor/datamodel/base/actor_settings.js` — feature flags, splat/variant/era, maximums, and soak permissions/bonuses.
 - `module/actor/datamodel/base/actor_traits.js` — aggregate health-level value/max.
 - `module/actor/datamodel/_module.js` — model export used by `wod.js`.
@@ -89,7 +89,7 @@ Important PC schema branches:
   compacts later wounds toward the start of the track.
 - `health.damage.woundlevel` / `.woundpenalty`: derived compatibility outputs;
   `health.damage.chimerical` retains legacy bashing/lethal/aggravated counters.
-- `willpower.damage`: persistent `light` and `heavy` wound counts. Maximum/current/full values and display boxes are derived rather than persisted.
+- `willpower.damage`: persistent `light`, `heavy`, and `aggravated` wound counts. Maximum/current/full values, five levels, penalty, and display boxes are derived rather than persisted.
 - `traits.health.totalhealthlevels`: derived current/max health boxes.
 - `initiative`, `conditions`, `movement`, `gear`, and `favoriterolls`.
 
@@ -224,7 +224,7 @@ Migration `7.3.0` converts an existing PC Willpower Advantage's spent temporary 
 
 Its `PARTS` are navigation, bio, stats, powers, combat, gear, feature, effects, and settings. `_prepareContext` creates shared context; `_preparePartContext` delegates to part-specific context builders in the same file. Important prepared values include enriched HTML, lists of embedded items, grouped advantages/powers, `calculateHealth` output, permission/lock state, and select-list data.
 
-The stats context calls `getWillpowerState(actor)` and `templates/actor/parts/stats_willpower.hbs` renders the resulting health-style boxes. Each box is empty, light (`/`), or heavy (`X`); empty boxes are available Willpower. The `editWillpower` action maps to `OnWillpowerCounterChange`, while the sheet's context-menu listener calls `OnWillpowerCounterClear`; both delegate to `getWillpowerUpdate` and persist only `system.willpower.damage.light/heavy`. A left click advances a box, exhaustion converts an existing light wound to heavy, and a right click clears damage. The actor rerender then derives current/full values and rebuilds the facade.
+The stats context calls `getWillpowerState(actor)` and `templates/actor/parts/stats_willpower.hbs` renders the same five-level layout and diagonal CSS wound marks as Health. Each box is empty, light (`/`), heavy (`X`), or aggravated (an `X` plus a centered vertical stroke); empty boxes are available Willpower. The `editWillpower` action maps to `OnWillpowerCounterChange`, while the sheet's context-menu listener calls `OnWillpowerCounterClear`; both delegate to `getWillpowerUpdate` and persist `system.willpower.damage.light/heavy/aggravated`. Left-click advances light to heavy to aggravated and then clears; right-click clears the selected severity.
 
 PC stats and combat contexts call `calculateHealth`, which returns the derived
 five-level Health state. `stats_health.hbs` renders its boxes and the exact
@@ -242,10 +242,8 @@ editing. `OnSquareCounterChange` delegates to `cycleHealthBox`:
 - right-clicking any occupied box removes that exact box through `setHealthBox`
   and likewise compacts the track.
 
-The normal-PC marker glyphs are black `/`, `X`, and a bold uppercase `Ж`; the
-aggravated glyph uses an explicit Arial-family rendering and larger size so
-its three crossing strokes remain legible. Legacy and chimerical counters keep
-their older interaction path.
+Normal-PC Health and Willpower use the shared diagonal-gradient wound marks.
+Legacy and chimerical counters keep their older interaction path.
 
 Static `DEFAULT_OPTIONS.actions` maps `data-action` events to functions imported mostly from `module/scripts/action-helpers.js` and `module/scripts/item-actions.js`. Typical flow:
 
@@ -356,7 +354,7 @@ The PC API bypasses dialogs for `rollAttribute`, `rollAbility`, and `rollAdvanta
 
 ### 7.2 Pool construction
 
-`DiceRollContainer` in `module/scripts/roll-dice.js` is the shared request DTO. Important fields are actor, attribute/ability keys, display text, base dice, special dice, bonus, Resistance, wound penalty, explicit exhaustion penalty, difficulty, action/origin, targets, speciality, Willpower use, system text, power type, and incoming/applicable damage. Resistance defaults to `0`. `exhaustionpenalty` defaults to `null`, which tells `DiceRoller` to derive it from PC Willpower state; an explicit `0` or `-2` overrides that default.
+`DiceRollContainer` in `module/scripts/roll-dice.js` is the shared request DTO. Important fields are actor, attribute/ability keys, display text, base dice, special dice, bonus, Resistance, Health wound penalty, Willpower wound penalty, difficulty, action/origin, targets, speciality, Willpower use, system text, power type, and incoming/applicable damage. Resistance defaults to `0`. `willpowerpenalty` defaults to `null`, which tells `DiceRoller` to derive the PC's active Willpower wound penalty from the shared five-level table.
 
 Dialogs are responsible for:
 
@@ -366,9 +364,8 @@ Dialogs are responsible for:
 4. identifying speciality and optionally reducing difficulty;
 5. adding wound penalties unless the action ignores them;
 6. for the general Test dialog, exposing a fillable Resistance field beside the other Test inputs, initialized to 0 and normalized to a non-negative integer;
-7. for that dialog, exposing a checked-by-default “Use exhausted penalty (-2)” control when the PC is exhausted and writing an explicit `-2` or `0` to the container;
-8. adding attack successes to damage where configured;
-9. setting `origin` (`general`, `power`, `attack`, `damage`, `soak`, or `initiative`) so the evaluator can apply origin-specific rules.
+7. adding attack successes to damage where configured;
+8. setting `origin` (`general`, `power`, `attack`, `damage`, `soak`, or `initiative`) so the evaluator can apply origin-specific rules.
 
 Weapon attack is a two-stage chain: `DialogWeaponV2._rollAttack` builds and evaluates the attack; if it succeeds and damage is rollable it opens/continues in damage state with `extraSuccesses` (usually successes minus one). `_rollDamage` builds target-specific pools and calls the same evaluator.
 
@@ -384,15 +381,15 @@ Evaluation sequence:
 4. disable botching for damage/soak when their “ones” settings are off;
 5. choose themed dice colors from actor type, Splat, variant sheet, or per-actor dice setting;
 6. create a default target when none is supplied, otherwise evaluate each target pool;
-7. resolve the exhaustion penalty: use an explicit container value when supplied, otherwise apply `-2` automatically to an exhausted PC;
-8. compute `numberDices = target.numDices + woundpenalty + exhaustionpenalty`, clamped to zero;
+7. resolve the Willpower wound penalty from an explicit container value or the PC Willpower track;
+8. compute `numberDices = target.numDices + woundpenalty + willpowerpenalty`, clamped to zero;
 9. when that value is zero, create no Foundry `Roll` objects, force zero successes and a failure result, and mark `diceResult.zeroPoolFailure`;
 10. otherwise evaluate a separate `Roll("1d10")` for each die and collect each face/color;
 11. count successful die faces in `rawSuccesses` and natural 1s in `rolledOnes`, while separately accumulating automatic and configurable 10/speciality successes into the running success total;
 12. snapshot that running total as `successesBeforeResistance`, add natural 1s to explicit Resistance, subtract total Resistance once, and clamp net successes to zero;
 13. classify result as success, failure, or botch; a botch occurs only when botching is allowed and `rolledOnes > rawSuccesses`, while Willpower and origin-specific gates can prevent it and speciality settings can downgrade it to failure;
 14. calculate per-target margin of failure and additional successes, applying speciality botch protection;
-15. add informational lines (difficulty, speciality, wound penalty, exhaustion penalty, Willpower, automatic successes, soak remainder, and Demon evocation Torment outcome);
+15. add informational lines (difficulty, speciality, Health and Willpower wound penalties, spent Willpower, automatic successes, soak remainder, and Demon evocation Torment outcome);
 16. render and create the chat message, then return the last target's numeric success count.
 
 Important implications:
@@ -419,12 +416,12 @@ Normal PC wounds are canonically stored as ordered severity ids in
 `system.health.wounds`; the sheet adjustment is `system.health.bonus`.
 `module/scripts/health.js::getHealthState` derives:
 
-- `max = 3 + Strength.value + Stamina.value + manual bonus + active health_buff values`;
+- `max = 2 + Strength.value + Stamina.value + manual bonus + active health_buff values`;
 - exactly five level groups with severe-first remainder distribution;
 - current Health, display boxes, and retained overflow;
 - the active fixed penalty from the most severe level containing heavy or aggravated damage.
 
-The exact PC markers are black `/`, `X`, and bold uppercase `Ж`. `damage.woundlevel`,
+PC Health and Willpower markers use square-box CSS gradients: one diagonal for light, two diagonals for heavy, and the same two diagonals plus a centered vertical stroke for aggravated. `damage.woundlevel`,
 `damage.woundpenalty`, and `traits.health.totalhealthlevels` remain derived
 compatibility outputs for existing roll and initiative consumers; they are not
 independently editable rules data.
@@ -497,7 +494,7 @@ General behavior:
 - damage rolls use it only when the `usePenaltyDamage` world setting is enabled;
 - the chat card displays the localized wound level and numeric penalty when applied.
 
-PC Willpower exhaustion is the second centralized pool penalty. `getWillpowerState` reports exhaustion when every Willpower box is at least light-damaged. `DiceRoller` then applies `-2` to every PC Test that leaves `DiceRollContainer.exhaustionpenalty` unset. `DialogGeneralRoll` exposes a checked-by-default checkbox and writes `-2` or `0`, allowing that dialog to include or suppress the penalty explicitly. Other dialogs and direct API callers currently inherit automatic exhaustion handling. Wound and exhaustion penalties are additive; if their sum reduces the pool to zero, no dice are rolled and the Test automatically fails.
+PC Willpower wounds are the second centralized pool penalty. `getWillpowerState` distributes the track across the same five levels as Health and derives the active 0/-1/-2/-3/-5 penalty from the most severe box containing a heavy or aggravated wound. `DiceRoller` applies that penalty to every PC Test. Health and Willpower penalties are additive; if their sum reduces the pool to zero, no dice are rolled and the Test automatically fails.
 
 Other penalties/bonuses are not unified into a single modifier pipeline. Dialogs query specialized `BonusHelper` methods for attribute, ability, attack, soak, movement, health, initiative, fixed-value, and difficulty effects. Armor applies its configured `dexpenalty` while `calculateTotals` derives Dexterity. A derivative system should treat `BonusHelper` and dialog code together as the effective modifier engine.
 
@@ -505,8 +502,8 @@ Other penalties/bonuses are not unified into a single modifier pipeline. Dialogs
 
 ### 11.1 Willpower storage and derived roll value
 
-- PC canonical storage: `actor.system.willpower.damage.light` and `.heavy`, defined by `module/actor/datamodel/base/actor_willpower.js`.
-- PC derived state: `module/scripts/willpower.js::getWillpowerState` computes `max = composure.value + resolve.value`, `current = max - light - heavy`, `full = max - heavy`, exhaustion, and the rendered box sequence. Empty boxes are available points; `/` is light damage and `X` is heavy damage.
+- PC canonical storage: `actor.system.willpower.damage.light`, `.heavy`, and `.aggravated`, defined by `module/actor/datamodel/base/actor_willpower.js`.
+- PC derived state: `module/scripts/willpower.js::getWillpowerState` computes `max = 2 + composure.value + resolve.value`, current/full pools, five levels, active penalty, spend availability, and rendered boxes. Empty boxes are available points; `/` is light, `X` is heavy, and the three-stroke mark is aggravated damage.
 - PC compatibility view: `createWillpowerAdvantageFacade` places a transient Advantage-shaped object at `actor.system.advantages.willpower` during actor preparation so existing readers and roll dispatch can obtain `system.roll`. This object is never canonical and must not be updated as an embedded item.
 - Legacy actors: persistent `actor.system.advantages.willpower` remains in use and follows the original permanent/temporary logic.
 
@@ -517,7 +514,7 @@ For a PC Willpower roll, the default pool is `current`; selecting “Use full Wi
 `DiceRoller` owns the transaction through private `_spendTemporaryWillpower`:
 
 1. for a PC, call `spendWillpower(actor)`; for a legacy actor, locate the old persistent Willpower path;
-2. on a PC, add a light wound to an empty box, or when no box is empty upgrade one light wound to heavy; a fully heavy track cannot be spent further;
+2. on a PC, add a light wound only when an empty box exists; any completely filled track, including an all-light track, cannot be spent further;
 3. persist the actor update before dice evaluation;
 4. grant one automatic success and prevent a botch for the Test. The legacy branch retains its older setting-dependent bonus-dice behavior.
 
@@ -711,7 +708,7 @@ DiceRoller / InitiativeRoll
 
 The template renders selected informational/system fields with triple braces because descriptions and several rule annotations are HTML. Any derivative that accepts less-trusted content should review this trust boundary.
 
-For a zero final dice pool, `DiceRoller` emits no roll objects and puts `zeroPoolFailure` on the result. The standard, attack, and damage branches of `roll-template.hbs` display `wod.dice.zeropoolfailure`; all seven language catalogs define that key. Exhaustion controls use `wod.dialog.useexhaustedpenalty`.
+For a zero final dice pool, `DiceRoller` emits no roll objects and puts `zeroPoolFailure` on the result. The standard, attack, and damage branches of `roll-template.hbs` display `wod.dice.zeropoolfailure`; all seven language catalogs define that key.
 
 For standard, attack, and damage results, each target block currently renders in this exact order:
 

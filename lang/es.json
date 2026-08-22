@@ -985,7 +985,7 @@
 			"willpowertrackhint": "Clic izquierdo para aumentar una herida de Voluntad; clic derecho para borrarla.",
 			"exhaustedwillpowerpenalty": "Fuerza de Voluntad agotada",
 			"imbalance": "Desequilibrio",
-			"willpowerchange": "¡La Fuerza de Voluntad está basada en tu Compostura + Resolución en la configuración del Sistema y no puede alterarse!",
+			"willpowerchange": "¡La Fuerza de Voluntad está basada en 2 + Compostura + Resolución y no puede alterarse!",
 			"willpowerbuiltin": "La Fuerza de Voluntad está integrada en los actores PJ y no puede añadirse como Ventaja.",
 			"noadvantages": "No advantage selected",
 			"path": {

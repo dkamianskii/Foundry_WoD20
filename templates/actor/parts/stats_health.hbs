@@ -12,11 +12,12 @@
             <div class="health" title="{{localize level.label}} ({{level.penalty}})">
                 <div class="resource-counter healthbox" data-name="system.health.{{level.id}}">
                     {{#each level.boxes as |box|}}
-                        <span class="resource-value-step healthBox pc-health-box {{level.id}}"
+                        <span class="resource-value-step healthBox wound-track-box {{level.id}}"
                             data-type="{{@root.config.sheettype.mortal}}"
                             data-action="editHealth"
                             data-index="{{box.index}}"
-                            data-state="{{box.severity}}"></span>
+                            data-state="{{box.severity}}"
+                            data-wound-mark="{{box.displayState}}"></span>
                     {{/each}}
                 </div>
             </div>

@@ -985,7 +985,7 @@
 			"willpowertrackhint": "Clic sinistro per aggravare una ferita alla Volontà; clic destro per cancellarla.",
 			"exhaustedwillpowerpenalty": "Volontà esausta",
 			"imbalance": "Sbilanciamento",
-			"willpowerchange": "La Volontà si basa su Autocontrollo + Fermezza come da Impostazioni di Sistema e non può essere modificata!",
+			"willpowerchange": "La Volontà si basa su 2 + Autocontrollo + Fermezza e non può essere modificata!",
 			"willpowerbuiltin": "La Volontà è integrata negli attori PG e non può essere aggiunta come Vantaggio.",
 			"noadvantages": "No advantage selected",
 			"path": {

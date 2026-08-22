@@ -985,7 +985,7 @@
 			"willpowertrackhint": "Ліва кнопка додає рану Сили Волі; права кнопка очищає її.",
 			"exhaustedwillpowerpenalty": "Виснажена Сила Волі",
 			"imbalance": "Imbalance",
-			"willpowerchange": "Willpower is based on Composure + Resolve in System Setting and can not be altered!",
+			"willpowerchange": "Willpower is based on 2 + Composure + Resolve and cannot be altered!",
 			"willpowerbuiltin": "Сила Волі вбудована в персонажів і не може бути додана як Перевага.",
 			"noadvantages": "No advantage selected",
 			"path": {

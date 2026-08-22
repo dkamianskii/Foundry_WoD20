@@ -30,8 +30,6 @@ export class GeneralRoll {
         this.useWillpower = false;
         this.useFullWillpower = false;
         this.isWillpowerRoll = actor?.type === "PC" && key === "willpower";
-		this.isexhausted = actor?.type === "PC" && getWillpowerState(actor).exhausted;
-		this.useexhaustion = true;
         this.hasSpeciality = false;
         this.isFavored = false;
 
@@ -113,7 +111,6 @@ export class DialogGeneralRoll extends FormApplication {
         if (!this.isFreeRole) {
             data.actorData = this.actor.system;
             data.actorData.type = this.actor.type;
-			data.object.isexhausted = this.actor.type === "PC" && getWillpowerState(this.actor).exhausted;
 
             // Determine sheettype for dialog CSS classes
             let actortype = this.actor.type.toLowerCase();
@@ -376,7 +373,6 @@ export class DialogGeneralRoll extends FormApplication {
         this.object.useSpeciality = formData["specialty"];
         this.object.useWillpower = formData["useWillpower"];
         this.object.useFullWillpower = !!formData["useFullWillpower"];
-		this.object.useexhaustion = !!formData["useexhaustion"];
 
         if (this.object.useSpeciality && CONFIG.worldofdarkness.usespecialityReduceDiff && !this.object.usedReducedDiff) {
             this.object.difficulty -= CONFIG.worldofdarkness.specialityReduceDiff;
@@ -571,7 +567,6 @@ export class DialogGeneralRoll extends FormApplication {
         generalRoll.origin = "general";
         generalRoll.numDices = numDices;
         generalRoll.woundpenalty = parseInt(woundPenaltyVal);
-		generalRoll.exhaustionpenalty = this.object.isexhausted && this.object.useexhaustion ? -2 : 0;
         generalRoll.difficulty = parseInt(this.object.difficulty);
         generalRoll.speciality = this.object.useSpeciality;
         generalRoll.usewillpower = this.object.useWillpower;

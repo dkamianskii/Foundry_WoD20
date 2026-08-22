@@ -985,7 +985,7 @@
 			"willpowertrackhint": "Clic gauche pour aggraver une blessure de Volonté ; clic droit pour l'effacer.",
 			"exhaustedwillpowerpenalty": "Volonté épuisée",
 			"imbalance": "Déséquilibre",
-			"willpowerchange": "La volonté est basée sur le Sang-Froid et la Résolution dans les paramètres du système et ne peut pas être changée !",
+			"willpowerchange": "La volonté est basée sur 2 + Sang-Froid + Résolution et ne peut pas être changée !",
 			"willpowerbuiltin": "La Volonté est intégrée aux acteurs PJ et ne peut pas être ajoutée comme Avantage.",
 			"noadvantages": "No advantage selected",
 			"path": {

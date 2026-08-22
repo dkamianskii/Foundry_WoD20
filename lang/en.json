@@ -993,7 +993,7 @@
 			"willpowertrackhint": "Left-click to advance a Willpower wound; right-click to clear it.",
 			"exhaustedwillpowerpenalty": "Exhausted Willpower",
 			"imbalance": "Imbalance",
-			"willpowerchange": "Willpower is based on Composure + Resolve in System Setting and can not be altered!",
+			"willpowerchange": "Willpower is based on 2 + Composure + Resolve and cannot be altered!",
 			"willpowerbuiltin": "Willpower is built into PC actors and cannot be added as an Advantage item.",
 			"noadvantages": "No advantage selected",
 			"path": {

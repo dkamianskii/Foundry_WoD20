@@ -80,7 +80,7 @@ When an applicable specialization is enabled, test difficulty is reduced by 1 be
 
 ### Maximum Willpower
 
-`max_willpower = Composure + Resolve`
+`max_willpower = 2 + Composure + Resolve`
 
 ### Current Willpower
 
@@ -91,6 +91,7 @@ Willpower boxes can contain:
 * empty
 * light wound `/`
 * heavy wound `X`
+* aggravated `Ж`
 
 ### Spending Willpower
 
@@ -98,29 +99,23 @@ Spending one point of Willpower marks one light Willpower wound.
 
 Character can spend one point of Willpower in the Test to prevent botch and grant 1 automatic success.
 
+Willpower cannot be spent in a Test when every Willpower box already contains a wound, including when every wound is light.
+
 ### Willpower Wounds
 
-Light Willpower damage marks `/`.
+Willpower uses the same five levels, severe-first distribution, wound severities, and non-stacking penalties as Health.
 
-If no empty Willpower boxes remain, each additional light Willpower wound upgrades one existing light wound:
+Light wounds do not cause a penalty. The active Willpower wound penalty is determined by the most severe Willpower level containing a heavy or aggravated wound.
 
-`/ -> X`
+### Willpower Wound Penalty
 
-Heavy Willpower wounds cannot be upgraded further.
-
-### Exhausted Willpower
-
-If every Willpower box contains at least a light wound, the character receives:
-
-`-2 dice to all Tests`
-
-This penalty remains until at least one Willpower box becomes empty.
+The active Willpower wound penalty applies to all Tests and stacks with the Health wound penalty.
 
 ### Current Willpower Roll
 
 Current Willpower is equal to the number of completely empty Willpower boxes:
 
-`current_willpower = max_willpower - light_wounds - heavy_wounds`
+`current_willpower = max_willpower - light_wounds - heavy_wounds - aggravated_wounds`
 
 A Current Willpower Test rolls:
 
@@ -128,9 +123,9 @@ A Current Willpower Test rolls:
 
 ### Full Willpower Roll
 
-Full Willpower ignores light Willpower wounds but not heavy wounds:
+Full Willpower ignores light Willpower wounds but not heavy or aggravated wounds:
 
-`full_willpower = max_willpower - heavy_wounds`
+`full_willpower = max_willpower - heavy_wounds - aggravated_wounds`
 
 A Full Willpower Test rolls:
 
@@ -144,7 +139,7 @@ A Full Willpower Test rolls:
 
 Maximum Health is:
 
-`max_health = 3 + Strength + Endurance + health_bonus`
+`max_health = 2 + Strength + Stamina + health_bonus`
 
 The Health track contains exactly `max_health` boxes.
 

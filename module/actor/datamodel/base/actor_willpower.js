@@ -6,7 +6,8 @@ export default class willpower extends foundry.abstract.DataModel {
         return {
             damage: new fields.SchemaField({
                 light: new fields.NumberField({...woundValue}),
-                heavy: new fields.NumberField({...woundValue})
+                heavy: new fields.NumberField({...woundValue}),
+                aggravated: new fields.NumberField({...woundValue})
             })
         };
     }

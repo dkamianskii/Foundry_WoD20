@@ -12,8 +12,8 @@ const SEVERITY_RANK = Object.freeze({light: 1, heavy: 2, aggravated: 3});
 const WOUND_MARKERS = Object.freeze({light: "/", heavy: "X", aggravated: "Ж"});
 const LEGACY_DAMAGE_SEVERITY = Object.freeze({bashing: "light", lethal: "heavy", aggravated: "aggravated"});
 
-export function calculateMaxHealth(strength, endurance, healthBonus = 0) {
-    return Math.max(0, 3 + integer(strength) + integer(endurance) + integer(healthBonus));
+export function calculateMaxHealth(strength, stamina, healthBonus = 0) {
+    return Math.max(0, 2 + integer(strength) + integer(stamina) + integer(healthBonus));
 }
 
 export function distributeHealthLevels(maxHealth) {
@@ -126,7 +126,7 @@ export function migrateLegacyHealth(source) {
     const legacyMaximum = configuredMaximum > 0
         ? configuredMaximum
         : integer(source?.traits?.health?.totalhealthlevels?.max);
-    const formulaBase = 3
+    const formulaBase = 2
         + integer(source?.attributes?.strength?.value)
         + integer(source?.attributes?.stamina?.value);
 
@@ -187,8 +187,8 @@ export function getHealthState(actor, {wounds, itemBonus} = {}) {
     const manualBonus = Math.max(0, integer(actor?.system?.health?.bonus));
     const activeBonus = itemBonus === undefined ? getActiveHealthBonus(actor) : integer(itemBonus);
     const strength = integer(actor?.system?.attributes?.strength?.value);
-    const endurance = integer(actor?.system?.attributes?.stamina?.value);
-    const max = calculateMaxHealth(strength, endurance, manualBonus + activeBonus);
+    const stamina = integer(actor?.system?.attributes?.stamina?.value);
+    const max = calculateMaxHealth(strength, stamina, manualBonus + activeBonus);
     const allWounds = normalizeWounds(wounds ?? actor?.system?.health?.wounds);
     const trackWounds = allWounds.slice(0, max);
     const overflow = allWounds.slice(max);
@@ -201,7 +201,8 @@ export function getHealthState(actor, {wounds, itemBonus} = {}) {
             const index = offset + localIndex;
             const severity = trackWounds[index] ?? null;
             const legacyMarker = severity === "heavy" ? "x" : severity === "aggravated" ? "*" : severity ? "/" : "";
-            const box = {index, severity, marker: severity ? WOUND_MARKERS[severity] : "", legacyMarker};
+            const displayState = severity === "heavy" ? "x" : severity === "aggravated" ? "*" : severity ? "/" : "";
+            const box = {index, severity, marker: severity ? WOUND_MARKERS[severity] : "", displayState, legacyMarker};
             boxes.push(box);
             levelBoxes.push(box);
         }
@@ -219,7 +220,7 @@ export function getHealthState(actor, {wounds, itemBonus} = {}) {
 
     return {
         strength,
-        endurance,
+        stamina,
         manualBonus,
         itemBonus: activeBonus,
         totalBonus: manualBonus + activeBonus,

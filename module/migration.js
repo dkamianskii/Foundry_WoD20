@@ -2515,13 +2515,15 @@ export  const updates = async () => {
 
         if (legacyWillpower) {
             const maximum = Math.max(0,
-                (parseInt(actor.system.attributes?.composure?.value) || 0)
+                2
+                + (parseInt(actor.system.attributes?.composure?.value) || 0)
                 + (parseInt(actor.system.attributes?.resolve?.value) || 0)
             );
             const available = Math.min(maximum, Math.max(0, parseInt(legacyWillpower.system.temporary) || 0));
 
             updateData["system.willpower.damage.light"] = maximum - available;
             updateData["system.willpower.damage.heavy"] = 0;
+            updateData["system.willpower.damage.aggravated"] = 0;
         }
 
         await actor.update(updateData);

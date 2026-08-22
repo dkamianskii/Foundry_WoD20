@@ -3091,25 +3091,35 @@ input.sheet-infoWidth {
   border-top: 1px solid var(--main-full-color);
 }
 
-.wod20 .resource-counter .pc-health-box {
-  position: relative;
-  text-align: center;
-  line-height: 12px;
-  font-weight: 700;
-  color: #000;
+.wod20 .resource-counter .wound-track-box {
+  --wound-box-background: #ffffff;
+  --wound-mark-color: black;
 }
 
-.wod20 .resource-counter .pc-health-box[data-state="light"]::after {
-  content: "/";
+.wod20 .resource-counter .wound-track-box.bruised { --wound-box-background: var(--healthlevel-bruised-color); }
+.wod20 .resource-counter .wound-track-box.hurt { --wound-box-background: var(--healthlevel-hurt-color); }
+.wod20 .resource-counter .wound-track-box.wounded { --wound-box-background: var(--healthlevel-wounded-color); }
+.wod20 .resource-counter .wound-track-box.mauled { --wound-box-background: var(--healthlevel-mauled-color); }
+.wod20 .resource-counter .wound-track-box.crippled {
+  --wound-box-background: var(--healthlevel-crippled-color);
+  --wound-mark-color: white;
 }
 
-.wod20 .resource-counter .pc-health-box[data-state="heavy"]::after {
-  content: "X";
+.wod20 .resource-counter .wound-track-box[data-wound-mark="/"] {
+  background: linear-gradient(135deg, transparent 43%, var(--wound-mark-color) 45%, var(--wound-mark-color) 55%, transparent 57%), var(--wound-box-background);
 }
 
-.wod20 .resource-counter .pc-health-box[data-state="aggravated"]::after {
-  content: "\0416";
-  font-family: Arial, sans-serif;
-  font-size: 13px;
-  font-weight: 900;
+.wod20 .resource-counter .wound-track-box[data-wound-mark="x"] {
+  background:
+    linear-gradient(45deg, transparent 43%, var(--wound-mark-color) 45%, var(--wound-mark-color) 55%, transparent 57%),
+    linear-gradient(135deg, transparent 43%, var(--wound-mark-color) 45%, var(--wound-mark-color) 55%, transparent 57%),
+    var(--wound-box-background);
+}
+
+.wod20 .resource-counter .wound-track-box[data-wound-mark="*"] {
+  background:
+    linear-gradient(45deg, transparent 43%, var(--wound-mark-color) 45%, var(--wound-mark-color) 55%, transparent 57%),
+    linear-gradient(90deg, transparent 43%, var(--wound-mark-color) 45%, var(--wound-mark-color) 55%, transparent 57%),
+    linear-gradient(135deg, transparent 43%, var(--wound-mark-color) 45%, var(--wound-mark-color) 55%, transparent 57%),
+    var(--wound-box-background);
 }

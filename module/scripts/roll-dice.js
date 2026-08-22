@@ -89,7 +89,7 @@ export class DiceRollContainer {
 		this.numDices = 0;
 		this.numSpecialDices = 0;
 		this.woundpenalty = 0;
-		this.exhaustionpenalty = null;
+		this.willpowerpenalty = null;
 		this.difficulty	= 6;
 		this.action = "";
 		this.targetlist = [];
@@ -275,7 +275,7 @@ export async function DiceRoller(diceRoll) {
 	let rollResult = "";
 	let info = [];
 	let systemtext = [];
-	let exhaustionPenalty = 0;
+	let willpowerPenalty = 0;
 
 
 	difficulty = difficulty < CONFIG.worldofdarkness.lowestDifficulty ? CONFIG.worldofdarkness.lowestDifficulty : difficulty;
@@ -307,12 +307,12 @@ export async function DiceRoller(diceRoll) {
 		}
 	}
 
-	const explicitExhaustionPenalty = Number.parseInt(diceRoll.exhaustionpenalty, 10);
-	if (Number.isFinite(explicitExhaustionPenalty)) {
-		exhaustionPenalty = explicitExhaustionPenalty;
+	const explicitWillpowerPenalty = Number.parseInt(diceRoll.willpowerpenalty, 10);
+	if (Number.isFinite(explicitWillpowerPenalty)) {
+		willpowerPenalty = explicitWillpowerPenalty;
 	}
-	else if ((actor?.type === "PC") && getWillpowerState(actor).exhausted) {
-		exhaustionPenalty = -2;
+	else if (actor?.type === "PC") {
+		willpowerPenalty = getWillpowerState(actor).woundpenalty;
 	}
 
 	if ((diceRoll.origin == "soak") && (!CONFIG.worldofdarkness.useOnesSoak)) {
@@ -346,7 +346,7 @@ export async function DiceRoller(diceRoll) {
 
 		let numberDices = (parseInt(target.numDices) || 0)
 			+ (parseInt(diceRoll.woundpenalty) || 0)
-			+ exhaustionPenalty;
+			+ willpowerPenalty;
 		const zeroPoolFailure = numberDices <= 0;
 		numberDices = Math.max(0, numberDices);
 
@@ -489,8 +489,9 @@ export async function DiceRoller(diceRoll) {
 	if ((diceRoll.woundpenalty < 0) && (actor != undefined) && (actor.system.health != undefined) && (actor.system.health.damage.woundlevel != "")) {
 		info.push(`${game.i18n.localize(actor.system.health.damage.woundlevel)} (${diceRoll.woundpenalty})`);
 	}
-	if (exhaustionPenalty < 0) {
-		info.push(`${game.i18n.localize("wod.advantages.exhaustedwillpowerpenalty")} (${exhaustionPenalty})`);
+	if (willpowerPenalty < 0) {
+		const willpower = getWillpowerState(actor);
+		info.push(`${game.i18n.localize("wod.advantages.willpower")}: ${game.i18n.localize(willpower.woundlevel)} (${willpowerPenalty})`);
 	}
 
 	if (diceRoll.speciality) {

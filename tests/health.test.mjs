@@ -13,8 +13,8 @@ import {
     setHealthBox
 } from "../module/scripts/health.js";
 
-test("maximum Health uses Strength, Stamina-as-Endurance, and bonus", () => {
-    assert.equal(calculateMaxHealth(2, 3, 1), 9);
+test("maximum Health uses 2 + Strength + Stamina + bonus", () => {
+    assert.equal(calculateMaxHealth(2, 3, 1), 8);
 });
 
 test("seven boxes distribute severe-first", () => {
@@ -94,8 +94,8 @@ test("unresolved wounds beyond a reduced maximum are retained as overflow", () =
     actor.system.attributes.strength.value = 0;
     actor.system.attributes.stamina.value = 0;
     const state = getHealthState(actor);
-    assert.equal(state.max, 3);
-    assert.equal(state.overflow.length, 3);
+    assert.equal(state.max, 2);
+    assert.equal(state.overflow.length, 4);
     assert.equal(state.wounds.length, 6);
 });
 
@@ -119,7 +119,7 @@ test("legacy PC Health migration preserves configured capacity and wound severit
         }
     };
     assert.deepEqual(migrateLegacyHealth(source), {
-        bonus: 1,
+        bonus: 2,
         wounds: ["aggravated", "heavy", "light", "light"]
     });
 });
@@ -148,7 +148,7 @@ function actorWith(wounds) {
         type: "PC",
         items: [],
         system: {
-            attributes: {strength: {value: 2}, stamina: {value: 2}},
+            attributes: {strength: {value: 2}, stamina: {value: 3}},
             health: {bonus: 0, wounds}
         }
     };

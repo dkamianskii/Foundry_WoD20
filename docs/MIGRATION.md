@@ -1,5 +1,23 @@
 # Data migrations
 
+## Unreleased — Mirrored PC Health and Willpower tracks
+
+Maximum PC Health now derives from `2 + Strength + Stamina + health bonus`.
+The formula change is derived and does not alter the persisted Health wound
+array or bonus.
+
+PC Willpower keeps its existing actor-owned light/heavy counters and adds:
+
+```text
+system.willpower.damage.aggravated
+```
+
+The typed PC data model supplies `0` when this field is absent, preserving all
+existing light and heavy Willpower wounds. Willpower maximum now derives from
+`2 + Composure + Resolve`. The former exhaustion penalty is removed; the
+five-level Health distribution and penalty table are derived for Willpower.
+No legacy Actor Willpower data is changed.
+
 ## 7.4.0 — Derived PC Health and wound track
 
 Normal Health for `PC` Actors is now stored at:
@@ -11,8 +29,8 @@ system.health.wounds[]
 
 Each wound entry is `light`, `heavy`, or `aggravated`. Maximum Health, the
 five Health Level sizes, remaining Health, active Health Level, and wound
-penalty are derived from Strength, Stamina (the implementation mapping for
-Endurance), the sheet bonus, and active `health_buff` effects.
+penalty are derived from Strength, Stamina, the sheet bonus, and active
+`health_buff` effects.
 
 Migration converts the old aggregate counters as follows:
 
@@ -23,7 +41,7 @@ aggravated -> aggravated
 ```
 
 The manual bonus is initialized to the non-negative difference between the
-old configured base track and `3 + Strength + Stamina`. Per-level active item
+old configured base track and the Health formula active at migration time. Per-level active item
 bonuses are not included in that adjustment; on a PC their values are summed
 directly into the new general Health bonus, so they are not counted twice.
 The old seven level objects and normal bashing/lethal/aggravated counters are
@@ -50,7 +68,7 @@ It is no longer persisted as an embedded `Advantage` item. During the 7.3.0
 world migration, an existing PC Willpower Advantage is converted as follows:
 
 ```text
-maximum = Composure + Resolve
+maximum = 2 + Composure + Resolve
 light wounds = maximum - min(old temporary Willpower, maximum)
 heavy wounds = 0
 ```

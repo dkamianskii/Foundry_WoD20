@@ -819,7 +819,8 @@ export default class DropHelper {
 
         actorData.system.willpower.damage = {
             light: 0,
-            heavy: 0
+            heavy: 0,
+            aggravated: 0
         };
 
         // Reset health totals

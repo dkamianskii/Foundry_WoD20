@@ -1,3 +1,5 @@
+import { distributeHealthLevels } from "./health.js";
+
 function toNonNegativeInteger(value) {
     const number = Number.parseInt(value, 10);
     return Number.isFinite(number) ? Math.max(0, number) : 0;
@@ -9,13 +11,39 @@ function getSystemData(actorOrSystem) {
 
 export function getWillpowerState(actorOrSystem) {
     const system = getSystemData(actorOrSystem);
-    const maximum = toNonNegativeInteger(system.attributes?.composure?.value)
+    const maximum = 2
+        + toNonNegativeInteger(system.attributes?.composure?.value)
         + toNonNegativeInteger(system.attributes?.resolve?.value);
 
-    let heavy = Math.min(toNonNegativeInteger(system.willpower?.damage?.heavy), maximum);
-    let light = Math.min(toNonNegativeInteger(system.willpower?.damage?.light), maximum - heavy);
-    const current = maximum - light - heavy;
-    const full = maximum - heavy;
+    let aggravated = Math.min(toNonNegativeInteger(system.willpower?.damage?.aggravated), maximum);
+    let heavy = Math.min(toNonNegativeInteger(system.willpower?.damage?.heavy), maximum - aggravated);
+    let light = Math.min(toNonNegativeInteger(system.willpower?.damage?.light), maximum - aggravated - heavy);
+    const current = maximum - light - heavy - aggravated;
+    const full = maximum - heavy - aggravated;
+    const wounds = [
+        ...Array.from({length: aggravated}, () => "aggravated"),
+        ...Array.from({length: heavy}, () => "heavy"),
+        ...Array.from({length: light}, () => "light")
+    ];
+    let offset = 0;
+    const levels = distributeHealthLevels(maximum).map(level => {
+        const boxes = Array.from({length: level.count}, (_, localIndex) => {
+            const index = offset + localIndex;
+            const severity = wounds[index] ?? null;
+            const displayState = severity === "aggravated" ? "*" : severity === "heavy" ? "x" : severity ? "/" : "";
+            return {index, severity, displayState};
+        });
+        offset += level.count;
+        return {...level, boxes};
+    });
+
+    let activeLevel = null;
+    for (let index = wounds.length - 1; index >= 0; index--) {
+        if (wounds[index] === "heavy" || wounds[index] === "aggravated") {
+            activeLevel = levels.find(level => level.boxes.some(box => box.index === index)) ?? null;
+            break;
+        }
+    }
 
     return {
         maximum,
@@ -23,38 +51,39 @@ export function getWillpowerState(actorOrSystem) {
         full,
         light,
         heavy,
-        exhausted: maximum > 0 && current === 0,
-        track: [
-            ...Array.from({length: heavy}, () => "x"),
-            ...Array.from({length: light}, () => "/"),
-            ...Array.from({length: current}, () => "")
-        ]
+        aggravated,
+        canSpend: current > 0,
+        woundlevel: activeLevel?.label ?? "",
+        woundpenalty: activeLevel?.penalty ?? 0,
+        levels,
+        track: levels.flatMap(level => level.boxes.map(box => box.displayState))
     };
 }
 
 export function getWillpowerUpdate(actorOrSystem, oldState, clear = false) {
     const state = getWillpowerState(actorOrSystem);
-    let {light, heavy} = state;
+    let {light, heavy, aggravated} = state;
 
     if (clear) {
-        if (oldState === "/" && light > 0) light -= 1;
-        else if (oldState === "x" && heavy > 0) heavy -= 1;
+        if ((oldState === "light" || oldState === "/") && light > 0) light -= 1;
+        else if ((oldState === "heavy" || oldState === "x") && heavy > 0) heavy -= 1;
+        else if ((oldState === "aggravated" || oldState === "*") && aggravated > 0) aggravated -= 1;
         else return null;
     }
     else if (oldState === "") {
         if (state.current > 0) light += 1;
-        else if (light > 0) {
-            light -= 1;
-            heavy += 1;
-        }
         else return null;
     }
-    else if (oldState === "/" && light > 0) {
+    else if ((oldState === "light" || oldState === "/") && light > 0) {
         light -= 1;
         heavy += 1;
     }
-    else if (oldState === "x" && heavy > 0) {
+    else if ((oldState === "heavy" || oldState === "x") && heavy > 0) {
         heavy -= 1;
+        aggravated += 1;
+    }
+    else if ((oldState === "aggravated" || oldState === "*") && aggravated > 0) {
+        aggravated -= 1;
     }
     else {
         return null;
@@ -62,12 +91,15 @@ export function getWillpowerUpdate(actorOrSystem, oldState, clear = false) {
 
     return {
         "system.willpower.damage.light": light,
-        "system.willpower.damage.heavy": heavy
+        "system.willpower.damage.heavy": heavy,
+        "system.willpower.damage.aggravated": aggravated
     };
 }
 
 export async function spendWillpower(actor) {
     if (!actor || actor.type !== "PC") return false;
+
+    if (!getWillpowerState(actor).canSpend) return false;
 
     const update = getWillpowerUpdate(actor, "");
     if (!update) return false;

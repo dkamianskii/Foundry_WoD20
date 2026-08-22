@@ -6,20 +6,25 @@
     <span class="sheet-banner-text">{{localize "wod.advantages.willpower"}}</span>
 </div>
 
-<div class="sheet-boxcontainer willpower-track">
-    <div class="resource-counter tempSquareRow" title="{{localize 'wod.advantages.willpowertrackhint'}}">
-        {{#each willpower.track as |state index|}}
-            <span class="resource-value-step"
-                data-action="editWillpower"
-                data-index="{{index}}"
-                data-state="{{state}}"></span>
-        {{/each}}
-    </div>
+<div class="sheet-boxcontainer willpower-track" title="{{localize 'wod.advantages.willpowertrackhint'}}">
+    {{#each willpower.levels as |level|}}
+        {{#if (gt level.count 0)}}
+            <div class="health" title="{{localize level.label}} ({{level.penalty}})">
+                <div class="resource-counter healthbox">
+                    {{#each level.boxes as |box|}}
+                        <span class="resource-value-step healthBox wound-track-box {{level.id}}"
+                            data-action="editWillpower"
+                            data-index="{{box.index}}"
+                            data-state="{{box.severity}}"
+                            data-wound-mark="{{box.displayState}}"></span>
+                    {{/each}}
+                </div>
+            </div>
+        {{/if}}
+    {{/each}}
 </div>
 
 <div class="information-area centerText">
     {{localize "wod.advantages.currentwillpower"}}: {{willpower.current}} / {{willpower.maximum}}
-    {{#if willpower.exhausted}}
-        &mdash; {{localize "wod.advantages.exhausted"}}
-    {{/if}}
+    &mdash; {{localize "wod.health.penalty"}}: {{willpower.woundpenalty}}
 </div>

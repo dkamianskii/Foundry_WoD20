@@ -59,7 +59,8 @@ export class WoDActor extends Actor {
             willpower: {
                 damage: {
                     light: value("system.willpower.damage.light", this.system.willpower.damage.light),
-                    heavy: value("system.willpower.damage.heavy", this.system.willpower.damage.heavy)
+                    heavy: value("system.willpower.damage.heavy", this.system.willpower.damage.heavy),
+                    aggravated: value("system.willpower.damage.aggravated", this.system.willpower.damage.aggravated)
                 }
             }
         };
@@ -67,6 +68,7 @@ export class WoDActor extends Actor {
 
         foundry.utils.setProperty(changed, "system.willpower.damage.light", willpower.light);
         foundry.utils.setProperty(changed, "system.willpower.damage.heavy", willpower.heavy);
+        foundry.utils.setProperty(changed, "system.willpower.damage.aggravated", willpower.aggravated);
 
         const healthCandidate = {
             type: "PC",
