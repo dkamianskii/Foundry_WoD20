@@ -990,6 +990,7 @@
 			"currentwillpower": "Current Willpower",
 			"fullwillpower": "Full Willpower",
 			"exhausted": "Exhausted",
+			"exhaustion": "Exhaustion",
 			"willpowertrackhint": "Left-click to advance a Willpower wound; right-click to clear it.",
 			"exhaustedwillpowerpenalty": "Exhausted Willpower",
 			"imbalance": "Imbalance",
@@ -2180,7 +2181,7 @@
 			"general": {
 				"selectattribute": "Select what attribute to use",
 				"numberdiceshint": "To be able to roll more than 10 dices as once, fill in the number in the box above.",
-				"fullwillpowerhint": "Full Willpower ignores light Willpower wounds but not heavy or aggravated wounds."
+				"fullwillpowerhint": "Full Willpower ignores light and heavy Willpower wounds, but not aggravated wounds."
 			},
 			"bonus": {
 				"chosenattribute": "Chosen attribute",

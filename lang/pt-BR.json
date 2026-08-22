@@ -982,6 +982,7 @@
 			"currentwillpower": "Força de Vontade atual",
 			"fullwillpower": "Força de Vontade total",
 			"exhausted": "Exausta",
+			"exhaustion": "Exaustão",
 			"willpowertrackhint": "Clique esquerdo para agravar um ferimento de Força de Vontade; clique direito para removê-lo.",
 			"exhaustedwillpowerpenalty": "Força de Vontade exausta",
 			"imbalance": "Desequilíbrio",
@@ -2161,7 +2162,7 @@
 			"general": {
 				"selectattribute": "Seleciona qual atributo irá utilizar",
 				"numberdiceshint": "Para poder rolar mais de 10 dados de uma vez, preencha o número na caixa acima.",
-				"fullwillpowerhint": "A Força de Vontade total ignora ferimentos leves de Força de Vontade, mas não os pesados ou agravados."
+				"fullwillpowerhint": "A Força de Vontade total ignora ferimentos leves e pesados de Força de Vontade, mas não os agravados."
 			},
 			"bonus": {
 				"chosenattribute": "Atributo escolhido",

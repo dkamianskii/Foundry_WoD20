@@ -1,5 +1,6 @@
 import { DiceRoller } from "../scripts/roll-dice.js";
 import { DiceRollContainer } from "../scripts/roll-dice.js";
+import { rollUsesAttribute } from "../scripts/roll-penalties.js";
 import CombatHelper from "../scripts/combat-helpers.js";
 import BonusHelper from "../scripts/bonus-helpers.js";
 import Functions from "../functions.js";
@@ -110,18 +111,29 @@ export class DialogGeneralRoll extends FormApplication {
         let abilitySpeciality = "";
         let specialityText = "";
 
-        if (!this.isFreeRole) {
+		if (!this.isFreeRole) {
 			data.actorData = this.actor.system;
 			data.actorData.type = this.actor.type;
+			const usesAttribute = rollUsesAttribute({
+				actor: this.actor,
+				attribute: attributeKey,
+				ability: abilityKey
+			});
 			if (this.actor.type === "PC") {
 				const ignoreHeavy = CombatHelper.ignoresPain(this.actor);
 				const health = getActorHealthState(this.actor);
 				const willpower = getWillpowerState(this.actor);
-				data.object.healthWoundPenalty = ignoreHeavy ? health.aggravatedWoundPenalty : health.woundpenalty;
-				data.object.willpowerWoundPenalty = ignoreHeavy ? willpower.aggravatedWoundPenalty : willpower.woundpenalty;
+				data.object.healthWoundPenalty = usesAttribute
+					? (ignoreHeavy ? health.aggravatedWoundPenalty : health.woundpenalty)
+					: 0;
+				data.object.willpowerWoundPenalty = usesAttribute
+					? (ignoreHeavy ? willpower.aggravatedWoundPenalty : willpower.woundpenalty)
+					: 0;
 			}
 			else {
-				data.object.healthWoundPenalty = this.actor.system.health?.damage?.woundpenalty ?? 0;
+				data.object.healthWoundPenalty = usesAttribute
+					? (this.actor.system.health?.damage?.woundpenalty ?? 0)
+					: 0;
 				data.object.willpowerWoundPenalty = 0;
 			}
 

@@ -982,6 +982,7 @@
 			"currentwillpower": "Volontà attuale",
 			"fullwillpower": "Volontà piena",
 			"exhausted": "Esausta",
+			"exhaustion": "Esaurimento",
 			"willpowertrackhint": "Clic sinistro per aggravare una ferita alla Volontà; clic destro per cancellarla.",
 			"exhaustedwillpowerpenalty": "Volontà esausta",
 			"imbalance": "Sbilanciamento",
@@ -2161,7 +2162,7 @@
 			"general": {
 				"selectattribute": "Seleziona l'attributo da usare",
 				"numberdiceshint": "To be able to roll more than 10 dices as once, fill in the number in the box above.",
-				"fullwillpowerhint": "La Volontà piena ignora le ferite leggere alla Volontà, ma non quelle pesanti o aggravate."
+				"fullwillpowerhint": "La Volontà piena ignora le ferite leggere e pesanti alla Volontà, ma non quelle aggravate."
 			},
 			"bonus": {
 				"chosenattribute": "Attributo scelto",

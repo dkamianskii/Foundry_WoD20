@@ -982,6 +982,7 @@
 			"currentwillpower": "Aktuelle Willenskraft",
 			"fullwillpower": "Volle Willenskraft",
 			"exhausted": "Erschöpft",
+			"exhaustion": "Erschöpfung",
 			"willpowertrackhint": "Linksklick erhöht eine Willenskraftwunde; Rechtsklick entfernt sie.",
 			"exhaustedwillpowerpenalty": "Erschöpfte Willenskraft",
 			"imbalance": "Ungleichgewicht",
@@ -2161,7 +2162,7 @@
 			"general": {
 				"selectattribute": "Wähle das zu verwendende Attribut",
 				"numberdiceshint": "Um mehr als 10 Würfel auf einmal würfeln zu können, trage die Anzahl in das Feld oben ein.",
-				"fullwillpowerhint": "Volle Willenskraft ignoriert leichte, aber nicht schwere oder verschärfte Willenskraftwunden."
+				"fullwillpowerhint": "Volle Willenskraft ignoriert leichte und schwere Willenskraftwunden, aber keine verschärften Wunden."
 			},
 			"bonus": {
 				"chosenattribute": "Wähle Attribut",

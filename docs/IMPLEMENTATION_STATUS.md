@@ -77,9 +77,10 @@ Compatibility and migration:
 **Status: Implemented.**
 
 - `DiceRollContainer.willpowerpenalty` distinguishes automatic derivation (`null`) from an explicit value.
-- `DiceRoller` automatically applies the PC's five-level Willpower wound penalty to every Test.
+- `DiceRoller` centrally applies both Health and PC Willpower wound penalties only to pools containing at least one Actor Attribute; Willpower, Humanity, virtues, standalone Abilities, and raw dice rolls are exempt.
 - the general Test dialog exposes independent Health and “exhausted” Willpower penalty checkboxes side by side; each can explicitly suppress its track for that Test.
 - Ignore Pain removes only heavy-derived Health and Willpower penalties; aggravated-derived penalties remain. Frenzy retains full Health-penalty suppression.
+- applied Willpower penalties are labeled `Exhaustion: {penalty}` in chat instead of displaying the Willpower wound level.
 - Health and Willpower wound penalties are additive.
 - a final pool at or below zero is clamped to zero, creates no `Roll` objects, returns failure with zero successes, and sets `zeroPoolFailure`, even if automatic successes were also requested.
 - `templates/dialogs/roll-template.hbs` explains the automatic failure for standard, attack, and damage cards.
@@ -188,8 +189,8 @@ Primary files: `module/scripts/roll-dice.js`, all builders in `module/dialogs/`,
 | Empty/light/heavy/aggravated wound boxes | **Implemented** | Actor-owned counts render the same five levels and CSS marks as Health. | Add Foundry interaction coverage for maximum shrink/growth. |
 | Spend adds light only when an empty box exists | **Implemented** | `spendWillpower` rejects every full track, including all-light tracks. | None for PC path. |
 | Spend grants one automatic success and prevents botch | **Implemented** | PC branch in `DiceRoller`. | Revalidate after the evaluator rewrite, especially zero-pool precedence. |
-| Health-style 0/-1/-2/-3/-5 penalty | **Implemented** | Heavy/aggravated Willpower in the most severe occupied level sets a non-stacking penalty applied to all Tests. | None for PC path. |
-| Current and full Willpower rolls | **Implemented** | General roll dialog selects current/full. | Ensure every future roll entry point uses the same selector contract. |
+| Health-style 0/-1/-2/-3/-5 penalty | **Implemented** | Heavy/aggravated Willpower in the most severe occupied level sets a non-stacking penalty on Attribute-based Tests; pools without Attributes are exempt from both wound tracks. | None for PC path. |
+| Current and full Willpower rolls | **Implemented** | General roll dialog selects current/full; full ignores light and heavy wounds, leaving only aggravated wounds to reduce its pool. | Ensure every future roll entry point uses the same selector contract. |
 | Base PC always has Willpower; Splats do not reinstall it | **Implemented** | PC schema plus Splat/direct-drop filtering. | Rebuild affected compendia to eliminate obsolete Willpower content when convenient. |
 | Legacy actor conversion | Legacy compatibility | Non-PC actors still use permanent/temporary Willpower. | Decide whether legacy actors remain supported, are migrated to PC, or receive the new schema separately. |
 
@@ -320,7 +321,7 @@ in `MIGRATION.md`.
 
 ## 6. Verification gates
 
-Current verification progress: JavaScript checks pass for the changed Health, Willpower, roll, dialog, Actor, data-model, and migration modules. The focused rules suite has 25 passing tests covering both formulas, shared and severity-specific penalties, Ignore Pain inputs, aggravated promotion, full-track spend rejection, successful spend, and presence-sensitive partial-update migration. Health and Willpower preprocessing is independently gated so changing one track does not write to or reset the other. Broader Test/chat-card regression coverage remains absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
+Current verification progress: JavaScript checks pass for the changed Health, Willpower, roll, dialog, Actor, data-model, and migration modules. The focused rules suite has 28 passing tests covering both formulas, Attribute-only wound-penalty eligibility, shared and severity-specific penalties, Ignore Pain inputs, aggravated promotion, full-track spend rejection, successful spend, and presence-sensitive partial-update migration. Health and Willpower preprocessing is independently gated so changing one track does not write to or reset the other. Broader Test/chat-card regression coverage remains absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
 
 Each phase is complete only after these checks pass:
 

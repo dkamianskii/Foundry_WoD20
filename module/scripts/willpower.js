@@ -46,7 +46,7 @@ export function getWillpowerState(actorOrSystem) {
     let heavy = Math.min(toNonNegativeInteger(system.willpower?.damage?.heavy), maximum - aggravated);
     let light = Math.min(toNonNegativeInteger(system.willpower?.damage?.light), maximum - aggravated - heavy);
     const current = maximum - light - heavy - aggravated;
-    const full = maximum - heavy - aggravated;
+    const full = maximum - aggravated;
     const wounds = [
         ...Array.from({length: aggravated}, () => "aggravated"),
         ...Array.from({length: heavy}, () => "heavy"),

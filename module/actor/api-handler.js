@@ -151,7 +151,7 @@ export default class PCActorAPI {
      * @param {Object} options - Roll options
      * @param {number} options.difficulty - Difficulty level (default: 6)
      * @param {boolean} options.useWillpower - Use willpower (default: false)
-     * @param {boolean} options.fullWillpower - For Willpower only, ignore light wounds (default: false)
+     * @param {boolean} options.fullWillpower - For Willpower only, ignore light and heavy wounds (default: false)
      * @param {number} options.bonus - Bonus dice (default: 0)
      * @param {number} options.resistance - Resistance applied to successes (default: 0)
      * @returns {Promise<number>} Number of successes

@@ -109,7 +109,7 @@ Light wounds do not cause a penalty. The active Willpower wound penalty is deter
 
 ### Willpower Wound Penalty
 
-The active Willpower wound penalty applies to all Tests and stacks with the Health wound penalty.
+The active Willpower wound penalty applies only to Tests whose dice pool contains at least one Attribute and stacks with the Health wound penalty. Neither Health nor Willpower wound penalties apply to pools without Attributes, such as Willpower, Humanity, virtues, standalone Abilities, or raw dice rolls.
 
 The general Test dialog allows the player to disable the Willpower wound penalty for that Test independently from the Health wound penalty.
 
@@ -127,9 +127,9 @@ A Current Willpower Test rolls:
 
 ### Full Willpower Roll
 
-Full Willpower ignores light Willpower wounds but not heavy or aggravated wounds:
+Full Willpower ignores light and heavy Willpower wounds but not aggravated wounds:
 
-`full_willpower = max_willpower - heavy_wounds - aggravated_wounds`
+`full_willpower = max_willpower - aggravated_wounds`
 
 A Full Willpower Test rolls:
 

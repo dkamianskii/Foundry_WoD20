@@ -982,6 +982,7 @@
 			"currentwillpower": "Fuerza de Voluntad actual",
 			"fullwillpower": "Fuerza de Voluntad completa",
 			"exhausted": "Agotada",
+			"exhaustion": "Agotamiento",
 			"willpowertrackhint": "Clic izquierdo para aumentar una herida de Voluntad; clic derecho para borrarla.",
 			"exhaustedwillpowerpenalty": "Fuerza de Voluntad agotada",
 			"imbalance": "Desequilibrio",
@@ -2161,7 +2162,7 @@
 			"general": {
 				"selectattribute": "Selecciona el Atributo a usar",
 				"numberdiceshint": "Para tirar más de 10 a la vez, inserta el número en la caja superior.",
-				"fullwillpowerhint": "La Voluntad completa ignora las heridas leves de Voluntad, pero no las graves o agravadas."
+				"fullwillpowerhint": "La Voluntad completa ignora las heridas leves y graves de Voluntad, pero no las agravadas."
 			},
 			"bonus": {
 				"chosenattribute": "Atributo elegido",

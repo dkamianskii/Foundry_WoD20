@@ -14,6 +14,14 @@ test("maximum Willpower uses 2 + Composure + Resolve + Willpower Bonus", () => {
     assert.equal(getWillpowerState(actorWith({}, 2)).maximum, 9);
 });
 
+test("full Willpower ignores light and heavy wounds but not aggravated wounds", () => {
+    const state = getWillpowerState(actorWith({light: 1, heavy: 3, aggravated: 1}));
+
+    assert.equal(state.maximum, 7);
+    assert.equal(state.current, 2);
+    assert.equal(state.full, 6);
+});
+
 test("Willpower migration leaves Health-only partial updates independent", () => {
     const update = {health: {wounds: ["light"]}};
 
