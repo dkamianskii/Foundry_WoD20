@@ -51,51 +51,79 @@ export class WoDActor extends Actor {
         if (this.type !== "PC") return;
 
         const value = (path, fallback) => foundry.utils.getProperty(changed, path) ?? fallback;
-        const candidate = {
-            attributes: {
-                composure: {value: value("system.attributes.composure.value", this.system.attributes.composure.value)},
-                resolve: {value: value("system.attributes.resolve.value", this.system.attributes.resolve.value)}
-            },
-            willpower: {
-                bonus: value("system.willpower.bonus", this.system.willpower.bonus),
-                damage: {
-                    light: value("system.willpower.damage.light", this.system.willpower.damage.light),
-                    heavy: value("system.willpower.damage.heavy", this.system.willpower.damage.heavy),
-                    aggravated: value("system.willpower.damage.aggravated", this.system.willpower.damage.aggravated)
-                }
-            }
-        };
-        const willpower = getWillpowerState(candidate);
+        const hasUpdate = path => Object.hasOwn(changed, path)
+            || foundry.utils.getProperty(changed, path) !== undefined;
 
-        foundry.utils.setProperty(changed, "system.willpower.damage.light", willpower.light);
-        foundry.utils.setProperty(changed, "system.willpower.damage.heavy", willpower.heavy);
-        foundry.utils.setProperty(changed, "system.willpower.damage.aggravated", willpower.aggravated);
+        const willpowerChanged = [
+            "system.willpower",
+            "system.willpower.bonus",
+            "system.willpower.damage",
+            "system.willpower.damage.light",
+            "system.willpower.damage.heavy",
+            "system.willpower.damage.aggravated",
+            "system.attributes.composure.value",
+            "system.attributes.resolve.value"
+        ].some(hasUpdate);
 
-        const healthCandidate = {
-            type: "PC",
-            items: this.items,
-            system: {
+        if (willpowerChanged) {
+            const candidate = {
                 attributes: {
-                    strength: {value: value("system.attributes.strength.value", this.system.attributes.strength.value)},
-                    stamina: {value: value("system.attributes.stamina.value", this.system.attributes.stamina.value)}
+                    composure: {value: value("system.attributes.composure.value", this.system.attributes.composure.value)},
+                    resolve: {value: value("system.attributes.resolve.value", this.system.attributes.resolve.value)}
                 },
-                health: {
-                    bonus: value("system.health.bonus", this.system.health.bonus),
-                    wounds: value("system.health.wounds", this.system.health.wounds),
+                willpower: {
+                    bonus: value("system.willpower.bonus", this.system.willpower.bonus),
                     damage: {
-                        chimerical: value("system.health.damage.chimerical", this.system.health.damage.chimerical)
+                        light: value("system.willpower.damage.light", this.system.willpower.damage.light),
+                        heavy: value("system.willpower.damage.heavy", this.system.willpower.damage.heavy),
+                        aggravated: value("system.willpower.damage.aggravated", this.system.willpower.damage.aggravated)
                     }
-                },
-                settings: {usechimerical: this.system.settings.usechimerical}
-            }
-        };
-        const health = getActorHealthState(healthCandidate);
+                }
+            };
+            const willpower = getWillpowerState(candidate);
 
-        foundry.utils.setProperty(changed, "system.health.wounds", health.wounds);
-        foundry.utils.setProperty(changed, "system.health.damage.woundlevel", health.woundlevel);
-        foundry.utils.setProperty(changed, "system.health.damage.woundpenalty", health.woundpenalty);
-        foundry.utils.setProperty(changed, "system.traits.health.totalhealthlevels.value", health.current);
-        foundry.utils.setProperty(changed, "system.traits.health.totalhealthlevels.max", health.max);
+            foundry.utils.setProperty(changed, "system.willpower.damage.light", willpower.light);
+            foundry.utils.setProperty(changed, "system.willpower.damage.heavy", willpower.heavy);
+            foundry.utils.setProperty(changed, "system.willpower.damage.aggravated", willpower.aggravated);
+        }
+
+        const healthChanged = [
+            "system.health",
+            "system.health.bonus",
+            "system.health.wounds",
+            "system.health.damage.chimerical",
+            "system.attributes.strength.value",
+            "system.attributes.stamina.value",
+            "system.settings.usechimerical"
+        ].some(hasUpdate);
+
+        if (healthChanged) {
+            const healthCandidate = {
+                type: "PC",
+                items: this.items,
+                system: {
+                    attributes: {
+                        strength: {value: value("system.attributes.strength.value", this.system.attributes.strength.value)},
+                        stamina: {value: value("system.attributes.stamina.value", this.system.attributes.stamina.value)}
+                    },
+                    health: {
+                        bonus: value("system.health.bonus", this.system.health.bonus),
+                        wounds: value("system.health.wounds", this.system.health.wounds),
+                        damage: {
+                            chimerical: value("system.health.damage.chimerical", this.system.health.damage.chimerical)
+                        }
+                    },
+                    settings: {usechimerical: this.system.settings.usechimerical}
+                }
+            };
+            const health = getActorHealthState(healthCandidate);
+
+            foundry.utils.setProperty(changed, "system.health.wounds", health.wounds);
+            foundry.utils.setProperty(changed, "system.health.damage.woundlevel", health.woundlevel);
+            foundry.utils.setProperty(changed, "system.health.damage.woundpenalty", health.woundpenalty);
+            foundry.utils.setProperty(changed, "system.traits.health.totalhealthlevels.value", health.current);
+            foundry.utils.setProperty(changed, "system.traits.health.totalhealthlevels.max", health.max);
+        }
     }
 
     async prepareDerivedData() {

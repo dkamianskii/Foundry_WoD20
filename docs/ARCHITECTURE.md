@@ -94,13 +94,13 @@ Important PC schema branches:
 - `traits.health.totalhealthlevels`: derived current/max health boxes.
 - `initiative`, `conditions`, `movement`, `gear`, and `favoriterolls`.
 
-`PCDataModel.migrateData` backfills chimerical soak and the PC Willpower damage
-object. PC Health conversion is delegated to
-`module/scripts/health.js::migratePCHealthSource`. That helper converts only a
-source which actually contains legacy Health counters or seven-level fields.
-This presence check is important because Foundry may pass partial update data
-through model migration: a wound-only update must not synthesize `bonus: 0` or
-replace omitted wounds. It does not define persistent `abilities` or
+`PCDataModel.migrateData` backfills chimerical soak. PC Health and Willpower
+normalization are delegated to `module/scripts/health.js::migratePCHealthSource`
+and `module/scripts/willpower.js::migratePCWillpowerSource`. Both helpers modify
+only fields actually present in the source. These presence checks are important
+because Foundry may pass partial update data through model migration: an update
+to either track must not synthesize defaults for, write to, or replace wounds on
+the other track. It does not define persistent `abilities` or
 `advantages`: `WoDActor._prepareCharacterData` creates those runtime
 projections from embedded items and installs the transient Willpower
 compatibility facade.

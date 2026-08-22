@@ -320,7 +320,7 @@ in `MIGRATION.md`.
 
 ## 6. Verification gates
 
-Current verification progress: JavaScript checks pass for the changed Health, Willpower, roll, dialog, Actor, data-model, and migration modules. The focused rules suite has 23 passing tests covering both formulas, shared and severity-specific penalties, Ignore Pain inputs, aggravated promotion, full-track spend rejection, and successful spend. Broader Test/chat-card regression coverage remains absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
+Current verification progress: JavaScript checks pass for the changed Health, Willpower, roll, dialog, Actor, data-model, and migration modules. The focused rules suite has 25 passing tests covering both formulas, shared and severity-specific penalties, Ignore Pain inputs, aggravated promotion, full-track spend rejection, successful spend, and presence-sensitive partial-update migration. Health and Willpower preprocessing is independently gated so changing one track does not write to or reset the other. Broader Test/chat-card regression coverage remains absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
 
 Each phase is complete only after these checks pass:
 

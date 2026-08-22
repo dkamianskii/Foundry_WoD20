@@ -9,6 +9,31 @@ function getSystemData(actorOrSystem) {
     return actorOrSystem?.system ?? actorOrSystem ?? {};
 }
 
+/**
+ * Normalize only Willpower fields that are actually present in a source payload.
+ * DataModel migration also receives partial Actor updates, so omitted fields must
+ * never be synthesized here or an unrelated update can overwrite stored wounds.
+ */
+export function migratePCWillpowerSource(source) {
+    const willpower = source?.willpower;
+    if (!willpower) return source;
+
+    if (Object.hasOwn(willpower, "bonus")) {
+        willpower.bonus = toNonNegativeInteger(willpower.bonus);
+    }
+
+    const damage = willpower.damage;
+    if (!damage) return source;
+
+    for (const severity of ["light", "heavy", "aggravated"]) {
+        if (Object.hasOwn(damage, severity)) {
+            damage[severity] = toNonNegativeInteger(damage[severity]);
+        }
+    }
+
+    return source;
+}
+
 export function getWillpowerState(actorOrSystem) {
     const system = getSystemData(actorOrSystem);
     const manualBonus = toNonNegativeInteger(system.willpower?.bonus);

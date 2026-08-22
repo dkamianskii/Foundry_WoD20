@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {
     getWillpowerState,
     getWillpowerUpdate,
+    migratePCWillpowerSource,
     spendWillpower
 } from "../module/scripts/willpower.js";
 import { getEffectiveWoundPenalty } from "../module/scripts/health.js";
@@ -11,6 +12,23 @@ import { getEffectiveWoundPenalty } from "../module/scripts/health.js";
 test("maximum Willpower uses 2 + Composure + Resolve + Willpower Bonus", () => {
     assert.equal(getWillpowerState(actorWith()).maximum, 7);
     assert.equal(getWillpowerState(actorWith({}, 2)).maximum, 9);
+});
+
+test("Willpower migration leaves Health-only partial updates independent", () => {
+    const update = {health: {wounds: ["light"]}};
+
+    migratePCWillpowerSource(update);
+
+    assert.deepEqual(update, {health: {wounds: ["light"]}});
+    assert.equal(Object.hasOwn(update, "willpower"), false);
+});
+
+test("Willpower migration does not synthesize omitted fields in partial updates", () => {
+    const update = {willpower: {damage: {light: 2}}};
+
+    migratePCWillpowerSource(update);
+
+    assert.deepEqual(update, {willpower: {damage: {light: 2}}});
 });
 
 test("Willpower uses Health level distribution and heavy/aggravated penalties", () => {

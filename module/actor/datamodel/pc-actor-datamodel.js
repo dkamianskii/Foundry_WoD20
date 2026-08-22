@@ -4,6 +4,7 @@ import traits from "./base/actor_traits.js";
 import health from "./base/actor_health.js";
 import willpower from "./base/actor_willpower.js";
 import { migratePCHealthSource } from "../../scripts/health.js";
+import { migratePCWillpowerSource } from "../../scripts/willpower.js";
 
 export default class PCDataModel extends foundry.abstract.DataModel {
     static defineSchema() {
@@ -135,14 +136,7 @@ export default class PCDataModel extends foundry.abstract.DataModel {
             source.soak.chimerical = { bashing: 0, lethal: 0, aggravated: 0 };
         }
         migratePCHealthSource(source);
-        if (source?.willpower === undefined) {
-            source.willpower = { bonus: 0, damage: { light: 0, heavy: 0, aggravated: 0 } };
-        }
-        else {
-            if (source.willpower.bonus === undefined) source.willpower.bonus = 0;
-            if (source.willpower.damage === undefined) source.willpower.damage = {};
-            if (source.willpower.damage?.aggravated === undefined) source.willpower.damage.aggravated = 0;
-        }
+        migratePCWillpowerSource(source);
         return super.migrateData(source);
     }
 }
