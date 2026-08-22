@@ -6,9 +6,11 @@ import {
     getWillpowerUpdate,
     spendWillpower
 } from "../module/scripts/willpower.js";
+import { getEffectiveWoundPenalty } from "../module/scripts/health.js";
 
-test("maximum Willpower uses 2 + Composure + Resolve", () => {
+test("maximum Willpower uses 2 + Composure + Resolve + Willpower Bonus", () => {
     assert.equal(getWillpowerState(actorWith()).maximum, 7);
+    assert.equal(getWillpowerState(actorWith({}, 2)).maximum, 9);
 });
 
 test("Willpower uses Health level distribution and heavy/aggravated penalties", () => {
@@ -24,6 +26,15 @@ test("Willpower uses Health level distribution and heavy/aggravated penalties", 
     const aggravated = getWillpowerState(actorWith({light: 0, heavy: 0, aggravated: 4}));
     assert.equal(aggravated.woundlevel, "wod.health.mauled");
     assert.equal(aggravated.woundpenalty, -3);
+});
+
+test("heavy and aggravated Willpower penalties are derived independently for Ignore Pain", () => {
+    const state = getWillpowerState(actorWith({light: 0, heavy: 3, aggravated: 1}));
+    assert.equal(state.woundpenalty, -3);
+    assert.equal(state.heavyWoundPenalty, -3);
+    assert.equal(state.aggravatedWoundPenalty, 0);
+    assert.equal(state.aggravatedWoundLevel, "wod.health.bruised");
+    assert.equal(getEffectiveWoundPenalty(state, true).penalty, 0);
 });
 
 test("Willpower sheet cycling promotes light to heavy to aggravated", () => {
@@ -59,12 +70,13 @@ test("spending available Willpower adds one light wound", async () => {
     assert.equal(actor.system.willpower.damage.light, 2);
 });
 
-function actorWith(damage = {}) {
+function actorWith(damage = {}, bonus = 0) {
     return {
         type: "PC",
         system: {
             attributes: {composure: {value: 2}, resolve: {value: 3}},
             willpower: {
+                bonus,
                 damage: {
                     light: damage.light ?? 0,
                     heavy: damage.heavy ?? 0,

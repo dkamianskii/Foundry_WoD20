@@ -985,7 +985,7 @@
 			"willpowertrackhint": "Clic izquierdo para aumentar una herida de Voluntad; clic derecho para borrarla.",
 			"exhaustedwillpowerpenalty": "Fuerza de Voluntad agotada",
 			"imbalance": "Desequilibrio",
-			"willpowerchange": "¡La Fuerza de Voluntad está basada en 2 + Compostura + Resolución y no puede alterarse!",
+			"willpowerchange": "La Fuerza de Voluntad se basa en 2 + Compostura + Resolución + Bonificación de Fuerza de Voluntad.",
 			"willpowerbuiltin": "La Fuerza de Voluntad está integrada en los actores PJ y no puede añadirse como Ventaja.",
 			"noadvantages": "No advantage selected",
 			"path": {
@@ -2161,7 +2161,7 @@
 			"general": {
 				"selectattribute": "Selecciona el Atributo a usar",
 				"numberdiceshint": "Para tirar más de 10 a la vez, inserta el número en la caja superior.",
-				"fullwillpowerhint": "La Voluntad completa ignora las heridas leves de Voluntad, pero no las graves."
+				"fullwillpowerhint": "La Voluntad completa ignora las heridas leves de Voluntad, pero no las graves o agravadas."
 			},
 			"bonus": {
 				"chosenattribute": "Atributo elegido",

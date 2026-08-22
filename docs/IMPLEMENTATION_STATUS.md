@@ -42,7 +42,7 @@ Persistent data and derivation:
 
 - `module/actor/datamodel/base/actor_willpower.js` defines `system.willpower.damage.light/heavy/aggravated`.
 - `module/actor/datamodel/pc-actor-datamodel.js` includes and backfills the schema.
-- `module/scripts/willpower.js::getWillpowerState` derives the `2 + Composure + Resolve` maximum, current/full pools, five levels, active penalty, spend availability, and display boxes.
+- `module/scripts/willpower.js::getWillpowerState` derives the `2 + Composure + Resolve + Willpower Bonus` maximum, current/full pools, five levels, combined/heavy/aggravated penalties, spend availability, and display boxes.
 - `WoDActor._preUpdate` clamps the track if Composure or Resolve changes.
 
 Sheet and click flow:
@@ -78,7 +78,8 @@ Compatibility and migration:
 
 - `DiceRollContainer.willpowerpenalty` distinguishes automatic derivation (`null`) from an explicit value.
 - `DiceRoller` automatically applies the PC's five-level Willpower wound penalty to every Test.
-- the former exhaustion checkbox and fixed `-2` rule have been removed.
+- the general Test dialog exposes independent Health and “exhausted” Willpower penalty checkboxes side by side; each can explicitly suppress its track for that Test.
+- Ignore Pain removes only heavy-derived Health and Willpower penalties; aggravated-derived penalties remain. Frenzy retains full Health-penalty suppression.
 - Health and Willpower wound penalties are additive.
 - a final pool at or below zero is clamped to zero, creates no `Roll` objects, returns failure with zero successes, and sets `zeroPoolFailure`, even if automatic successes were also requested.
 - `templates/dialogs/roll-template.hbs` explains the automatic failure for standard, attack, and damage cards.
@@ -183,7 +184,7 @@ Primary files: `module/scripts/roll-dice.js`, all builders in `module/dialogs/`,
 
 | Requirement | Status | Current implementation | Required change |
 | --- | --- | --- | --- |
-| Maximum is 2 + Composure + Resolve | **Implemented** | Derived from base attribute `value` fields. | Decide whether future derived attribute bonuses should affect maximum. |
+| Maximum is 2 + Composure + Resolve + Willpower Bonus | **Implemented** | Base attribute `value` fields plus a persistent manual bonus edited in Options → Combat. | Decide whether future derived attribute bonuses should affect maximum. |
 | Empty/light/heavy/aggravated wound boxes | **Implemented** | Actor-owned counts render the same five levels and CSS marks as Health. | Add Foundry interaction coverage for maximum shrink/growth. |
 | Spend adds light only when an empty box exists | **Implemented** | `spendWillpower` rejects every full track, including all-light tracks. | None for PC path. |
 | Spend grants one automatic success and prevents botch | **Implemented** | PC branch in `DiceRoller`. | Revalidate after the evaluator rewrite, especially zero-pool precedence. |
@@ -319,7 +320,7 @@ in `MIGRATION.md`.
 
 ## 6. Verification gates
 
-Current verification progress: JavaScript checks pass for the changed Health, Willpower, roll, dialog, Actor, data-model, and migration modules. The focused rules suite has 21 passing tests: 16 Health cases plus 5 Willpower cases covering the new formula, shared distribution/penalties, aggravated promotion, full-track spend rejection, and successful spend. Broader Test/chat-card regression coverage remains absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
+Current verification progress: JavaScript checks pass for the changed Health, Willpower, roll, dialog, Actor, data-model, and migration modules. The focused rules suite has 23 passing tests covering both formulas, shared and severity-specific penalties, Ignore Pain inputs, aggravated promotion, full-track spend rejection, and successful spend. Broader Test/chat-card regression coverage remains absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
 
 Each phase is complete only after these checks pass:
 

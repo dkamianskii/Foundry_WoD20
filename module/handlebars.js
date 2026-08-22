@@ -1847,6 +1847,14 @@ export const registerHandlebarsHelpers = function () {
 		}
 	});
 
+	Handlebars.registerHelper("effectiveWoundPenalty", function (state) {
+		if (this.actor.system.conditions?.isfrenzy) return 0;
+		if (this.actor.type === "PC" && this.actor.system.conditions?.isignoringpain) {
+			return state?.aggravatedWoundPenalty ?? 0;
+		}
+		return state?.woundpenalty ?? 0;
+	});
+
 	// Handlebars.registerHelper("calculateHight", function (area, list) {
 	// 	if (area == "rotes") {
 	// 		if (list.length < 26) {

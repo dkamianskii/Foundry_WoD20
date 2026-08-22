@@ -985,7 +985,7 @@
 			"willpowertrackhint": "Linksklick erhöht eine Willenskraftwunde; Rechtsklick entfernt sie.",
 			"exhaustedwillpowerpenalty": "Erschöpfte Willenskraft",
 			"imbalance": "Ungleichgewicht",
-			"willpowerchange": "Die Willenskraft basiert auf 2 + Fassung + Entschlossenheit und kann nicht verändert werden!",
+			"willpowerchange": "Die Willenskraft basiert auf 2 + Fassung + Entschlossenheit + Willenskraftbonus.",
 			"willpowerbuiltin": "Willenskraft ist in SC-Akteure integriert und kann nicht als Vorteil hinzugefügt werden.",
 			"noadvantages": "No advantage selected",
 			"path": {
@@ -2161,7 +2161,7 @@
 			"general": {
 				"selectattribute": "Wähle das zu verwendende Attribut",
 				"numberdiceshint": "Um mehr als 10 Würfel auf einmal würfeln zu können, trage die Anzahl in das Feld oben ein.",
-				"fullwillpowerhint": "Volle Willenskraft ignoriert leichte, aber nicht schwere Willenskraftwunden."
+				"fullwillpowerhint": "Volle Willenskraft ignoriert leichte, aber nicht schwere oder verschärfte Willenskraftwunden."
 			},
 			"bonus": {
 				"chosenattribute": "Wähle Attribut",

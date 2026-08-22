@@ -31,7 +31,7 @@ import { OnItemCreate,
 			RollDice,
 			OnEditImage } from "../../scripts/action-helpers.js";
 
-import { calculateHealth } from "../../scripts/health.js";
+import { calculateHealth, getActorHealthState } from "../../scripts/health.js";
 import { getWillpowerState } from "../../scripts/willpower.js";
 import { calculateTotals } from "../../scripts/totals.js";
 
@@ -1189,6 +1189,7 @@ export const prepareStatContext = async function (context, actor) {
 	context.hasGroupedAdvantages = context.groupedadvantages.length > 0;
 
 	context.health = await calculateHealth(actor, CONFIG.worldofdarkness.sheettype.mortal);
+	context.healthPenaltyState = getActorHealthState(actor);
 	context.willpower = getWillpowerState(actor);
 
 	context.chimericalhealth = undefined;
@@ -1296,6 +1297,7 @@ export const prepareCombatContext = async function (context, actor) {
 	context.powercombat		= actor.items.filter(item => item.type === "Power" && item.system.type === "wod.types.gift" && item.system.isactive);
 
 	context.health = await calculateHealth(actor, CONFIG.worldofdarkness.sheettype.mortal);
+	context.healthPenaltyState = getActorHealthState(actor);
 	context.chimericalhealth = actor.system.settings.usechimerical
 		? await calculateHealth(actor, CONFIG.worldofdarkness.sheettype.changeling)
 		: undefined;
@@ -1370,6 +1372,7 @@ export const prepareEffectContext = async function (context, actor) {
 export const prepareSettingsContext = async function (context, actor) {
   	context.tab = context.tabs.settings;
 	context.health = await calculateHealth(actor, CONFIG.worldofdarkness.sheettype.mortal);
+	context.willpower = getWillpowerState(actor);
 
 	// Bio
 	context.splatfields = actor.system.bio.splatfields;

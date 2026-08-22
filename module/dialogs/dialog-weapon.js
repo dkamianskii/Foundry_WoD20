@@ -577,7 +577,7 @@ export class DialogWeapon extends FormApplication {
             weaponRoll.damageCode = `(${this.object.damageCode})`;
 
             if (CONFIG.worldofdarkness.usePenaltyDamage) {
-                if (CombatHelper.ignoresPain(this.actor)) {
+                if (CombatHelper.ignoresAllWoundPenalties(this.actor)) {
                     woundPenaltyVal = 0;			}
                 else {
                     woundPenaltyVal = parseInt(this.actor.system.health.damage.woundpenalty);
@@ -610,7 +610,7 @@ export class DialogWeapon extends FormApplication {
                 }
             }
 
-            if (CombatHelper.ignoresPain(this.actor)) {
+            if (CombatHelper.ignoresAllWoundPenalties(this.actor)) {
                 woundPenaltyVal = 0;			}
             else {
                 woundPenaltyVal = parseInt(this.actor.system.health.damage.woundpenalty);

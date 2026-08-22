@@ -4,6 +4,7 @@ import CombatHelper from "../scripts/combat-helpers.js";
 import BonusHelper from "../scripts/bonus-helpers.js";
 import Functions from "../functions.js";
 import { getWillpowerState } from "../scripts/willpower.js";
+import { getActorHealthState } from "../scripts/health.js";
 
 export class GeneralRoll {
     constructor(key, type, actor) {
@@ -29,12 +30,13 @@ export class GeneralRoll {
         this.useSpeciality = false;
         this.useWillpower = false;
         this.useFullWillpower = false;
+        this.useWillpowerPenalty = true;
         this.isWillpowerRoll = actor?.type === "PC" && key === "willpower";
         this.hasSpeciality = false;
         this.isFavored = false;
 
         if (actor != undefined) {
-            this.ignorepain = CombatHelper.ignoresPain(actor);
+            this.ignorepain = CombatHelper.ignoresAllWoundPenalties(actor);
         }
         else {
             this.ignorepain = false;
@@ -109,8 +111,19 @@ export class DialogGeneralRoll extends FormApplication {
         let specialityText = "";
 
         if (!this.isFreeRole) {
-            data.actorData = this.actor.system;
-            data.actorData.type = this.actor.type;
+			data.actorData = this.actor.system;
+			data.actorData.type = this.actor.type;
+			if (this.actor.type === "PC") {
+				const ignoreHeavy = CombatHelper.ignoresPain(this.actor);
+				const health = getActorHealthState(this.actor);
+				const willpower = getWillpowerState(this.actor);
+				data.object.healthWoundPenalty = ignoreHeavy ? health.aggravatedWoundPenalty : health.woundpenalty;
+				data.object.willpowerWoundPenalty = ignoreHeavy ? willpower.aggravatedWoundPenalty : willpower.woundpenalty;
+			}
+			else {
+				data.object.healthWoundPenalty = this.actor.system.health?.damage?.woundpenalty ?? 0;
+				data.object.willpowerWoundPenalty = 0;
+			}
 
             // Determine sheettype for dialog CSS classes
             let actortype = this.actor.type.toLowerCase();
@@ -373,6 +386,12 @@ export class DialogGeneralRoll extends FormApplication {
         this.object.useSpeciality = formData["specialty"];
         this.object.useWillpower = formData["useWillpower"];
         this.object.useFullWillpower = !!formData["useFullWillpower"];
+        const hasWillpowerPenaltyToggle = !this.object.ignorepain
+            && this.object.type !== "noability"
+            && this.object.willpowerWoundPenalty !== 0;
+        if (hasWillpowerPenaltyToggle) {
+            this.object.useWillpowerPenalty = !!formData["useWillpowerPenalty"];
+        }
 
         if (this.object.useSpeciality && CONFIG.worldofdarkness.usespecialityReduceDiff && !this.object.usedReducedDiff) {
             this.object.difficulty -= CONFIG.worldofdarkness.specialityReduceDiff;
@@ -567,6 +586,7 @@ export class DialogGeneralRoll extends FormApplication {
         generalRoll.origin = "general";
         generalRoll.numDices = numDices;
         generalRoll.woundpenalty = parseInt(woundPenaltyVal);
+        generalRoll.willpowerpenalty = this.object.useWillpowerPenalty ? null : 0;
         generalRoll.difficulty = parseInt(this.object.difficulty);
         generalRoll.speciality = this.object.useSpeciality;
         generalRoll.usewillpower = this.object.useWillpower;

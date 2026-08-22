@@ -210,13 +210,9 @@ export function getHealthState(actor, {wounds, itemBonus} = {}) {
         return {...level, boxes: levelBoxes};
     });
 
-    let activeLevel = null;
-    for (let index = trackWounds.length - 1; index >= 0; index--) {
-        if (trackWounds[index] === "heavy" || trackWounds[index] === "aggravated") {
-            activeLevel = levels.find(level => level.boxes.some(box => box.index === index)) ?? null;
-            break;
-        }
-    }
+    const heavyLevel = findActiveLevel(levels, trackWounds, severity => severity === "heavy");
+    const aggravatedLevel = findActiveLevel(levels, trackWounds, severity => severity === "aggravated");
+    const activeLevel = findActiveLevel(levels, trackWounds, severity => severity === "heavy" || severity === "aggravated");
 
     return {
         strength,
@@ -232,7 +228,11 @@ export function getHealthState(actor, {wounds, itemBonus} = {}) {
         boxes,
         levels,
         woundlevel: activeLevel?.label ?? "",
-        woundpenalty: activeLevel?.penalty ?? 0
+        woundpenalty: activeLevel?.penalty ?? 0,
+        heavyWoundLevel: heavyLevel?.label ?? "",
+        heavyWoundPenalty: heavyLevel?.penalty ?? 0,
+        aggravatedWoundLevel: aggravatedLevel?.label ?? "",
+        aggravatedWoundPenalty: aggravatedLevel?.penalty ?? 0
     };
 }
 
@@ -245,13 +245,34 @@ export function getActorHealthState(actor) {
         wounds: legacyDamageToWounds(actor.system.health?.damage?.chimerical)
     });
     const chimericalIsWorse = chimerical.woundpenalty < normal.woundpenalty;
+    const chimericalHeavyIsWorse = chimerical.heavyWoundPenalty < normal.heavyWoundPenalty;
+    const chimericalAggravatedIsWorse = chimerical.aggravatedWoundPenalty < normal.aggravatedWoundPenalty;
 
     return {
         ...normal,
         current: Math.min(normal.current, chimerical.current),
         woundlevel: chimericalIsWorse ? chimerical.woundlevel : normal.woundlevel,
-        woundpenalty: chimericalIsWorse ? chimerical.woundpenalty : normal.woundpenalty
+        woundpenalty: chimericalIsWorse ? chimerical.woundpenalty : normal.woundpenalty,
+        heavyWoundLevel: chimericalHeavyIsWorse ? chimerical.heavyWoundLevel : normal.heavyWoundLevel,
+        heavyWoundPenalty: chimericalHeavyIsWorse ? chimerical.heavyWoundPenalty : normal.heavyWoundPenalty,
+        aggravatedWoundLevel: chimericalAggravatedIsWorse ? chimerical.aggravatedWoundLevel : normal.aggravatedWoundLevel,
+        aggravatedWoundPenalty: chimericalAggravatedIsWorse ? chimerical.aggravatedWoundPenalty : normal.aggravatedWoundPenalty
     };
+}
+
+export function getEffectiveWoundPenalty(state, ignoreHeavy = false) {
+    return ignoreHeavy
+        ? {penalty: state?.aggravatedWoundPenalty ?? 0, woundlevel: state?.aggravatedWoundLevel ?? ""}
+        : {penalty: state?.woundpenalty ?? 0, woundlevel: state?.woundlevel ?? ""};
+}
+
+function findActiveLevel(levels, wounds, matchesSeverity) {
+    for (let index = wounds.length - 1; index >= 0; index--) {
+        if (matchesSeverity(wounds[index])) {
+            return levels.find(level => level.boxes.some(box => box.index === index)) ?? null;
+        }
+    }
+    return null;
 }
 
 /** Existing sheet entry point. PC tracks use the new state; legacy tracks keep their representation. */

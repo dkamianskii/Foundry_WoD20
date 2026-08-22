@@ -817,6 +817,7 @@ export default class DropHelper {
             }
         };
 
+        actorData.system.willpower.bonus = 0;
         actorData.system.willpower.damage = {
             light: 0,
             heavy: 0,

@@ -985,7 +985,7 @@
 			"willpowertrackhint": "Clic gauche pour aggraver une blessure de Volonté ; clic droit pour l'effacer.",
 			"exhaustedwillpowerpenalty": "Volonté épuisée",
 			"imbalance": "Déséquilibre",
-			"willpowerchange": "La volonté est basée sur 2 + Sang-Froid + Résolution et ne peut pas être changée !",
+			"willpowerchange": "La volonté est basée sur 2 + Sang-Froid + Résolution + Bonus de Volonté.",
 			"willpowerbuiltin": "La Volonté est intégrée aux acteurs PJ et ne peut pas être ajoutée comme Avantage.",
 			"noadvantages": "No advantage selected",
 			"path": {
@@ -2161,7 +2161,7 @@
 			"general": {
 				"selectattribute": "Choisir l'Attribut à utiliser",
 				"numberdiceshint": "To be able to roll more than 10 dices as once, fill in the number in the box above.",
-				"fullwillpowerhint": "La Volonté complète ignore les blessures légères de Volonté, mais pas les blessures graves."
+				"fullwillpowerhint": "La Volonté complète ignore les blessures légères de Volonté, mais pas les blessures graves ou aggravées."
 			},
 			"bonus": {
 				"chosenattribute": "Attribut choisi",

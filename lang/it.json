@@ -985,7 +985,7 @@
 			"willpowertrackhint": "Clic sinistro per aggravare una ferita alla Volontà; clic destro per cancellarla.",
 			"exhaustedwillpowerpenalty": "Volontà esausta",
 			"imbalance": "Sbilanciamento",
-			"willpowerchange": "La Volontà si basa su 2 + Autocontrollo + Fermezza e non può essere modificata!",
+			"willpowerchange": "La Volontà si basa su 2 + Autocontrollo + Fermezza + Bonus Volontà.",
 			"willpowerbuiltin": "La Volontà è integrata negli attori PG e non può essere aggiunta come Vantaggio.",
 			"noadvantages": "No advantage selected",
 			"path": {
@@ -2161,7 +2161,7 @@
 			"general": {
 				"selectattribute": "Seleziona l'attributo da usare",
 				"numberdiceshint": "To be able to roll more than 10 dices as once, fill in the number in the box above.",
-				"fullwillpowerhint": "La Volontà piena ignora le ferite leggere alla Volontà, ma non quelle pesanti."
+				"fullwillpowerhint": "La Volontà piena ignora le ferite leggere alla Volontà, ma non quelle pesanti o aggravate."
 			},
 			"bonus": {
 				"chosenattribute": "Attributo scelto",

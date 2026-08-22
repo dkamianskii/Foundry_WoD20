@@ -1,5 +1,5 @@
 import BonusHelper from "./bonus-helpers.js";
-import { getActorHealthState } from "./health.js";
+import { getActorHealthState, getEffectiveWoundPenalty } from "./health.js";
 
 export async function calculateTotals(updateData) {
 	let toForm = getForm(updateData);
@@ -255,8 +255,9 @@ export async function calculateTotals(updateData) {
 
 	// PC Health is derived from attributes and a single Health bonus. Legacy
 	// actors retain their configurable per-level totals.
+	let health;
 	if (updateData.type === "PC") {
-		const health = getActorHealthState(updateData);
+		health = getActorHealthState(updateData);
 		updateData.system.health.wounds = health.wounds;
 		updateData.system.health.damage.woundlevel = health.woundlevel;
 		updateData.system.health.damage.woundpenalty = health.woundpenalty;
@@ -277,7 +278,7 @@ export async function calculateTotals(updateData) {
 		let woundpenalty = parseInt(updateData.system.health.damage.woundpenalty);
 
 		if (updateData.system.conditions.isignoringpain) {
-			woundpenalty = 0;
+			woundpenalty = updateData.type === "PC" ? getEffectiveWoundPenalty(health, true).penalty : 0;
 		}
 
 		updateData.system.initiative.total = parseInt(updateData.system.initiative.base) + parseInt(updateData.system.initiative.bonus) + woundpenalty;

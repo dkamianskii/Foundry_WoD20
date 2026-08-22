@@ -6,6 +6,7 @@ import {
     calculateMaxHealth,
     cycleHealthBox,
     distributeHealthLevels,
+    getEffectiveWoundPenalty,
     getActorHealthState,
     getHealthState,
     migrateLegacyHealth,
@@ -80,6 +81,18 @@ test("the most severe occupied heavy/aggravated level supplies the non-stacking 
     assert.equal(state.max, 7);
     assert.equal(state.woundlevel, "wod.health.mauled");
     assert.equal(state.woundpenalty, -3);
+});
+
+test("heavy and aggravated Health penalties are derived independently for Ignore Pain", () => {
+    const state = getHealthState(actorWith(["aggravated", "heavy", "heavy", "heavy"]));
+    assert.equal(state.woundpenalty, -3);
+    assert.equal(state.heavyWoundPenalty, -3);
+    assert.equal(state.aggravatedWoundPenalty, 0);
+    assert.equal(state.aggravatedWoundLevel, "wod.health.bruised");
+    assert.deepEqual(getEffectiveWoundPenalty(state, true), {
+        penalty: 0,
+        woundlevel: "wod.health.bruised"
+    });
 });
 
 test("wound position is preserved while empty boxes remain", () => {

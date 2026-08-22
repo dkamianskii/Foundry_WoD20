@@ -119,7 +119,7 @@ export default class PCActorAPI {
 
         // Check for wound penalty
         let woundPenalty = 0;
-        if (!CombatHelper.ignoresPain(this.actor)) {
+        if (!CombatHelper.ignoresAllWoundPenalties(this.actor)) {
             woundPenalty = parseInt(this.actor.system.health.damage.woundpenalty) || 0;
         }
 
@@ -220,7 +220,7 @@ export default class PCActorAPI {
 
         // Check for wound penalty
         let woundPenalty = 0;
-        if (!CombatHelper.ignoresPain(this.actor)) {
+        if (!CombatHelper.ignoresAllWoundPenalties(this.actor)) {
             woundPenalty = parseInt(this.actor.system.health.damage.woundpenalty) || 0;
         }
 
@@ -335,7 +335,7 @@ export default class PCActorAPI {
 
         // Check for wound penalty
         let woundPenalty = 0;
-        if (!CombatHelper.ignoresPain(this.actor)) {
+        if (!CombatHelper.ignoresAllWoundPenalties(this.actor)) {
             woundPenalty = parseInt(this.actor.system.health.damage.woundpenalty) || 0;
         }
 

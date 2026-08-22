@@ -490,7 +490,7 @@ export class DialogWeaponV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
     async _rollAttack() {
         const o = this.object;
-        let woundPenaltyVal = CombatHelper.ignoresPain(this.actor)
+        let woundPenaltyVal = CombatHelper.ignoresAllWoundPenalties(this.actor)
                     ? 0
                     : parseInt(this.actor.system?.health?.damage?.woundpenalty) || 0;
         const weaponRoll = new DiceRollContainer(this.actor);
@@ -633,7 +633,7 @@ export class DialogWeaponV2 extends HandlebarsApplicationMixin(ApplicationV2) {
         const o = this.object;
         let woundPenaltyVal = 0;
 
-        if (CONFIG.worldofdarkness.usePenaltyDamage && !CombatHelper.ignoresPain(this.actor)) {
+        if (CONFIG.worldofdarkness.usePenaltyDamage && !CombatHelper.ignoresAllWoundPenalties(this.actor)) {
             woundPenaltyVal = parseInt(this.actor.system?.health?.damage?.woundpenalty) || 0;
         }
 

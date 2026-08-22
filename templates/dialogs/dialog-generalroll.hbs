@@ -115,15 +115,20 @@
             </div>
         </div>
 
-        {{#if (and (ne actorData.health.damage.woundpenalty 0) (ne object.type "noability"))}}
-            {{#if (eq object.ignorepain false)}}
-                <div class="dialog-area">
+        {{#if (and (eq object.ignorepain false) (ne object.type "noability") (or (ne object.healthWoundPenalty 0) (ne object.willpowerWoundPenalty 0)))}}
+                <div class="dialog-area penalty-toggle-row">
+                    {{#if (ne object.healthWoundPenalty 0)}}
                     <div class="infobox headline splatFont">
-                        <input name="usepain" type="checkbox" {{isChecked object.usepain}}>{{localize 'wod.dialog.usewoundpenalty'}} ({{actorData.health.damage.woundpenalty}})</input>
+                        <input name="usepain" type="checkbox" {{isChecked object.usepain}}>{{localize 'wod.dialog.usewoundpenalty'}} ({{object.healthWoundPenalty}})</input>
                     </div>
-                </div>
-            {{/if}}
-        {{/if}}
+					{{/if}}
+					{{#if (ne object.willpowerWoundPenalty 0)}}
+					<div class="infobox headline splatFont">
+						<input name="useWillpowerPenalty" type="checkbox" {{isChecked object.useWillpowerPenalty}}>{{localize "wod.dialog.useexhaustedpenalty"}} ({{object.willpowerWoundPenalty}})</input>
+					</div>
+					{{/if}}
+				</div>
+		{{/if}}
 
     {{/if}}
 

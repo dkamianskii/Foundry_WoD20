@@ -985,7 +985,7 @@
 			"willpowertrackhint": "Clique esquerdo para agravar um ferimento de Força de Vontade; clique direito para removê-lo.",
 			"exhaustedwillpowerpenalty": "Força de Vontade exausta",
 			"imbalance": "Desequilíbrio",
-			"willpowerchange": "A Força de Vontade é baseada em 2 + Autocontrole + Determinação e não pode ser alterada!",
+			"willpowerchange": "A Força de Vontade é baseada em 2 + Autocontrole + Determinação + Bônus de Força de Vontade.",
 			"willpowerbuiltin": "A Força de Vontade é integrada aos atores PJ e não pode ser adicionada como Vantagem.",
 			"noadvantages": "Nenhuma vantagem selecionada",
 			"path": {
@@ -2161,7 +2161,7 @@
 			"general": {
 				"selectattribute": "Seleciona qual atributo irá utilizar",
 				"numberdiceshint": "Para poder rolar mais de 10 dados de uma vez, preencha o número na caixa acima.",
-				"fullwillpowerhint": "A Força de Vontade total ignora ferimentos leves de Força de Vontade, mas não os pesados."
+				"fullwillpowerhint": "A Força de Vontade total ignora ferimentos leves de Força de Vontade, mas não os pesados ou agravados."
 			},
 			"bonus": {
 				"chosenattribute": "Atributo escolhido",

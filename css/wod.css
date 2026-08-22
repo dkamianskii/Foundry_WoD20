@@ -2158,6 +2158,15 @@ input.sheet-infoWidth {
   line-height: 30px;
 }
 
+.wod-dialog .penalty-toggle-row {
+  display: flex;
+  gap: 12px;
+}
+
+.wod-dialog .penalty-toggle-row > .infobox {
+  flex: 1 1 0;
+}
+
 /* END - Dialogs */
 
 /* START - Items */

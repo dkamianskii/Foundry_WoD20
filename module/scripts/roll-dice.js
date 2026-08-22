@@ -1,6 +1,7 @@
 import BonusHelper from "./bonus-helpers.js";
 import CombatHelper from "./combat-helpers.js";
 import { getWillpowerState, spendWillpower } from "./willpower.js";
+import { getActorHealthState, getEffectiveWoundPenalty } from "./health.js";
 
 let _diceColor;
 let _specialDiceType = "";
@@ -275,7 +276,10 @@ export async function DiceRoller(diceRoll) {
 	let rollResult = "";
 	let info = [];
 	let systemtext = [];
+	let healthPenalty = parseInt(diceRoll.woundpenalty) || 0;
+	let healthWoundLevel = actor?.system?.health?.damage?.woundlevel ?? "";
 	let willpowerPenalty = 0;
+	let willpowerWoundLevel = "";
 
 
 	difficulty = difficulty < CONFIG.worldofdarkness.lowestDifficulty ? CONFIG.worldofdarkness.lowestDifficulty : difficulty;
@@ -307,12 +311,28 @@ export async function DiceRoller(diceRoll) {
 		}
 	}
 
+	const willpowerState = actor?.type === "PC" ? getWillpowerState(actor) : null;
+	if (willpowerState) willpowerWoundLevel = willpowerState.woundlevel;
 	const explicitWillpowerPenalty = Number.parseInt(diceRoll.willpowerpenalty, 10);
 	if (Number.isFinite(explicitWillpowerPenalty)) {
 		willpowerPenalty = explicitWillpowerPenalty;
 	}
 	else if (actor?.type === "PC") {
-		willpowerPenalty = getWillpowerState(actor).woundpenalty;
+		willpowerPenalty = willpowerState.woundpenalty;
+	}
+
+	if (actor?.type === "PC" && CombatHelper.ignoresPain(actor)) {
+		if (healthPenalty < 0) {
+			const health = getActorHealthState(actor);
+			const effectiveHealth = getEffectiveWoundPenalty(health, true);
+			healthPenalty = effectiveHealth.penalty;
+			healthWoundLevel = effectiveHealth.woundlevel;
+		}
+		if (willpowerPenalty < 0) {
+			const effectiveWillpower = getEffectiveWoundPenalty(willpowerState, true);
+			willpowerPenalty = effectiveWillpower.penalty;
+			willpowerWoundLevel = effectiveWillpower.woundlevel;
+		}
 	}
 
 	if ((diceRoll.origin == "soak") && (!CONFIG.worldofdarkness.useOnesSoak)) {
@@ -345,7 +365,7 @@ export async function DiceRoller(diceRoll) {
 		diceResult.rolledAnySuccesses = rolledAnySuccesses;
 
 		let numberDices = (parseInt(target.numDices) || 0)
-			+ (parseInt(diceRoll.woundpenalty) || 0)
+			+ healthPenalty
 			+ willpowerPenalty;
 		const zeroPoolFailure = numberDices <= 0;
 		numberDices = Math.max(0, numberDices);
@@ -486,12 +506,11 @@ export async function DiceRoller(diceRoll) {
 	}
 
 	// if any wound penalty show in message
-	if ((diceRoll.woundpenalty < 0) && (actor != undefined) && (actor.system.health != undefined) && (actor.system.health.damage.woundlevel != "")) {
-		info.push(`${game.i18n.localize(actor.system.health.damage.woundlevel)} (${diceRoll.woundpenalty})`);
+	if (healthPenalty < 0 && actor?.system?.health && healthWoundLevel) {
+		info.push(`${game.i18n.localize(healthWoundLevel)} (${healthPenalty})`);
 	}
 	if (willpowerPenalty < 0) {
-		const willpower = getWillpowerState(actor);
-		info.push(`${game.i18n.localize("wod.advantages.willpower")}: ${game.i18n.localize(willpower.woundlevel)} (${willpowerPenalty})`);
+		info.push(`${game.i18n.localize("wod.advantages.willpower")}: ${game.i18n.localize(willpowerWoundLevel)} (${willpowerPenalty})`);
 	}
 
 	if (diceRoll.speciality) {

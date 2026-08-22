@@ -1124,7 +1124,7 @@ export class DialogPower extends FormApplication {
             specialityText = this.object.specialityText;
         }
 
-        if (CombatHelper.ignoresPain(this.actor)) {
+        if (CombatHelper.ignoresAllWoundPenalties(this.actor)) {
             woundPenaltyVal = 0;
         }
         else {

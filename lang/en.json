@@ -993,7 +993,7 @@
 			"willpowertrackhint": "Left-click to advance a Willpower wound; right-click to clear it.",
 			"exhaustedwillpowerpenalty": "Exhausted Willpower",
 			"imbalance": "Imbalance",
-			"willpowerchange": "Willpower is based on 2 + Composure + Resolve and cannot be altered!",
+			"willpowerchange": "Willpower is based on 2 + Composure + Resolve + Willpower Bonus.",
 			"willpowerbuiltin": "Willpower is built into PC actors and cannot be added as an Advantage item.",
 			"noadvantages": "No advantage selected",
 			"path": {
@@ -2180,7 +2180,7 @@
 			"general": {
 				"selectattribute": "Select what attribute to use",
 				"numberdiceshint": "To be able to roll more than 10 dices as once, fill in the number in the box above.",
-				"fullwillpowerhint": "Full Willpower ignores light Willpower wounds but not heavy wounds."
+				"fullwillpowerhint": "Full Willpower ignores light Willpower wounds but not heavy or aggravated wounds."
 			},
 			"bonus": {
 				"chosenattribute": "Chosen attribute",

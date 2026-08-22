@@ -470,6 +470,17 @@
 
 			<div class="space sheet-area flex-columns">
 				<div class="clearareaBox">
+					<div class="headlineGroup splatFont">{{localize "wod.advantages.willpower"}}</div>
+					<div class="clearareaBox">
+						<label class="pullLeft headlineNormal settings-leftwidth settings-verticalcenter" for="system.willpower.bonus">{{localize "wod.advantages.willpower"}} {{localize "wod.labels.bonus.headline"}}</label>
+						<input class="pullLeft sheet-infoValues numberBox {{#if (eq locked false)}}editable{{/if}}"
+							name="system.willpower.bonus" type="number" min="0" value="{{willpower.manualBonus}}"
+							data-dtype="Number" {{#if locked}}readonly{{/if}} />
+					</div>
+					<div class="clearareaBox"><span class="pullLeft settings-leftwidth">{{localize "wod.attributes.composure"}}</span><span>{{actor.system.attributes.composure.value}}</span></div>
+					<div class="clearareaBox"><span class="pullLeft settings-leftwidth">{{localize "wod.attributes.resolve"}}</span><span>{{actor.system.attributes.resolve.value}}</span></div>
+					<div class="clearareaBox bold"><span class="pullLeft settings-leftwidth">{{localize "wod.advantages.willpower"}} {{localize "wod.health.maximum"}}</span><span>{{willpower.maximum}}</span></div>
+					<hr />
 					<div class="headlineGroup splatFont">{{localize "wod.health.health"}}</div>
 					<div class="clearareaBox">
 						<label class="pullLeft headlineNormal settings-leftwidth settings-verticalcenter" for="system.health.bonus">{{localize "wod.health.bonus"}}</label>

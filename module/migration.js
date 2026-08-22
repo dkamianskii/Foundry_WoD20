@@ -2524,6 +2524,7 @@ export  const updates = async () => {
             updateData["system.willpower.damage.light"] = maximum - available;
             updateData["system.willpower.damage.heavy"] = 0;
             updateData["system.willpower.damage.aggravated"] = 0;
+            updateData["system.willpower.bonus"] = 0;
         }
 
         await actor.update(updateData);

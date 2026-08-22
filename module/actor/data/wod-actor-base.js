@@ -57,6 +57,7 @@ export class WoDActor extends Actor {
                 resolve: {value: value("system.attributes.resolve.value", this.system.attributes.resolve.value)}
             },
             willpower: {
+                bonus: value("system.willpower.bonus", this.system.willpower.bonus),
                 damage: {
                     light: value("system.willpower.damage.light", this.system.willpower.damage.light),
                     heavy: value("system.willpower.damage.heavy", this.system.willpower.damage.heavy),

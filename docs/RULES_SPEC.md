@@ -80,7 +80,7 @@ When an applicable specialization is enabled, test difficulty is reduced by 1 be
 
 ### Maximum Willpower
 
-`max_willpower = 2 + Composure + Resolve`
+`max_willpower = 2 + Composure + Resolve + willpower_bonus`
 
 ### Current Willpower
 
@@ -110,6 +110,10 @@ Light wounds do not cause a penalty. The active Willpower wound penalty is deter
 ### Willpower Wound Penalty
 
 The active Willpower wound penalty applies to all Tests and stacks with the Health wound penalty.
+
+The general Test dialog allows the player to disable the Willpower wound penalty for that Test independently from the Health wound penalty.
+
+Ignore Pain suppresses penalties caused by heavy Health and Willpower wounds. It does not suppress penalties caused by aggravated wounds; each track is recalculated using its most severe aggravated wound while Ignore Pain is active.
 
 ### Current Willpower Roll
 

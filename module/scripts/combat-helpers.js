@@ -15,17 +15,12 @@ export default class CombatHelper {
 	}
 
     static ignoresPain(actor) {
-		let ignoresPain = false;
+		return !!actor?.system?.conditions?.isignoringpain;
+	}
 
-		if (actor.system.conditions?.isignoringpain) {
-			ignoresPain = true;
-		}
-
-		if (actor.system.conditions?.isfrenzy) {
-			ignoresPain = true;
-		}
-
-		return ignoresPain;
+	/** Frenzy retains the legacy behavior of suppressing every Health penalty. */
+	static ignoresAllWoundPenalties(actor) {
+		return !!actor?.system?.conditions?.isfrenzy;
 	}
 
 	static async CalculateMovement(actor) {

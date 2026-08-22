@@ -89,7 +89,8 @@ Important PC schema branches:
   compacts later wounds toward the start of the track.
 - `health.damage.woundlevel` / `.woundpenalty`: derived compatibility outputs;
   `health.damage.chimerical` retains legacy bashing/lethal/aggravated counters.
-- `willpower.damage`: persistent `light`, `heavy`, and `aggravated` wound counts. Maximum/current/full values, five levels, penalty, and display boxes are derived rather than persisted.
+- `willpower.bonus`: persistent non-negative manual adjustment edited in Options → Combat.
+- `willpower.damage`: persistent `light`, `heavy`, and `aggravated` wound counts. Maximum/current/full values, five levels, severity-specific penalties, and display boxes are derived rather than persisted.
 - `traits.health.totalhealthlevels`: derived current/max health boxes.
 - `initiative`, `conditions`, `movement`, `gear`, and `favoriterolls`.
 
@@ -364,8 +365,9 @@ Dialogs are responsible for:
 4. identifying speciality and optionally reducing difficulty;
 5. adding wound penalties unless the action ignores them;
 6. for the general Test dialog, exposing a fillable Resistance field beside the other Test inputs, initialized to 0 and normalized to a non-negative integer;
-7. adding attack successes to damage where configured;
-8. setting `origin` (`general`, `power`, `attack`, `damage`, `soak`, or `initiative`) so the evaluator can apply origin-specific rules.
+7. exposing independent checked-by-default Health and Willpower wound-penalty toggles in the general Test dialog when their effective penalties are nonzero;
+8. adding attack successes to damage where configured;
+9. setting `origin` (`general`, `power`, `attack`, `damage`, `soak`, or `initiative`) so the evaluator can apply origin-specific rules.
 
 Weapon attack is a two-stage chain: `DialogWeaponV2._rollAttack` builds and evaluates the attack; if it succeeds and damage is rollable it opens/continues in damage state with `extraSuccesses` (usually successes minus one). `_rollDamage` builds target-specific pools and calls the same evaluator.
 
@@ -488,13 +490,14 @@ The canonical wound penalty is `actor.system.health.damage.woundpenalty`, derive
 General behavior:
 
 - general, ability, attribute, advantage, item, power, shapechange, and weapon attack builders usually copy it into `DiceRollContainer.woundpenalty`;
-- `CombatHelper.ignoresPain(actor)` suppresses it when `conditions.isignoringpain` or `conditions.isfrenzy` is true;
+- frenzy retains its legacy full Health-penalty suppression before evaluation;
+- Ignore Pain is resolved centrally: heavy-derived Health and Willpower penalties are ignored, but each track's aggravated-derived penalty remains;
 - `DiceRoller` applies it arithmetically to the target pool and clamps the result to zero;
 - soak, frenzy, initiative's d10, paradox, and several special rolls explicitly use zero;
 - damage rolls use it only when the `usePenaltyDamage` world setting is enabled;
 - the chat card displays the localized wound level and numeric penalty when applied.
 
-PC Willpower wounds are the second centralized pool penalty. `getWillpowerState` distributes the track across the same five levels as Health and derives the active 0/-1/-2/-3/-5 penalty from the most severe box containing a heavy or aggravated wound. `DiceRoller` applies that penalty to every PC Test. Health and Willpower penalties are additive; if their sum reduces the pool to zero, no dice are rolled and the Test automatically fails.
+PC Willpower wounds are the second centralized pool penalty. `getWillpowerState` distributes the track across the same five levels as Health and derives combined, heavy-only, and aggravated-only penalty states. `DiceRoller` applies the combined penalty to every PC Test unless the general dialog explicitly disables it. Health and Willpower penalties are additive; if their sum reduces the pool to zero, no dice are rolled and the Test automatically fails.
 
 Other penalties/bonuses are not unified into a single modifier pipeline. Dialogs query specialized `BonusHelper` methods for attribute, ability, attack, soak, movement, health, initiative, fixed-value, and difficulty effects. Armor applies its configured `dexpenalty` while `calculateTotals` derives Dexterity. A derivative system should treat `BonusHelper` and dialog code together as the effective modifier engine.
 
@@ -503,11 +506,11 @@ Other penalties/bonuses are not unified into a single modifier pipeline. Dialogs
 ### 11.1 Willpower storage and derived roll value
 
 - PC canonical storage: `actor.system.willpower.damage.light`, `.heavy`, and `.aggravated`, defined by `module/actor/datamodel/base/actor_willpower.js`.
-- PC derived state: `module/scripts/willpower.js::getWillpowerState` computes `max = 2 + composure.value + resolve.value`, current/full pools, five levels, active penalty, spend availability, and rendered boxes. Empty boxes are available points; `/` is light, `X` is heavy, and the three-stroke mark is aggravated damage.
+- PC derived state: `module/scripts/willpower.js::getWillpowerState` computes `max = 2 + composure.value + resolve.value + willpower.bonus`, current/full pools, five levels, combined/heavy/aggravated penalties, spend availability, and rendered boxes. Empty boxes are available points; `/` is light, `X` is heavy, and the three-stroke mark is aggravated damage.
 - PC compatibility view: `createWillpowerAdvantageFacade` places a transient Advantage-shaped object at `actor.system.advantages.willpower` during actor preparation so existing readers and roll dispatch can obtain `system.roll`. This object is never canonical and must not be updated as an embedded item.
 - Legacy actors: persistent `actor.system.advantages.willpower` remains in use and follows the original permanent/temporary logic.
 
-For a PC Willpower roll, the default pool is `current`; selecting “Use full Willpower” in `DialogGeneralRoll` uses `full`, so light wounds are ignored but heavy wounds still reduce the pool. Ordinary Advantage and legacy Willpower rolls retain `WoDItem._handleAdvantagesCalculations` and the `advantageRolls` settings behavior.
+For a PC Willpower roll, the default pool is `current`; selecting “Use full Willpower” in `DialogGeneralRoll` uses `full`, so light wounds are ignored but heavy and aggravated wounds still reduce the pool. Ordinary Advantage and legacy Willpower rolls retain `WoDItem._handleAdvantagesCalculations` and the `advantageRolls` settings behavior.
 
 ### 11.2 Spending Willpower in rolls
 

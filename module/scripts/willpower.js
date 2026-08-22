@@ -11,9 +11,11 @@ function getSystemData(actorOrSystem) {
 
 export function getWillpowerState(actorOrSystem) {
     const system = getSystemData(actorOrSystem);
+    const manualBonus = toNonNegativeInteger(system.willpower?.bonus);
     const maximum = 2
         + toNonNegativeInteger(system.attributes?.composure?.value)
-        + toNonNegativeInteger(system.attributes?.resolve?.value);
+        + toNonNegativeInteger(system.attributes?.resolve?.value)
+        + manualBonus;
 
     let aggravated = Math.min(toNonNegativeInteger(system.willpower?.damage?.aggravated), maximum);
     let heavy = Math.min(toNonNegativeInteger(system.willpower?.damage?.heavy), maximum - aggravated);
@@ -37,16 +39,13 @@ export function getWillpowerState(actorOrSystem) {
         return {...level, boxes};
     });
 
-    let activeLevel = null;
-    for (let index = wounds.length - 1; index >= 0; index--) {
-        if (wounds[index] === "heavy" || wounds[index] === "aggravated") {
-            activeLevel = levels.find(level => level.boxes.some(box => box.index === index)) ?? null;
-            break;
-        }
-    }
+    const heavyLevel = findActiveLevel(levels, wounds, severity => severity === "heavy");
+    const aggravatedLevel = findActiveLevel(levels, wounds, severity => severity === "aggravated");
+    const activeLevel = findActiveLevel(levels, wounds, severity => severity === "heavy" || severity === "aggravated");
 
     return {
         maximum,
+        manualBonus,
         current,
         full,
         light,
@@ -55,9 +54,22 @@ export function getWillpowerState(actorOrSystem) {
         canSpend: current > 0,
         woundlevel: activeLevel?.label ?? "",
         woundpenalty: activeLevel?.penalty ?? 0,
+        heavyWoundLevel: heavyLevel?.label ?? "",
+        heavyWoundPenalty: heavyLevel?.penalty ?? 0,
+        aggravatedWoundLevel: aggravatedLevel?.label ?? "",
+        aggravatedWoundPenalty: aggravatedLevel?.penalty ?? 0,
         levels,
         track: levels.flatMap(level => level.boxes.map(box => box.displayState))
     };
+}
+
+function findActiveLevel(levels, wounds, matchesSeverity) {
+    for (let index = wounds.length - 1; index >= 0; index--) {
+        if (matchesSeverity(wounds[index])) {
+            return levels.find(level => level.boxes.some(box => box.index === index)) ?? null;
+        }
+    }
+    return null;
 }
 
 export function getWillpowerUpdate(actorOrSystem, oldState, clear = false) {

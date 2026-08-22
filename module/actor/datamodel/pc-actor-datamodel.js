@@ -136,10 +136,12 @@ export default class PCDataModel extends foundry.abstract.DataModel {
         }
         migratePCHealthSource(source);
         if (source?.willpower === undefined) {
-            source.willpower = { damage: { light: 0, heavy: 0, aggravated: 0 } };
+            source.willpower = { bonus: 0, damage: { light: 0, heavy: 0, aggravated: 0 } };
         }
-        else if (source.willpower.damage?.aggravated === undefined) {
-            source.willpower.damage.aggravated = 0;
+        else {
+            if (source.willpower.bonus === undefined) source.willpower.bonus = 0;
+            if (source.willpower.damage === undefined) source.willpower.damage = {};
+            if (source.willpower.damage?.aggravated === undefined) source.willpower.damage.aggravated = 0;
         }
         return super.migrateData(source);
     }

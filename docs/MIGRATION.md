@@ -9,13 +9,14 @@ array or bonus.
 PC Willpower keeps its existing actor-owned light/heavy counters and adds:
 
 ```text
+system.willpower.bonus
 system.willpower.damage.aggravated
 ```
 
-The typed PC data model supplies `0` when this field is absent, preserving all
+The typed PC data model supplies `0` when either field is absent, preserving all
 existing light and heavy Willpower wounds. Willpower maximum now derives from
-`2 + Composure + Resolve`. The former exhaustion penalty is removed; the
-five-level Health distribution and penalty table are derived for Willpower.
+`2 + Composure + Resolve + Willpower Bonus`. The fixed exhaustion penalty is
+replaced by the five-level Health distribution and penalty table.
 No legacy Actor Willpower data is changed.
 
 ## 7.4.0 — Derived PC Health and wound track
@@ -71,6 +72,8 @@ world migration, an existing PC Willpower Advantage is converted as follows:
 maximum = 2 + Composure + Resolve
 light wounds = maximum - min(old temporary Willpower, maximum)
 heavy wounds = 0
+aggravated wounds = 0
+Willpower Bonus = 0
 ```
 
 This preserves the old number of available temporary Willpower points. The
