@@ -10,6 +10,7 @@ import * as WoDSetup from "./module/scripts/wodsetup.js";
 
 import { WoDActor } from "./module/actor/data/wod-actor-base.js";
 import { WoDItem } from "./module/items/data/wod-item-base.js";
+import { WoDCombat } from "./module/scripts/wod-combat.js";
 
 /* Modules */
 import * as actorModels from "./module/actor/datamodel/_module.js";
@@ -210,6 +211,7 @@ Hooks.once("init", async function() {
 	// Register application classes
 	CONFIG.Actor.documentClass = WoDActor;
 	CONFIG.Item.documentClass = WoDItem;
+	CONFIG.Combat.documentClass = WoDCombat;
 
 	console.log("WoD | Classes Registered");
 

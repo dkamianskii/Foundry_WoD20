@@ -632,13 +632,12 @@ export async function InitiativeRoll(diceRoll) {
 
 	let foundToken = false;
 	let foundEncounter = true;
-	let tokenAdded = false;
-	let rolledInitiative = false;
 	let init = 0;
 
-	let token = await canvas.tokens.placeables.find(t => t.document.actor._id === actor._id);
+	const existingCombatant = diceRoll.combatant;
+	let token = existingCombatant?.token?.object ?? await canvas.tokens.placeables.find(t => t.document.actor._id === actor._id);
 
-	if(token) foundToken = true;
+	if (token || existingCombatant) foundToken = true;
 
 	if (game.combat == null) {
 		foundEncounter = false;
@@ -668,15 +667,18 @@ export async function InitiativeRoll(diceRoll) {
 	allDiceResult.push(diceResult);
 
 	if ((foundToken) && (foundEncounter)) {
-		if (!CombatHelper._inTurn(token)) {
+		let combatant = existingCombatant;
+
+		if (!combatant && !CombatHelper._inTurn(token)) {
 			await token.document.toggleCombatant();
+			combatant = token.combatant;
+		}
+		else if (!combatant) {
+			combatant = token.combatant;
+		}
 
-			if (token.combatant.system.initiative == undefined) {
-				await token.combatant.update({initiative: init});
-				rolledInitiative = true;
-			}
-
-			tokenAdded = true;
+		if (combatant) {
+			await combatant.parent.setInitiative(combatant.id, init);
 		}
 	}
 
@@ -687,16 +689,6 @@ export async function InitiativeRoll(diceRoll) {
 	else {
 		if (!foundToken) {
 			info.push(game.i18n.localize("wod.dice.notokenfound"));
-		}
-		else {
-			if (!tokenAdded) {
-				info.push(game.i18n.localize("wod.dice.characteradded"));
-				allDiceResult = [];
-			}
-			if (!rolledInitiative) {
-				info.push(`${actor.name} ${game.i18n.localize("wod.dice.initiativealready")}`);
-				allDiceResult = [];
-			}
 		}
 	}
 

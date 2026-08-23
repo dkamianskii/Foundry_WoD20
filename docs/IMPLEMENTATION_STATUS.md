@@ -188,21 +188,28 @@ required for unlocked/locked PC and legacy sheets and every affected dialog.
 
 ### 2.8 Initiative Test
 
-**Status: Implemented for the sheet action and Foundry combat-tracker formula.**
+**Status: Implemented for the sheet action and Foundry combat tracker.**
 
 - Initiative rolls Dexterity + Wits d10s against fixed difficulty 8.
 - Natural 10s explode recursively, natural 1s subtract successes, a failure is
   initiative 0, and any botch is initiative -1.
 - The rule is fixed and does not use the configurable general-Test explosion,
   speciality, initiative bonus, or wound-penalty settings.
-- The existing dedicated initiative chat card and combatant update path are
-  retained. No persisted Actor data changes or migration are required.
+- `WoDCombat.rollInitiative` routes combat-tracker rolls through the same
+  dedicated initiative function as the sheet action because Foundry's formula
+  parser treats an arithmetic dice quantity such as `(Dexterity + Wits)d10` as
+  multiplication around a one-die term.
+- Rolling again always updates the existing Combatant's initiative instead of
+  reporting that the character and initiative already exist.
+- The existing dedicated initiative chat card is retained. No persisted Actor
+  data changes or migration are required; the manifest initiative formula is an
+  unused zero-value fallback for the custom Combat document path.
 
 Primary files are `module/scripts/initiative.js`, `module/scripts/roll-dice.js`,
-`system.json`, the initiative chat and macro-icon templates, and
-`tests/initiative.test.mjs`. Manual Foundry v14 verification remains required
-for both the sheet action and combat-tracker action, including recursive
-explosions and a botch result of -1.
+`module/scripts/wod-combat.js`, `wod.js`, `system.json`, the initiative chat and
+macro-icon templates, and `tests/initiative.test.mjs`. Manual Foundry v14
+verification remains required for sheet and combat-tracker first rolls and
+rerolls, including recursive explosions and a botch result of -1.
 
 ## 3. Requirement matrix
 

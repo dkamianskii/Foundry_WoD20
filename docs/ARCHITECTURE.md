@@ -406,7 +406,7 @@ Important implications:
 - Favored attribute/ability flags currently add informational chat metadata only; they do not exempt natural 1s from Resistance.
 - Demon Lore Torment compares successful die faces with permanent Torment after the normal roll.
 
-`InitiativeRoll` is separate: it rolls a Dexterity + Wits d10 pool at fixed difficulty 8, recursively explodes 10s, deducts 1s, maps a botch to -1, tries to add/update the actor's token combatant, and emits the same chat template. `module/scripts/initiative.js` provides its pure outcome calculation, while `system.json` carries the equivalent Foundry combat-tracker formula.
+`InitiativeRoll` is separate: it rolls a Dexterity + Wits d10 pool at fixed difficulty 8, recursively explodes 10s, deducts 1s, maps a botch to -1, adds or updates the actor's token combatant, and emits the same chat template. `module/scripts/initiative.js` provides its pure outcome calculation. The `WoDCombat` document class routes Foundry combat-tracker rolls through `InitiativeRoll`; this avoids the core formula parser's inability to treat an arithmetic expression as a dynamic dice quantity and makes tracker and sheet rerolls use the same path. The `system.json` initiative formula is therefore only a zero-value fallback.
 
 Dependencies: evaluation depends on settings cached in `CONFIG.worldofdarkness`, `BonusHelper`, actor conditions/data layout, Foundry `Roll`, the dice SVG helpers/icons, localization, and chat rendering.
 
