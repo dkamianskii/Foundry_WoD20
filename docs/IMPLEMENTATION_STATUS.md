@@ -186,6 +186,24 @@ sheet templates, all Test dialog builders, the PC Actor API, migration code,
 CSS, and `tests/speciality.test.mjs`. Manual Foundry v14 verification remains
 required for unlocked/locked PC and legacy sheets and every affected dialog.
 
+### 2.8 Initiative Test
+
+**Status: Implemented for the sheet action and Foundry combat-tracker formula.**
+
+- Initiative rolls Dexterity + Wits d10s against fixed difficulty 8.
+- Natural 10s explode recursively, natural 1s subtract successes, a failure is
+  initiative 0, and any botch is initiative -1.
+- The rule is fixed and does not use the configurable general-Test explosion,
+  speciality, initiative bonus, or wound-penalty settings.
+- The existing dedicated initiative chat card and combatant update path are
+  retained. No persisted Actor data changes or migration are required.
+
+Primary files are `module/scripts/initiative.js`, `module/scripts/roll-dice.js`,
+`system.json`, the initiative chat and macro-icon templates, and
+`tests/initiative.test.mjs`. Manual Foundry v14 verification remains required
+for both the sheet action and combat-tracker action, including recursive
+explosions and a botch result of -1.
+
 ## 3. Requirement matrix
 
 ### 3.1 Generic Dice Tests
@@ -348,7 +366,7 @@ in `MIGRATION.md`.
 
 ## 6. Verification gates
 
-Current verification progress: JavaScript checks pass for the changed Health, Willpower, speciality, roll, dialog, Actor, data-model, and migration modules. The focused rules suite has 31 passing tests covering both formulas, Attribute-only wound-penalty eligibility, shared and severity-specific penalties, Ignore Pain inputs, aggravated promotion, full-track spend rejection, successful spend, presence-sensitive partial-update migration, and the two-dot/non-blank Ability speciality boundary. Health and Willpower preprocessing is independently gated so changing one track does not write to or reset the other. Broader Test/chat-card regression coverage remains absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
+Current verification progress: JavaScript checks pass for the changed Health, Willpower, speciality, initiative, roll, dialog, Actor, data-model, and migration modules. The focused rules suite has 35 passing tests covering both formulas, Attribute-only wound-penalty eligibility, shared and severity-specific penalties, Ignore Pain inputs, aggravated promotion, full-track spend rejection, successful spend, presence-sensitive partial-update migration, the two-dot/non-blank Ability speciality boundary, and Initiative success/failure/botch outcomes. Health and Willpower preprocessing is independently gated so changing one track does not write to or reset the other. Broader Test/chat-card regression coverage remains absent, so the gates below remain the completion standard rather than a claim that the full conversion is verified.
 
 Each phase is complete only after these checks pass:
 

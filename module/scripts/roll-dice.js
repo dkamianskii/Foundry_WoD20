@@ -3,6 +3,7 @@ import CombatHelper from "./combat-helpers.js";
 import { getWillpowerState, spendWillpower } from "./willpower.js";
 import { getActorHealthState, getEffectiveWoundPenalty } from "./health.js";
 import { rollUsesAttribute } from "./roll-penalties.js";
+import { INITIATIVE_DIFFICULTY, resolveInitiativeDice } from "./initiative.js";
 
 let _diceColor;
 let _specialDiceType = "";
@@ -634,7 +635,6 @@ export async function InitiativeRoll(diceRoll) {
 	let tokenAdded = false;
 	let rolledInitiative = false;
 	let init = 0;
-	let initAttribute;
 
 	let token = await canvas.tokens.placeables.find(t => t.document.actor._id === actor._id);
 
@@ -647,20 +647,23 @@ export async function InitiativeRoll(diceRoll) {
 	// set correct dice colors
 	_GetDiceColors(actor);
 
-	let roll = new Roll("1d10");
+	const dexterity = Math.max(0, parseInt(actor.system.attributes.dexterity.total) || 0);
+	const wits = Math.max(0, parseInt(actor.system.attributes.wits.total) || 0);
+	const initiativePool = dexterity + wits;
+	let roll = new Roll(`${initiativePool}d10cs>=${INITIATIVE_DIFFICULTY}x=10df=1`);
 	await roll.evaluate();
-	roll.terms[0].results.forEach((dice) => {
-		init += parseInt(dice.result) + parseInt(actor.system.initiative.total);
+	const diceValues = roll.dice.flatMap(die => die.results.map(dice => parseInt(dice.result)));
+	const initiativeResult = resolveInitiativeDice(diceValues);
+	init = initiativeResult.initiative;
 
-		let result = {
-			value: parseInt(dice.result),
-			color: _diceColor
-		}
+	for (const value of diceValues) {
+		diceResult.dices.push({value, color: _diceColor});
+	}
 
-		diceResult.dices.push(result);
-
-		rollInfo = `${dice.result} + ${actor.system.initiative.total} = ${dice.result + actor.system.initiative.total}`;
-	});
+	diceResult.successes = initiativeResult.successes;
+	diceResult.rollResult = initiativeResult.rollResult;
+	diceResult.initiative = init;
+	rollInfo = `${game.i18n.localize(actor.system.attributes.dexterity.label)} ${dexterity} + ${game.i18n.localize(actor.system.attributes.wits.label)} ${wits} = ${initiativePool}; ${game.i18n.localize("wod.labels.difficulty")}: ${INITIATIVE_DIFFICULTY}`;
 
 	allDiceResult.push(diceResult);
 
@@ -675,18 +678,6 @@ export async function InitiativeRoll(diceRoll) {
 
 			tokenAdded = true;
 		}
-	}
-
-	if (actor.type != CONFIG.worldofdarkness.sheettype.spirit) {
-		if (parseInt(actor.system.attributes.dexterity.total) >= parseInt(actor.system.attributes.wits.total)) {
-			initAttribute = game.i18n.localize(actor.system.attributes.dexterity.label) + " " + actor.system.attributes.dexterity.total;
-		}
-		else {
-			initAttribute = game.i18n.localize(actor.system.attributes.wits.label) + " " + actor.system.attributes.wits.total;
-		}
-	}
-	else {
-		initAttribute = game.i18n.localize(actor.system.advantages.willpower.label) + " " + actor.system.advantages.willpower.permanent;
 	}
 
 	//(into)
@@ -725,6 +716,7 @@ export async function InitiativeRoll(diceRoll) {
     const html = await foundry.applications.handlebars.renderTemplate(template, templateData);
 
     const chatData = {
+		rolls: [roll],
         content: html,
 		speaker: ChatMessage.getSpeaker({ actor: actor }),
     };

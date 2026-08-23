@@ -761,7 +761,7 @@
             "flags": {}
         }
     ],
-    "initiative": "1d10 + @initiative.total",
+    "initiative": "max(-1, (@attributes.dexterity.total + @attributes.wits.total)d10cs>=8x=10df=1)",
     "grid": {
         "distance": 2,
         "units": "m"

@@ -77,6 +77,15 @@
 
         {{#each data.multipleresult as |result key|}}
             <div class="tray-roll-area">
+                <div class="tray-success-area">
+					<div>{{localize "wod.dice.successes"}}: {{result.successes}}</div>
+					<div class="tray-test-result">
+						{{#if (eq result.rollResult "botch")}}<span class="danger">{{localize "wod.dice.botch"}}</span>{{/if}}
+						{{#if (eq result.rollResult "fail")}}<span class="danger">{{localize "wod.dice.fail"}}</span>{{/if}}
+						{{#if (eq result.rollResult "success")}}{{localize "wod.dice.success"}}{{/if}}
+					</div>
+					<div>{{localize "wod.combat.initiative"}}: {{result.initiative}}</div>
+				</div>
                 {{#each result.dices as |dice key|}}   
                     <img class="wod-svg" src='data:image/svg+xml;utf8,{{SvgHtml 'dice' dice ../../data.actor.type ../../data.actor.system.settings.variantsheet}}' title="{{dice.value}}">
                 {{/each}}

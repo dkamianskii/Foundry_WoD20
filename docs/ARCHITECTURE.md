@@ -406,7 +406,7 @@ Important implications:
 - Favored attribute/ability flags currently add informational chat metadata only; they do not exempt natural 1s from Resistance.
 - Demon Lore Torment compares successful die faces with permanent Torment after the normal roll.
 
-`InitiativeRoll` is separate: it rolls one d10, adds derived initiative, tries to add/update the actor's token combatant, and emits the same chat template.
+`InitiativeRoll` is separate: it rolls a Dexterity + Wits d10 pool at fixed difficulty 8, recursively explodes 10s, deducts 1s, maps a botch to -1, tries to add/update the actor's token combatant, and emits the same chat template. `module/scripts/initiative.js` provides its pure outcome calculation, while `system.json` carries the equivalent Foundry combat-tracker formula.
 
 Dependencies: evaluation depends on settings cached in `CONFIG.worldofdarkness`, `BonusHelper`, actor conditions/data layout, Foundry `Roll`, the dice SVG helpers/icons, localization, and chat rendering.
 
@@ -493,7 +493,7 @@ General behavior:
 - frenzy retains its legacy full Health-penalty suppression before evaluation;
 - Ignore Pain is resolved centrally: heavy-derived Health and Willpower penalties are ignored, but each track's aggravated-derived penalty remains;
 - `DiceRoller` applies it arithmetically to the target pool and clamps the result to zero;
-- soak, frenzy, initiative's d10, paradox, and several special rolls explicitly use zero;
+- soak, frenzy, the fixed Dexterity + Wits initiative Test, paradox, and several special rolls explicitly use zero;
 - damage rolls use it only when the `usePenaltyDamage` world setting is enabled;
 - the chat card displays the localized wound level and numeric penalty when applied.
 
